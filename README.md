@@ -1,6 +1,6 @@
 # SIP3 Documentation #
 
-**SIP3 Documentation** is a documentation as a code project struvtured and built using [Antora](https://antora.org/).
+**SIP3 Documentation** is a documentation as a code project structured and built with [Antora](https://antora.org/).
 
 ## Intro
 
