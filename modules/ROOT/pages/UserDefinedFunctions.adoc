@@ -1,0 +1,59 @@
+= User Defined Functions
+
+== Overview
+
+:description: SIP3 User Defined Functions.
+
+VoIP systems are very generic. Their basic call flow is strictly defined in various RFCs, however there are still a plenty of ways to customize the business logic on behalf of the protocol itself.
+
+Kamailio SIP proxy is one example of such system. It strictly follows RFC 3261. At the same time it gives you a card blanche for modifying each SIP message accordingly to your business logic. That is what makes every Kamailio configuration specific and harder for engineers to properly set granular VoIP monitoring. 
+
+We designed the SIP3 platform with generic VoIP systems in mind. User Defined Functions (UDFs) let engineers get granular monitoring data, based on various user defined and service attributes.
+
+At the moment the SIP3 platform lets you write UDFs using Groovy or Javascript.
+
+== User Defined Function Base Structure
+
+Each UDF has the following base structure:
+
+++++
+<details open>
+<summary>Groovy</summary>
+++++
+[source,groovy]
+----
+def eventBus = vertx.eventBus()                                 // <1>
+eventBus.localConsumer("sip_message_udf", { event ->            // <2>
+    def packet = event.body()                                   // <3>
+    
+    // TODO...
+    
+    event.reply(true)                                           // <4>
+})
+----
+++++
+</details>
+++++
+++++
+<details>
+<summary>JS</summary>
+++++
+
+[source,js]
+----
+var eventBus = vertx.eventBus();                                // <1>
+eventBus.localConsumer("sip_message_udf", function (event) {    // <2>
+    var packet = event.body();                                  // <3>
+
+    // TODO...
+    
+    event.reply(true);                                          // <4>
+});
+----
+
+++++
+</details>
+++++
+
+
+
