@@ -34,11 +34,11 @@ eventBus.localConsumer("sip_message_udf", { event ->            // <2>
 ++++
 </details>
 ++++
+
 ++++
 <details>
 <summary>JS</summary>
 ++++
-
 [source,js]
 ----
 var eventBus = vertx.eventBus();                                // <1>
@@ -50,7 +50,6 @@ eventBus.localConsumer("sip_message_udf", function (event) {    // <2>
     event.reply(true);
 });
 ----
-
 ++++
 </details>
 ++++
