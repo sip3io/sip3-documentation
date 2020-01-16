@@ -92,7 +92,9 @@ eventBus.localConsumer("sip_message_udf", function (event) {    // <2>
 
 == User-Defined Attributes
 
-As mentioned in the previous section, the main purpose of any SIP3 UDF is assigning `String` or `Boolean` attribute to a SIP3 packet according to its business logic. We call such attributes User-Defined Attributes (UDAs). If you follow best practices described below UDAs may bring your user experience with SIP3 to the next level.
+As mentioned in the previous section, the main purpose of any SIP3 UDF is assigning `String` or `Boolean` attribute to a SIP3 packet according to its business logic.
+
+We call such attributes User-Defined Attributes (UDAs). UDAs may bring your experience with SIP3 to the next level if you will follow this simple rule:
 
 CAUTION: Always choose attributes with limited amount of possible options otherwise it may affect database performance and cause serious issues. For instance, if you have a mobile application: `operation_system` or `application_version` are examples of good UDAs.
 
