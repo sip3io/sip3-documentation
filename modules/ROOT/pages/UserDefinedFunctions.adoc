@@ -96,5 +96,5 @@ As mentioned in the previous section, the main purpose of any SIP3 UDF is assign
 
 We call such attributes User-Defined Attributes (UDAs). UDAs may bring your experience with SIP3 to the next level if you will follow this simple rule:
 
-CAUTION: Always choose attributes with limited amount of possible options otherwise it may affect database performance and cause serious issues. For instance, if you have a mobile application: `operation_system` or `application_version` are examples of good UDAs.
+CAUTION: Always choose `String` attributes with limited amount of possible values otherwise it may affect database performance and cause serious issues. For instance, if you have a mobile application: `operation_system` or `application_version` are good options for UDAs.
 
