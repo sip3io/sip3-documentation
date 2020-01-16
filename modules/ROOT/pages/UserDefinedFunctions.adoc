@@ -1,18 +1,18 @@
-= User Defined Functions
+= User-Defined Functions
 
 == Overview
 
-:description: SIP3 User Defined Functions.
+:description: SIP3 User-Defined Functions.
 
 VoIP systems are very generic. Their basic call flow is strictly defined in various RFCs, however there are still a plenty of ways to customize the business logic on behalf of the protocol itself.
 
 Kamailio SIP proxy is one example of such system. It strictly follows RFC 3261. At the same time it gives you a card blanche for modifying each SIP message accordingly to your business logic. That is what makes every Kamailio configuration specific and harder for engineers to properly set granular VoIP monitoring. 
 
-We designed the SIP3 platform with generic VoIP systems in mind. User Defined Functions (UDFs) let engineers get granular monitoring data, based on various user defined and service attributes.
+We designed the SIP3 platform with generic VoIP systems in mind. User-Defined Functions (UDFs) let engineers get granular monitoring data, based on various user-defined and service attributes.
 
 At the moment the SIP3 platform lets you write UDFs using Groovy or JavaScript.
 
-== User Defined Function Base Structure
+== User-Defined Function Base Structure
 
 Each UDF has the following base structure:
 
@@ -24,7 +24,7 @@ Each UDF has the following base structure:
 ----
 def eventBus = vertx.eventBus()                                 // <1>
 eventBus.localConsumer("sip_message_udf", { event ->            // <2>
-    // `event.body` is a Map<String, Object> with following data structure:
+    // `event.body` is a Map<String, Object>:
     // {
     //  "src_addr" : String,
     //  "src_host" : String (Optional),
@@ -57,7 +57,7 @@ eventBus.localConsumer("sip_message_udf", { event ->            // <2>
 ----
 var eventBus = vertx.eventBus();                                // <1>
 eventBus.localConsumer("sip_message_udf", function (event) {    // <2>
-    // `event.body` is a Map<String, Object> with following data structure:
+    // `event.body` is a Map<String, Object>:
     // {
     //  "src_addr" : String,
     //  "src_host" : String (Optional),
@@ -82,10 +82,17 @@ eventBus.localConsumer("sip_message_udf", function (event) {    // <2>
 </details>
 ++++
 
-<1> Under the hood SIP3 uses https://vertx.io[Vert.x] framework which makes it pretty simple to write code extensions in different languages. If you want to get more details read https://vertx.io/docs/[Vert.x Documentation] first. Otherwise, just copy code sample above and modify it based on your needs.
+<1> Under the hood SIP3 uses https://vertx.io[Vert.x] framework which makes it pretty simple to write code extensions in different languages. If you want to get more details read https://vertx.io/docs/[Vert.x Documentation] first. Otherwise, just copy the code sample above and modify it according to your needs.
 
-<2> `"sip_message_udf"` is an address of the SIP3 UDF endpoint. As an input it receives SIP3 packet with generic payload represented as a `Map<String, Object>`.
+<2> `"sip_message_udf"` is an address of the SIP3 UDF endpoint. As an input it receives a SIP3 packet with generic payload represented as a `Map<String, Object>`.
 
-<3> For example, as a payload `"sip_message_udf"` UDF endpoint receives SIP message represented as a `Map<String, String>`.
+<3> For example, `"sip_message_udf"` endpoint receives as a payload a SIP message represented as a `Map<String, String>` where keys are SIP header names and values are related SIP header values.
 
-<4> `robocall` is an User Defined Attribute which was assigned to the SIP3 packet. As long as it was assigned it will be automatically populated in `Advanced Search` and in all related `Service Metrics` as a search criteria.
+<4> `robocall` is an User-Defined Attribute which was assigned to a SIP3 packet. As long as it's assigned it will be automatically populated in `Advanced Search` and in all related `Service Metrics` as a search criteria.
+
+== User-Defined Attributes
+
+As mentioned in the previous section, the main purpose of any SIP3 UDF is assigning `String` or `Boolean` attribute to a SIP3 packet according to its business logic. We call such attributes User-Defined Attributes (UDAs). If you follow best practices described below UDAs may bring your user experience with SIP3 to the next level.
+
+CAUTION: Always choose attributes with limited amount of possible options otherwise it may affect database performance and cause serious issues. For instance, if you have a mobile application: `operation_system` or `application_version` are examples of good UDAs.
+
