@@ -84,7 +84,7 @@ eventBus.localConsumer("sip_message_udf", function (event) {    // <2>
 
 <1> Under the hood SIP3 uses https://vertx.io[Vert.x] framework which makes it very simple to write code extensions in different languages. You can find more about that in the https://vertx.io/docs/[Vert.x Documentation]. Alternatively you can copy the code snippet above and modify it according to your needs.
 
-<2> `"sip_message_udf"` is an address of the SIP3 UDF endpoint. 
+<2> `"sip_message_udf"` is a name of the SIP3 UDF endpoint. 
 As an input it receives a SIP3 packet with generic payload represented as a `Map<String, Object>`.
 
 <3> `"sip_message_udf"` endpoint receives as a payload a SIP message represented as a `Map<String, String>` where keys are SIP header names and values are related SIP header values.
@@ -151,6 +151,16 @@ eventBus.localConsumer("sip_message_udf", function (event) {
 ++++
 </details>
 ++++
+
+The example below is just a simple cutomization which can be done by analizing SIP message content. But you can build a very complex business logic using `vertx` object. Check out in the https://vertx.io/docs/[Vert.x Documentation] how to send HTTP requests or query a remote database just in a few lines of code.
+
+== SIP3 UDF Endpoints
+
+
+
+
+
+
 
 
 
