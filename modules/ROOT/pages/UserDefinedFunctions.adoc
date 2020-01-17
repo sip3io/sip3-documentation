@@ -154,7 +154,7 @@ eventBus.localConsumer("sip_message_udf", function (event) {
 
 The example below is just a simple cutomization which can be done by analizing SIP message content. But you can build a very complex business logic using `vertx` object. Check out in the https://vertx.io/docs/[Vert.x Documentation] how to send HTTP requests or query a remote database just in a few lines of code.
 
-== SIP3 UDF Endpoints
+== SIP3 Endpoints
 
 
 
