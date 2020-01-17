@@ -1,1 +1,1 @@
-* xref:UserDefinedFunctions.adoc[User Defined Functions]
+* xref:UserDefinedFunctions.adoc[User-Defined Functions]
