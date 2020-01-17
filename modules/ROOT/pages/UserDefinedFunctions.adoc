@@ -152,7 +152,7 @@ eventBus.localConsumer("sip_message_udf", function (event) {
 </details>
 ++++
 
-The example below is just a simple cutomization which can be done by analizing SIP message content. However you can build a very complex business logic using `vertx` object. Read in the https://vertx.io/docs/[Vert.x Documentation] how to send HTTP requests or query a remote database just in a few lines of code.
+The example below is just a simple customization which can be done by analyzing SIP message content. However you can build a very complex business logic using `vertx` object. Read in the https://vertx.io/docs/[Vert.x Documentation] how to send HTTP requests or query a remote database just in a few lines of code.
 
 == Endpoints
 
