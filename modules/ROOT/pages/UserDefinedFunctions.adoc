@@ -104,7 +104,7 @@ IMPORTANT: Always choose `String` attributes with limited amount of possible val
 
 Most attributes assigned within a UDF are UDAs. Along with those each UDF endpoint carries out its own set of attributes called Service Attributes. The same help resolving various call aggregation and correlation problems.
 
-SIP3 correlates same call legs by strictly matching `From` and `To` users. Now, let's imagine that you have a SIP node which receives all SIP messages containing `From` headers with US numbers in international format (`From: <sip:+13027030026@sip3.io>`). The SIP node handles SIP messages and routes them further while modifying the `From` header according to the US national number format (`From: <sip:3027030026@sip3.io>`). Such configuration breaks the SIP3 call correlation. Fortunately, there is a solution to that problem. We can simply do a pattern matching and assign the results to the `caller` and `callee` Service Attributes defined for the `"sip_message_udf"` endpoint, as shown below.
+SIP3 correlates same call legs by strictly matching `From` and `To` users. Now, let's imagine that you have a SIP node which receives all SIP messages containing `From` headers with US numbers in international format (`From: <sip:13027030026@sip3.io>`). The SIP node handles SIP messages and routes them further while modifying the `From` header according to the US national number format (`From: <sip:3027030026@sip3.io>`). Such configuration breaks the SIP3 call correlation. Fortunately, there is a solution to that problem. We can simply do a pattern matching and assign the results to the `caller` and `callee` Service Attributes defined for the `"sip_message_udf"` endpoint, as shown below.
 
 ++++
 <details open>
