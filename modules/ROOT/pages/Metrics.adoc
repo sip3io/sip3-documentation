@@ -4,3 +4,56 @@
 
 == Overview
 
+TODO
+
+== SIP Register Metrics
+
+TODO
+
+=== `sip_register_messages`
+
+TODO
+
+=== `sip_register_request-delay`
+
+TODO
+
+=== `sip_register_attempts`
+
+TODO
+
+=== `sip_register_duration`
+
+TODO
+
+== SIP Call Metrics
+
+TODO
+
+=== `sip_call_messages`
+
+TODO
+
+=== `sip_call_trying-delay`
+
+TODO
+
+=== `sip_call_setup-time`
+
+TODO
+
+=== `sip_call_establish-time`
+
+TODO
+
+=== `sip_call_disconnect-time`
+
+TODO
+
+=== `sip_call_attempts`
+
+TODO
+
+=== `sip_call_duration`
+
+TODO
