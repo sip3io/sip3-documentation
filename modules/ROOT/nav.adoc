@@ -1,2 +1,6 @@
-* xref:UserDefinedFunctions.adoc[User-Defined Functions]
-* xref:Metrics.adoc[Metrics]
+* xref:Introduction.adoc[Introduction]
+* xref:Installation.adoc[Installation]
+* Features
+** xref:Metrics.adoc[Metrics]
+** xref:UserDefinedFunctions.adoc[User-Defined Functions]
+* Tutorials

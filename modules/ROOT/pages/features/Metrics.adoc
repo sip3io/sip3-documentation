@@ -4,7 +4,9 @@
 
 == Overview
 
-TODO
+Nowadays every DevOps and Service Reliability Engineer knows about concept of Visibility. In most of the cases Visibility starts from ability of the maintenance team immediately react on any sort of service distractions. That's why it's very important to design your system having proper monitoring tools in mind.
+
+This document will get you in touch with the http://micrometer.io/[Micrometer], framework which allows SIP3 to ship metrics to different backends. Also, below you can find a list of all avaialble Service Metrics.
 
 == Micrometer
 
