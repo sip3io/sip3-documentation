@@ -1,6 +1,6 @@
-* xref:Introduction.adoc[Introduction]
-* xref:Installation.adoc[Installation]
+* xref:Overview.adoc[Overview]
+* xref:InstallationGuide.adoc[Installation Guide]
 * Features
-** xref:Metrics.adoc[Metrics]
+** xref:ServiceMetrics.adoc[Service Metrics]
 ** xref:UserDefinedFunctions.adoc[User-Defined Functions]
 * Tutorials

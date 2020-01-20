@@ -4,19 +4,24 @@
 
 == Overview
 
-Nowadays every DevOps and Service Reliability Engineer knows about concept of Visibility. In most of the cases Visibility starts from ability of the maintenance team immediately react on any sort of service distractions. That's why it's very important to design your system having proper monitoring tools in mind.
+Nowadays every DevOps and Service Reliability Engineer is familiar with the link:[Visibility] concept. Often times Visibility starts with the ability of the maintenance team to react immediately on any service disruption. That is why it is very important to design your system having proper monitoring tools in mind. // TODO - Need a better statement backup
 
 This document will get you in touch with the http://micrometer.io/[Micrometer], framework which allows SIP3 to ship metrics to different backends. Also, below you can find a list of all avaialble Service Metrics.
 
 == Micrometer
 
 TODO
+- expensive to bring another monitoring tool for the support team;
+- we want to give them service metrics whilte utilizing their own backend;
+- micrometer is the tool of choice to deliver those metrics to many different backends
+- SIP is utilizing Micrometer's metric types
 
 == SIP Metrics
 
 TODO
+- list of all available sip metrics, based on RFC - 6076;
 
-=== `sip_call_messages`
+=== *sip_call_messages*
 
 ==== Tags
 
@@ -31,7 +36,7 @@ Counter
 
 Call SIP messages counter.
 
-=== `sip_call_attempts`
+=== *sip_call_attempts*
 
 Default: `src_host`, `dst_host`, `state`, `expired`, `retransmits`.
 Optional: UDAs assigned within `"sip_message_udf"` endpoint.
