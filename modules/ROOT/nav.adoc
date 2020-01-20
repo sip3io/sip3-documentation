@@ -1,1 +1,2 @@
 * xref:UserDefinedFunctions.adoc[User-Defined Functions]
+* xref:Metrics.adoc[Metrics]

@@ -1,8 +1,8 @@
 = User-Defined Functions
 
-== Overview
-
 :description: SIP3 User-Defined Functions.
+
+== Overview
 
 VoIP systems are very generic. Their basic call flow is strictly defined in various RFCs, however there are still a plenty of ways to customize the business logic on behalf of the protocol itself.
 
@@ -11,6 +11,8 @@ Kamailio SIP proxy is one example of such system. It strictly follows RFC 3261. 
 We designed the SIP3 platform with generic VoIP systems in mind. User-Defined Functions (UDFs) let engineers get granular monitoring data, based on various user-defined and service attributes.
 
 At the moment the SIP3 platform lets you write UDFs using Groovy or JavaScript.
+
+This document will walk you though the process of writing UDFs. For more information about deployment, please read the https://sip3.io/docs[SIP3 Installation Guide].
 
 == User-Defined Function Base Structure
 
@@ -87,7 +89,7 @@ eventBus.localConsumer("sip_message_udf", function (event) {    // <2>
 <2> `"sip_message_udf"` is a name of the SIP3 UDF endpoint. 
 As an input it receives a SIP3 packet with generic payload represented as a `Map<String, Object>`.
 
-<3> `"sip_message_udf"` endpoint receives as a payload a SIP message represented as a `Map<String, String>` where keys are SIP header names and values are related SIP header values.
+<3> `"sip_message_udf"` endpoint receives as a payload a SIP message represented as a `Map<String, String>` where keys are SIP header names and values are corresponding SIP header values.
 
 <4> In our example `robocall` is an User-Defined Attribute which is assigned to a SIP3 packet. There is no limit of the amount of user defined attributes that can be assigned to a packet. Every assigned attribute is automatically populated as a search criteria in the `Advanced Search` and all related `Service Metrics`.
 
@@ -102,7 +104,7 @@ IMPORTANT: Always choose `String` attributes with limited amount of possible val
 
 == Service Attributes
 
-Most attributes assigned within a UDF are UDAs. Along with those each UDF endpoint carries out its own set of attributes called Service Attributes. The same help resolving various call aggregation and correlation problems.
+Most attributes assigned within a UDF are UDAs. Along with those each UDF endpoint carries out its own set of attributes called Service Attributes. Service Attributes help resolving various call aggregation and correlation problems.
 
 SIP3 correlates same call legs by strictly matching `From` and `To` users. Now, let's imagine that you have a SIP node which receives all SIP messages containing `From` headers with US numbers in international format (`From: <sip:13027030026@sip3.io>`). The SIP node handles SIP messages and routes them further while modifying the `From` header according to the US national number format (`From: <sip:3027030026@sip3.io>`). Such configuration breaks the SIP3 call correlation. Fortunately, there is a solution to that problem. We can simply do a pattern matching and assign the results to the `caller` and `callee` Service Attributes defined for the `"sip_message_udf"` endpoint, as shown below.
 
@@ -152,15 +154,24 @@ eventBus.localConsumer("sip_message_udf", function (event) {
 </details>
 ++++
 
-The example below is just a simple customization which can be done by analyzing SIP message content. However you can build a very complex business logic using `vertx` object. Read in the https://vertx.io/docs/[Vert.x Documentation] how to send HTTP requests or query a remote database just in a few lines of code.
+The example above is just a simple customization which can be done by analyzing SIP message content. However you can build a very complex business logic using `vertx` object. Read in the https://vertx.io/docs/[Vert.x Documentation] how to send HTTP requests or query a remote database just in a few lines of code.
 
 == Endpoints
 
+Below you can find a list of all avaialble service UDF endpoints.
 
+=== `"sip3_message_udf"`
 
+==== Description
 
+`"sip3_message_udf"` UDF is called for every SIP message. UDAs and Service Attributes assigned within the UDF are used for futher registration and call aggregation.
 
+==== Payload
 
+`"sip3_message_udf"` UDF receives as a payload a `Map<String, String>` where keys are SIP header names and values are corresponding SIP header values.
 
+==== Service Attributes
+
+`"sip3_message_udf"` UDF has `caller` and `callee` Service Attributes which can be assigned to resolve various call correlation problems.
 
 
