@@ -6,54 +6,111 @@
 
 TODO
 
-== SIP Register Metrics
+== Micrometer
 
 TODO
 
-=== `sip_register_messages`
-
-TODO
-
-=== `sip_register_request-delay`
-
-TODO
-
-=== `sip_register_attempts`
-
-TODO
-
-=== `sip_register_duration`
-
-TODO
-
-== SIP Call Metrics
+== SIP Metrics
 
 TODO
 
 === `sip_call_messages`
 
-TODO
+==== Tags
 
-=== `sip_call_trying-delay`
+Default: `src_host`, `dst_host`, `cseq_method`, `method`, `status_code`, `status_type`.
+Optional: UDAs assigned within `"sip_message_udf"` endpoint. 
 
-TODO
+==== Type
 
-=== `sip_call_setup-time`
+Counter
 
-TODO
+==== Description
 
-=== `sip_call_establish-time`
-
-TODO
-
-=== `sip_call_disconnect-time`
-
-TODO
+Call SIP messages counter.
 
 === `sip_call_attempts`
 
-TODO
+Default: `src_host`, `dst_host`, `state`, `expired`, `retransmits`.
+Optional: UDAs assigned within `"sip_message_udf"` endpoint.
+
+==== Type
+
+Counter
+
+==== Description
+
+Call attempts.
 
 === `sip_call_duration`
 
-TODO
+Default: `src_host`, `dst_host`, `state`, `expired`, `retransmits`.
+Optional: UDAs assigned within `"sip_message_udf"` endpoint.
+
+==== Type
+
+Timer
+
+==== Description
+
+Call duration.
+
+=== `sip_call_trying-delay`
+
+==== Tags
+
+Default: `src_host`, `dst_host`, `retransmits`.
+Optional: UDAs assigned within `"sip_message_udf"` endpoint. 
+
+==== Type
+
+Timer
+
+==== Description
+
+The time interval between initial `INVITE` message and corresponding `100` response.
+
+=== `sip_call_setup-time`
+
+==== Tags
+
+Default: `src_host`, `dst_host`, `retransmits`.
+Optional: UDAs assigned within `"sip_message_udf"` endpoint. 
+
+==== Type
+
+Timer
+
+==== Description
+
+The time interval between initial `INVITE` message and corresponding `18x` response.
+
+=== `sip_call_establish-time`
+
+==== Tags
+
+Default: `src_host`, `dst_host`, `retransmits`.
+Optional: UDAs assigned within `"sip_message_udf"` endpoint. 
+
+==== Type
+
+Timer
+
+==== Description
+
+The time interval between initial `INVITE` message and corresponding `200` response.
+
+=== `sip_call_disconnect-time`
+
+==== Tags
+
+Default: `src_host`, `dst_host`, `retransmits`.
+Optional: UDAs assigned within `"sip_message_udf"` endpoint. 
+
+==== Type
+
+Timer
+
+==== Description
+
+The time interval between the first `BYE` message and corresponding `200` response.
