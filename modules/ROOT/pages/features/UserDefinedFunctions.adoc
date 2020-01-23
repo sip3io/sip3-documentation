@@ -172,6 +172,6 @@ Below you can find a list of all avaialble service UDF endpoints.
 
 ==== Service Attributes
 
-`"sip3_message_udf"` UDF has `caller` and `callee` Service Attributes which can be assigned to resolve various call correlation problems.
+`"sip3_message_udf"` UDF has `caller`, `callee` and `x_call_id` Service Attributes which can be assigned to resolve various call correlation problems.
 
 
