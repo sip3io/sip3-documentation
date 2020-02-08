@@ -21,103 +21,57 @@ TODO
 TODO
 - list of all available sip metrics, based on RFC - 6076;
 
-=== *sip_call_messages*
 
-==== Tags
+[%header,cols=4*]
+|====================
+|Name
+|Type
+|Tags
+|Description
 
-Default: `src_host`, `dst_host`, `cseq_method`, `method`, `status_code`, `status_type`.
-Optional: UDAs assigned within `"sip_message_udf"` endpoint. 
+|`sip_call_messages`
+|Counter
+|`src_host`, `dst_host`, `cseq_method`, `method`, `status_code`, `status_type`
+|Call messages
 
-==== Type
+|`sip_call_attempts`
+|Counter
+|`src_host`, `dst_host`, `state`, `error_code`, `error_type`, `expired`, `retransmits`
+|Call attempts
 
-Counter
+|`sip_call_duration`
+|Timer
+|`src_host`, `dst_host`, `state`, `error_code`, `error_type`, `expired`, `retransmits`
+|Call duration
 
-==== Description
+|`sip_call_approaching`
+|Counter
+|`src_host`, `dst_host`, `retransmits`
+|Calls approaching at the moment
 
-Call SIP messages counter.
+|`sip_call_established`
+|Counter
+|`src_host`, `dst_host`, `retransmits`
+|Calls established at the moment
 
-=== *sip_call_attempts*
+|`sip_call_trying-delay`
+|Timer
+|`src_host`, `dst_host`, `retransmits`
+|The time interval between initial `INVITE` message and corresponding `100` response
 
-Default: `src_host`, `dst_host`, `state`, `expired`, `retransmits`.
-Optional: UDAs assigned within `"sip_message_udf"` endpoint.
+|`sip_call_setup-time`
+|Timer
+|`src_host`, `dst_host`, `retransmits`
+|The time interval between initial `INVITE` message and corresponding `18x` response
 
-==== Type
+|`sip_call_establish-time`
+|Timer
+|`src_host`, `dst_host`, `retransmits`
+|The time interval between initial `INVITE` message and corresponding `200` response
 
-Counter
+|`sip_call_disconnect-time`
+|Timer
+|`src_host`, `dst_host`, `retransmits`
+|The time interval between the first `BYE` message and corresponding `200` response.
 
-==== Description
-
-Call attempts.
-
-=== `sip_call_duration`
-
-Default: `src_host`, `dst_host`, `state`, `expired`, `retransmits`.
-Optional: UDAs assigned within `"sip_message_udf"` endpoint.
-
-==== Type
-
-Timer
-
-==== Description
-
-Call duration.
-
-=== `sip_call_trying-delay`
-
-==== Tags
-
-Default: `src_host`, `dst_host`, `retransmits`.
-Optional: UDAs assigned within `"sip_message_udf"` endpoint. 
-
-==== Type
-
-Timer
-
-==== Description
-
-The time interval between initial `INVITE` message and corresponding `100` response.
-
-=== `sip_call_setup-time`
-
-==== Tags
-
-Default: `src_host`, `dst_host`, `retransmits`.
-Optional: UDAs assigned within `"sip_message_udf"` endpoint. 
-
-==== Type
-
-Timer
-
-==== Description
-
-The time interval between initial `INVITE` message and corresponding `18x` response.
-
-=== `sip_call_establish-time`
-
-==== Tags
-
-Default: `src_host`, `dst_host`, `retransmits`.
-Optional: UDAs assigned within `"sip_message_udf"` endpoint. 
-
-==== Type
-
-Timer
-
-==== Description
-
-The time interval between initial `INVITE` message and corresponding `200` response.
-
-=== `sip_call_disconnect-time`
-
-==== Tags
-
-Default: `src_host`, `dst_host`, `retransmits`.
-Optional: UDAs assigned within `"sip_message_udf"` endpoint. 
-
-==== Type
-
-Timer
-
-==== Description
-
-The time interval between the first `BYE` message and corresponding `200` response.
+|====================
