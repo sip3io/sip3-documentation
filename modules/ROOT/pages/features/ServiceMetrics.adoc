@@ -18,8 +18,7 @@ TODO
 
 == SIP Metrics
 
-TODO
-- list of all available sip metrics, based on RFC - 6076;
+The list below contains entire set of SIP QoS metrics aggregated and reported by SIP3. You can use it to retrieve the most important QoS metrics described in RFC 6076.
 
 
 [%header,cols=4*]
@@ -78,7 +77,7 @@ TODO
 
 == RTP/RTCP Metrics
 
-TODO...
+The list below contains entire set of RTP/RTCP QoS metrics aggregated and reported by SIP3. 
 
 [%header,cols=4*]
 |====================
@@ -87,42 +86,41 @@ TODO...
 |Tags
 |Description
 
-|`rtpr_(rtp/rtcp)_mos`
+|`rtpr_rtp_mos`, `rtpr_rtcp_mos`
 |Summary
 |`src_host`, `dst_host`, `codec`
 |Mean opinion score
 
-|`rtpr_(rtp/rtcp)_r-factor`
+|`rtpr_rtp_r-factor`, `rtpr_rtcp_r-factor`
 |Summary
 |`src_host`, `dst_host`, `codec`
 |R-Factor
 
-|`rtpr_(rtp/rtcp)_duration`
+|`rtpr_rtp_duration`, `rtpr_rtcp_duration`
 |Timer
 |`src_host`, `dst_host`, `codec`
 |Call media duration
 
-|`rtpr_(rtp/rtcp)_jitter`
+|`rtpr_rtp_jitter`, `rtpr_rtcp_jitter`
 |Summary
 |`src_host`, `dst_host`, `codec`
 |Average jitter
 
-|`rtpr_(rtp/rtcp)_expected-packets`
+|`rtpr_rtp_expected-packets`, `rtpr_rtcp_expected-packets`
 |Summary
 |`src_host`, `dst_host`, `codec`
 |Expected RTP packets
 
-|`rtpr_(rtp/rtcp)_lost-packets`
+|`rtpr_rtp_lost-packets`, `rtpr_rtcp_lost-packets`
 |Summary
 |`src_host`, `dst_host`, `codec`
 |Lost RTP packets
 
 
-|`rtpr_(rtp/rtcp)_rejected-packets`
+|`rtpr_rtp_rejected-packets`, `rtpr_rtcp_rejected-packets`
 |Summary
 |`src_host`, `dst_host`, `codec`
 |Rejected RTP packets
-
 |====================
 
 
