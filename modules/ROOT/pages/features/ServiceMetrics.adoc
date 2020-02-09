@@ -47,12 +47,12 @@ TODO
 |`sip_call_approaching`
 |Counter
 |`src_host`, `dst_host`, `retransmits`
-|Calls approaching at the moment
+|Approaching calls
 
 |`sip_call_established`
 |Counter
 |`src_host`, `dst_host`, `retransmits`
-|Calls established at the moment
+|Established calls
 
 |`sip_call_trying-delay`
 |Timer
@@ -75,3 +75,54 @@ TODO
 |The time interval between the first `BYE` message and corresponding `200` response.
 
 |====================
+
+== RTP/RTCP Metrics
+
+TODO...
+
+[%header,cols=4*]
+|====================
+|Name
+|Type
+|Tags
+|Description
+
+|`rtpr_(rtp/rtcp)_mos`
+|Summary
+|`src_host`, `dst_host`, `codec`
+|Mean opinion score
+
+|`rtpr_(rtp/rtcp)_r-factor`
+|Summary
+|`src_host`, `dst_host`, `codec`
+|R-Factor
+
+|`rtpr_(rtp/rtcp)_duration`
+|Timer
+|`src_host`, `dst_host`, `codec`
+|Call media duration
+
+|`rtpr_(rtp/rtcp)_jitter`
+|Summary
+|`src_host`, `dst_host`, `codec`
+|Average jitter
+
+|`rtpr_(rtp/rtcp)_expected-packets`
+|Summary
+|`src_host`, `dst_host`, `codec`
+|Expected RTP packets
+
+|`rtpr_(rtp/rtcp)_lost-packets`
+|Summary
+|`src_host`, `dst_host`, `codec`
+|Lost RTP packets
+
+
+|`rtpr_(rtp/rtcp)_rejected-packets`
+|Summary
+|`src_host`, `dst_host`, `codec`
+|Rejected RTP packets
+
+|====================
+
+
