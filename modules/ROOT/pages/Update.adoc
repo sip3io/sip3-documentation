@@ -1,0 +1,11 @@
+= Update
+
+In the directory with playbooks, execute command:
+
+    `git fetch && git pull`
+
+Then run ansile:
+
+    `ansible-playbook -K playbooks/trial/sip3-captain.yml`
+
+    `ansible-playbook -K playbooks/trial/sip3-backend.yml`
