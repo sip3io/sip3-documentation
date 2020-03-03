@@ -120,7 +120,7 @@ eventBus.localConsumer("sip_message_udf", { event ->
     
     def from_header = packet['payload']['from']
     def matcher = (from_header =~ /1(\d*)/)
-    if (matcher.hasGroup()) {
+    if (matcher) {
         packet['attributes']['caller'] = matcher[0][1]
     }
 
