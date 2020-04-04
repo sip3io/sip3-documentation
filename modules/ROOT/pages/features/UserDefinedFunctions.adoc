@@ -16,7 +16,7 @@ This document will walk you though the process of writing UDFs. For more informa
 
 == User-Defined Function Base Structure
 
-Each UDF has the following base structure:
+To better understand SIP3 UDF structure let's analyze following `sip_message_udf` example:
 
 ++++
 <details open>
@@ -44,7 +44,7 @@ eventBus.localConsumer("sip_message_udf", { event ->            // <2>
         packet['attributes']['robocall'] = true                 // <4>
     }
 
-    event.reply(true)
+    event.reply(true)                                           // <5>
 })
 ----
 ++++
@@ -77,7 +77,7 @@ eventBus.localConsumer("sip_message_udf", function (event) {    // <2>
         packet['attributes']['robocall'] = true;                // <4>
     }
 
-    event.reply(true);
+    event.reply(true);                                          // <5>
 });
 ----
 ++++
@@ -93,6 +93,7 @@ As an input it receives a SIP3 packet with generic payload represented as a `Map
 
 <4> In our example `robocall` is an User-Defined Attribute which is assigned to a SIP3 packet. There is no limit of the amount of user defined attributes that can be assigned to a packet. Every assigned attribute is automatically populated as a search criteria in the `Advanced Search` and all related `Service Metrics`.
 
+<5> Each UDF has to return boolean result which may be used by SIP3 Salto to define further message flow.
 
 == User-Defined Attributes
 
@@ -160,18 +161,173 @@ The example above shows just a simple customization which can be done by analyzi
 
 Below you can find a list of all avaialble service UDF endpoints.
 
+=== `"packet_udf"`
+
+==== Description
+
+`"packet_udf"` UDF is called for every packet received by SIP3 Salto. The main purpose of this UDF is to filter duplicates (e.g. traffic sent from SIP3 Captain and Heplify can be filtered only by this function).
+
+==== Payload
+
+`"packet_udf"` UDF receives as a payload a `Map<String, Object>` of `src_addr`, `src_port`, `src_host`, `dst_addr`, `dst_port` and `dst_host`.
+
+==== User-Defined and Service Attributes
+
+`"packet_udf"` UDF doesn't support User-Defined and Service Attributes.
+
+==== Usage Example
+
+Following example shows how to filter traffic passing between `SBC` and `SSW` hosts:
+++++
+<details open>
+<summary>Groovy</summary>
+++++
+[source,groovy]
+----
+def eventBus = vertx.eventBus()
+eventBus.localConsumer("packet_udf", { event ->
+    // `event.body` is a Map<String, Object>:
+    // {
+    //  "sender_addr" : String,
+    //  "sender_host" : String (Optional),
+    //  "sender_port" : Integer,
+    //  "payload" : Map<String, Object>,
+    //      "src_addr" : String,
+    //      "src_host" : String (Optional),
+    //      "src_port" : Integer,
+    //      "dst_addr" : String,
+    //      "dst_host" : String (Optional),
+    //      "dst_port" : Integer,
+    // }
+    def packet = event.body()
+
+    if (packet['sender_host'] == 'SBC'
+            && (packet['payload']['src_host'] == 'SSW' || packet['payload']['dst_host'] == 'SSW')) {
+        event.reply(false)
+    } else {
+        event.reply(true)
+    }
+})
+----
+++++
+</details>
+++++
+
+++++
+<details>
+<summary>JS</summary>
+++++
+[source,js]
+----
+var eventBus = vertx.eventBus();
+eventBus.localConsumer("packet_udf", function (event) {
+    // `event.body` is a Map<String, Object>:
+    // {
+    //  "sender_addr" : String,
+    //  "sender_host" : String (Optional),
+    //  "sender_port" : Integer,
+    //  "payload" : Map<String, Object>,
+    //      "src_addr" : String,
+    //      "src_host" : String (Optional),
+    //      "src_port" : Integer,
+    //      "dst_addr" : String,
+    //      "dst_host" : String (Optional),
+    //      "dst_port" : Integer,
+    // }
+    var packet = event.body();
+
+    if (packet['sender_host'] == 'SBC'
+        && (packet['payload']['src_host'] == 'SSW' || packet['payload']['dst_host'] == 'SSW')) {
+        event.reply(false);
+    } else {
+        event.reply(true);
+    }
+});
+----
+++++
+</details>
+++++
+
+
 === `"sip3_message_udf"`
 
 ==== Description
 
-`"sip3_message_udf"` UDF is called for every SIP message. UDAs and Service Attributes assigned within the UDF are used for futher registration and call aggregation.
+`"sip3_message_udf"` UDF is called for every SIP message receieved by SIP3 Salto. UDAs and Service Attributes assigned within the UDF are used for futher registration and call aggregation.
 
 ==== Payload
 
 `"sip3_message_udf"` UDF receives as a payload a `Map<String, String>` where keys are SIP header names and values are corresponding SIP header values.
 
-==== Service Attributes
+==== User-Defined and Service Attributes
 
-`"sip3_message_udf"` UDF has `caller`, `callee` and `x_call_id` Service Attributes which can be assigned to resolve various call correlation problems.
+`"sip3_message_udf"` UDF has no restrictions on assigning User-Defined Attributes. However it considers `caller`, `callee` and `x_call_id` as a Service Attributes used to resolve various call correlation problems.
 
+==== Usage Example
 
+Following example shows how to define and assign `robocall` attribute:
+++++
+<details open>
+<summary>Groovy</summary>
+++++
+[source,groovy]
+----
+def eventBus = vertx.eventBus()                                 // <1>
+eventBus.localConsumer("sip_message_udf", { event ->            // <2>
+    // `event.body` is a Map<String, Object>:
+    // {
+    //  "src_addr" : String,
+    //  "src_host" : String (Optional),
+    //  "src_port" : Integer,
+    //  "dst_addr" : String,
+    //  "dst_host" : String (Optional),
+    //  "dst_port" : Integer,
+    //  "payload" : Map<String, String>,
+    //  "attributes" : Map<String, String|Boolean>
+    // }
+    def packet = event.body()                                   
+    
+    def sip_message = packet['payload']                         // <3>
+    if (sip_message['from'].matches('<sip:100@.*')) {           
+        packet['attributes']['robocall'] = true                 // <4>
+    }
+
+    event.reply(true)                                           // <5>
+})
+----
+++++
+</details>
+++++
+
+++++
+<details>
+<summary>JS</summary>
+++++
+[source,js]
+----
+var eventBus = vertx.eventBus();                                // <1>
+eventBus.localConsumer("sip_message_udf", function (event) {    // <2>
+    // `event.body` is a Map<String, Object>:
+    // {
+    //  "src_addr" : String,
+    //  "src_host" : String (Optional),
+    //  "src_port" : Integer,
+    //  "dst_addr" : String,
+    //  "dst_host" : String (Optional),
+    //  "dst_port" : Integer,
+    //  "payload" : Map<String, String>,
+    //  "attributes" : Map<String, String|Boolean>
+    // }
+    var packet = event.body();                                  
+    
+    var sip_message = packet['payload'];                        // <3>
+    if (sip_message['from'].match('<sip:100@.*')) {             
+        packet['attributes']['robocall'] = true;                // <4>
+    }
+
+    event.reply(true);                                          // <5>
+});
+----
+++++
+</details>
+++++
