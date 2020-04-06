@@ -163,19 +163,19 @@ Below you can find a list of all avaialble service UDF endpoints.
 
 === `"packet_udf"`
 
-==== Description
+====  1. Description
 
 `"packet_udf"` UDF is called for every packet received by SIP3 Salto. The main purpose of this UDF is to filter duplicates (e.g. traffic sent from SIP3 Captain and Heplify can be filtered only by this function).
 
-==== Payload
+==== 2. Payload
 
 `"packet_udf"` UDF receives as a payload a `Map<String, Object>` of `src_addr`, `src_port`, `src_host`, `dst_addr`, `dst_port` and `dst_host`.
 
-==== User-Defined and Service Attributes
+==== 3. User-Defined and Service Attributes
 
 `"packet_udf"` UDF doesn't support User-Defined and Service Attributes.
 
-==== Usage Example
+==== 4. Usage Example
 
 Following example shows how to filter traffic passing between `SBC` and `SSW` hosts:
 ++++
@@ -251,19 +251,19 @@ eventBus.localConsumer("packet_udf", function (event) {
 
 === `"sip3_message_udf"`
 
-==== Description
+==== 1. Description
 
 `"sip3_message_udf"` UDF is called for every SIP message receieved by SIP3 Salto. UDAs and Service Attributes assigned within the UDF are used for futher registration and call aggregation.
 
-==== Payload
+==== 2. Payload
 
 `"sip3_message_udf"` UDF receives as a payload a `Map<String, String>` where keys are SIP header names and values are corresponding SIP header values.
 
-==== User-Defined and Service Attributes
+==== 3. User-Defined and Service Attributes
 
 `"sip3_message_udf"` UDF has no restrictions on assigning User-Defined Attributes. However it considers `caller`, `callee` and `x_call_id` as a Service Attributes used to resolve various call correlation problems.
 
-==== Usage Example
+==== 4. Usage Example
 
 Following example shows how to define and assign `robocall` attribute:
 ++++
@@ -272,8 +272,8 @@ Following example shows how to define and assign `robocall` attribute:
 ++++
 [source,groovy]
 ----
-def eventBus = vertx.eventBus()                                 // <1>
-eventBus.localConsumer("sip_message_udf", { event ->            // <2>
+def eventBus = vertx.eventBus()                                 
+eventBus.localConsumer("sip_message_udf", { event ->
     // `event.body` is a Map<String, Object>:
     // {
     //  "src_addr" : String,
@@ -287,12 +287,12 @@ eventBus.localConsumer("sip_message_udf", { event ->            // <2>
     // }
     def packet = event.body()                                   
     
-    def sip_message = packet['payload']                         // <3>
+    def sip_message = packet['payload']
     if (sip_message['from'].matches('<sip:100@.*')) {           
-        packet['attributes']['robocall'] = true                 // <4>
+        packet['attributes']['robocall'] = true
     }
 
-    event.reply(true)                                           // <5>
+    event.reply(true)
 })
 ----
 ++++
@@ -305,8 +305,8 @@ eventBus.localConsumer("sip_message_udf", { event ->            // <2>
 ++++
 [source,js]
 ----
-var eventBus = vertx.eventBus();                                // <1>
-eventBus.localConsumer("sip_message_udf", function (event) {    // <2>
+var eventBus = vertx.eventBus();
+eventBus.localConsumer("sip_message_udf", function (event) {
     // `event.body` is a Map<String, Object>:
     // {
     //  "src_addr" : String,
@@ -320,12 +320,12 @@ eventBus.localConsumer("sip_message_udf", function (event) {    // <2>
     // }
     var packet = event.body();                                  
     
-    var sip_message = packet['payload'];                        // <3>
+    var sip_message = packet['payload'];
     if (sip_message['from'].match('<sip:100@.*')) {             
-        packet['attributes']['robocall'] = true;                // <4>
+        packet['attributes']['robocall'] = true;
     }
 
-    event.reply(true);                                          // <5>
+    event.reply(true);
 });
 ----
 ++++
