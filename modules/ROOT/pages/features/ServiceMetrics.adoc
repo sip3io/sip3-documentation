@@ -4,17 +4,9 @@
 
 == Overview
 
-Nowadays every DevOps and Service Reliability Engineer is familiar with the link:[Visibility] concept. Often times Visibility starts with the ability of the maintenance team to react immediately on any service disruption. That is why it is very important to design your system having proper monitoring tools in mind. // TODO - Need a better statement backup
+SIP3 uses vendor-neutral application metric facade called http://micrometer.io/[Micrometer]. It allows SIP3 to send multi-dimensional QoS metrics to the most popular monitoring systems such as CloudWatch, Datadog, Elastic, InfluxDB, New Relic, Prometheus, etc.
 
-This document will get you in touch with the http://micrometer.io/[Micrometer], framework which allows SIP3 to ship metrics to different backends. Also, below you can find a list of all avaialble Service Metrics.
-
-== Micrometer
-
-TODO
-- expensive to bring another monitoring tool for the support team;
-- we want to give them service metrics whilte utilizing their own backend;
-- micrometer is the tool of choice to deliver those metrics to many different backends
-- SIP is utilizing Micrometer's metric types
+Please read http://micrometer.io/docs[Micrometer Documentation] to get more information about basic concepts, metric types, dimensional data models and specific implementation details.
 
 == SIP Metrics
 
