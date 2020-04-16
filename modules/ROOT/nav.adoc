@@ -1,7 +1,7 @@
-* xref:Introduction.adoc[Overview]
+* xref:GettingStartedGuide.adoc[Getting Started]
 * xref:InstallationGuide.adoc[Installation Guide]
 * Features
 ** xref:features/UserDefinedFunctions.adoc[User-Defined Functions]
 ** xref:features/ServiceMetrics.adoc[Service Metrics]
 * Tutorials
-** xref:tutorials/HowToInroduceUserDefinedAttribute.adoc[How To Introduce User-Defined Attribute]
+** xref:tutorials/HowToInroduceUserDefinedAttribute.adoc[How To Introduce a User-Defined Attribute]
