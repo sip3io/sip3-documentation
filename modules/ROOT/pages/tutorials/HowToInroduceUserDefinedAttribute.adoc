@@ -2,17 +2,17 @@
 
 == Overview
 
-With SIP3 you can search for calls and build metric dashboards based on set of defined criterias.
+With SIP3 you can search for calls and build metric dashboards based on the set of defined criteria.
 
 For instance, you can find all calls sent though particular SIP trunk, filter them by state and check which of those calls had problems with setup time, like it's shown on the picture below:
 
 // TODO: Picture with Advanced Search
 
-We call each of the criterias above Service Attributes. They are assigned automatically by SIP3 to each call. You can also use those attributes for building metiric dashboards:
+We call each of the criteria above Service Attributes. They are assigned automatically by SIP3 to each call. You can also use those attributes for building metiric dashboards:
 
 // TODO: Picture with Grafana Dashboard
 
-Service Attributes address to tons of different problems. Hovewer it is not enough to cover all the use cases considering very different traffic profiles.
+Service Attributes address to tons of different problems. However, it is not enough to cover all the use cases considering very different traffic profiles.
 
 In this tutorial we will define a specific use case, introduce a User-Defined Attribute and learn how to use it.
 
