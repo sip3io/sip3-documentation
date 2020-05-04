@@ -42,7 +42,7 @@ NOTE: Before you start, make sure you get yourself familiar with the concept of 
 == User-Defined Function
 
 NOTE: The SIP3 team recommends you to use https://www.jetbrains.com/idea[InteliJ IDEA].
-Just clone the https://github.com/sip3io/sip3-salto-ce[SIP3 Salto] project, open it in your IDEA and take an advantage of syntax highlight and autocomplete.
+Just clone the https://github.com/sip3io/sip3-salto-ce[SIP3 Salto] project, open it in your IDEA, create `.groovy` file within the project and take an advantage of syntax highlight and autocomplete.
 
 As expected, the use case we are going to implement is a bit more complicated.
 However, it's enough just to walk though the https://vertx.io/docs/vertx-core/groovy[Vert.x Documentation] to understand what's happening in the code snippet below:
