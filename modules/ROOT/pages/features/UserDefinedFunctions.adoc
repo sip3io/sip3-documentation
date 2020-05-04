@@ -12,7 +12,7 @@ We designed the SIP3 platform with generic VoIP systems in mind. User-Defined Fu
 
 At the moment the SIP3 platform lets you write UDFs using Groovy or JavaScript.
 
-This document will walk you though the process of writing UDFs. For more information about deployment, please read the https://sip3.io/docs[SIP3 Installation Guide].
+This document will walk you though the process of writing UDFs. For more information about deployment, please read the xref:InstallationGuied.adoc[SIP3 Installation Guide].
 
 == User-Defined Function Base Structure
 
@@ -101,7 +101,7 @@ As mentioned in the previous section, the main purpose of any SIP3 UDF is assign
 
 We call such attributes User-Defined Attributes (UDAs). UDAs can bring your SIP3 experience to a next level if you follow the following rule:
 
-IMPORTANT: Always choose `String` attributes with limited amount of possible values. Otherwise it may affect your database performance and can even bring it down. For instance, if you have a mobile application: `operation_system` or `application_version` are good choice of UDAs.
+IMPORTANT: Always choose `String` attributes with a limited amount of possible values. Otherwise, it may affect your database performance and can even bring it down. For instance, if you have a mobile application: `operation_system` or `application_version` are good choice of UDAs.
 
 == Service Attributes
 
@@ -155,7 +155,7 @@ eventBus.localConsumer("sip_message_udf", function (event) {
 </details>
 ++++
 
-The example above shows just a simple customization which can be done by analyzing SIP message content. However you can build a very complex business logic using `vertx` object. Read in the https://vertx.io/docs/[Vert.x Documentation] how to send HTTP requests or query a remote database just in a few lines of code.
+The example above shows just a simple customization which can be done by analyzing SIP message content. However, you can build a very complex business logic using `vertx` object. Read in the https://vertx.io/docs/[Vert.x Documentation] and xref:tutorials/HowToInroduceUserDefinedAttribute.adoc[this tutorial] how to send HTTP requests or query a remote database just in a few lines of code.
 
 == Endpoints
 

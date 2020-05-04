@@ -6,11 +6,11 @@ With SIP3 you can search for calls and build metric dashboards based on a set of
 
 For instance, you can find all calls sent though particular SIP trunk, filter them by state and check which of those had problems with setup time, like it's shown on the picture below:
 
-image::Call_Setup_Troubleshooting_By_Trunk.png[Troubleshooting Example]
+image::CallSetupTroubleshootingByTrunk.png[Troubleshooting Example]
 
 We call each of the criteria above Service Attributes. They are assigned automatically by SIP3 to each call. You can also use those attributes for building metric dashboards:
 
-image::Call_Setup_Statistic_By_Trunk.png[Statistic Example]
+image::CallSetupStatisticByTrunk.png[Statistic Example]
 
 Service Attributes can help you troubleshoot and address various problems. That however is not enough to cover different traffic profile use cases.
 
@@ -34,29 +34,30 @@ So even if the traffic has been blocked you will still be able detect fraud atte
 
 Let's see how this works in action!
 
+For the use case we will introduce two User-Defined Attributes: `blocked` as a Boolean and `blocked_addr` as a String.
+The first one will let us search for all calls originated from blacklisted IPs while the second one will show us more detailed information per IP.
+
+NOTE: Before you start, make sure you get yourself familiar with the concept of xref:features/UserDefinedFunctions.adoc[User-Defined Functions].
+
 == User-Defined Function
 
-```groovy
-package io.sip3.udf
+NOTE: The SIP3 team recommends you to use https://www.jetbrains.com/idea[InteliJ IDEA].
+Just clone the https://github.com/sip3io/sip3-salto-ce[SIP3 Salto] project, open it in your IDEA and take an advantage of syntax highlight and autocomplete.
 
-import io.vertx.core.AbstractVerticle
-import io.vertx.ext.web.client.WebClient
-import org.slf4j.LoggerFactory
+As expected, the use case we are going to implement is a bit more complicated.
+However, it's enough just to walk though the https://vertx.io/docs/vertx-core/groovy[Vert.x Documentation] to understand what's happening in the code snippet below:
 
-class ApiBanUdfExample extends AbstractVerticle {
-
-    private final logger = LoggerFactory.getLogger(ApiBanUdfExample)
+[source,groovy]
+----
+class ApiBanUdfExample extends AbstractVerticle {                               // <1>
 
     private final APIBAN_URL = 'https://apiban.org/api/%YOUR_API_KEY%/banned'
-    private final UPDATE_PERIOD_MIN = 5
 
-    Set blocked = []
+    private Set blocked = []
 
     @Override
     void start() throws Exception {
-        updateBlocked()
-
-        vertx.eventBus().localConsumer("sip_message_udf") { event ->
+        vertx.eventBus().localConsumer("sip_message_udf") { event ->            // <2>
             def packet = event.body()
 
             if (blocked.contains(packet['src_addr'])) {
@@ -66,39 +67,49 @@ class ApiBanUdfExample extends AbstractVerticle {
 
             event.reply(true)
         }
+
+        asyncUpdateBlocked()                                                    // <3>
     }
+}
+----
 
-    void updateBlocked(String controlId) {
-        // Let's generate URL based on control ID value (`https://apiban.org/doc.html`)
-        def url = controlId ? "$APIBAN_URL/$controlId" : APIBAN_URL
+<1> Don't be confused that our code doesn't look like a Groovy script from xref:features/UserDefinedFunctions.adoc[User-Defined Functions] document.
+This is because every SIP3 User-Defined Function is a verticle which can be written in https://vertx.io/docs/vertx-core/groovy/#_writing_verticles[multiple ways].
+We've chosen to extend `AbstractVerticle` class which gives us more context and control on the IDEA level.
+<2> This part is a very simple and looks exactly like any Groovy script from xref:features/UserDefinedFunctions.adoc[User-Defined Functions] document.
+For the use case, we will analyze packet's `src_addr` attribute. If this attribute is found in the `blocked` list we will assign User-Defined Attributes stated above.
+<3> To update the `blocked` list we need to call APIBAN API. The method `asyncUpdateBlocked` is pretty big that's why you will find it below in a separate code snippet.
 
-        WebClient.create(vertx).getAbs(url).send { asr ->
-            if (asr.failed()) {
-                logger.error("APIBAN call failed. Request: $url", asr.cause())
-                // Operation failed, let's repeat downloads in `UPDATE_PERIOD_MIN`
-                vertx.setTimer(UPDATE_PERIOD_MIN * 60000) {
-                    updateBlocked()
-                }
+[source,groovy]
+----
+private void asyncUpdateBlocked(String controlId) {
+    def url = controlId ? "$APIBAN_URL/$controlId" : APIBAN_URL                 // <1>
+
+    WebClient.create(vertx).getAbs(url).send { asr ->                           // <2>
+        if (asr.failed()) {
+            vertx.setTimer(UPDATE_PERIOD_MIN * 60000) {                         // <3>
+                asyncUpdateBlocked()
             }
+        }
 
-            def response = asr.result().bodyAsJsonObject()
-            logger.info("APIBAN call succeed. Request: $url, Response: $response")
+        def response = asr.result().bodyAsJsonObject()
+        def addresses = response.get('ipaddress') as ArrayList
 
-            def addresses = response.get('ipaddress') as ArrayList
-            blocked.addAll(addresses)
-            if (addresses.size() == 250) {
-                // Seems that we have more data, let's perform incremental downloads immediately
-                updateBlocked(response.get('ID'))
-            } else {
-                // Seems that we are up to date, let's repeat downloads in `UPDATE_PERIOD_MIN`
-                vertx.setTimer(UPDATE_PERIOD_MIN * 60000) {
-                    updateBlocked()
-                }
+        blocked.addAll(addresses)                                               // <4>
+
+        if (addresses.size() == 250) {
+            def id = response.get('ID') as String                               // <5>
+            asyncUpdateBlocked(id)
+        } else {
+            vertx.setTimer(UPDATE_PERIOD_MIN * 60000) {                         // <6>
+                asyncUpdateBlocked()
             }
         }
     }
 }
-```
+----
+
+//TODO: Explain `asyncUpdateBlocked()` method
 
 == Advanced Search
 
