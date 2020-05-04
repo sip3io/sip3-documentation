@@ -2,27 +2,103 @@
 
 == Overview
 
-With SIP3 you can search for calls and build metric dashboards based on the set of defined criteria.
+With SIP3 you can search for calls and build metric dashboards based on a set of defined criteria.
 
-For instance, you can find all calls sent though particular SIP trunk, filter them by state and check which of those calls had problems with setup time, like it's shown on the picture below:
+For instance, you can find all calls sent though particular SIP trunk, filter them by state and check which of those had problems with setup time, like it's shown on the picture below:
 
-// TODO: Picture with Advanced Search
+image::Call_Setup_Troubleshooting_By_Trunk.png[Troubleshooting Example]
 
-We call each of the criteria above Service Attributes. They are assigned automatically by SIP3 to each call. You can also use those attributes for building metiric dashboards:
+We call each of the criteria above Service Attributes. They are assigned automatically by SIP3 to each call. You can also use those attributes for building metric dashboards:
 
-// TODO: Picture with Grafana Dashboard
+image::Call_Setup_Statistic_By_Trunk.png[Statistic Example]
 
-Service Attributes address to tons of different problems. However, it is not enough to cover all the use cases considering very different traffic profiles.
+Service Attributes can help you troubleshoot and address various problems. That however is not enough to cover different traffic profile use cases.
 
-In this tutorial we will define a specific use case, introduce a User-Defined Attribute and learn how to use it.
+In this tutorial we will define a specific use case, introducing a User-Defined Attribute, and learn how to use it later.
 
 == Use Case
 
-// TODO: Use case
+Everyone in the VoIP community knows https://twitter.com/fredposner[Fred Posner] as a great VoIP engeener and very talented baker. Awhile back Fred introduced a new community-driven service called https://apiban.org[APIBAN]. A platform for sharing and retrieving a list of fraud IP addresses.
 
-== User-Defined Fuction
+APIBAN is integrated with https://apiban.org/doc.html#kamailioex[Kamailio] and https://apiban.org/doc.html#iptablesex[iptables] which makes it possible to automatically update firewall rules and block any fraud attempts.
 
-// TODO: User-Defined Function
+Unfortunately, as with any other open source platform, APIBAN's data may be compromised. Thus, the need of a verification via another service.
+
+Thanks to the SIP3 architecture design you can have a monitoring set in place that works in front of `iptables`.
+
+So even if the traffic has been blocked you will still be able detect fraud attempts and whitelist wrongly blocked IP addresses. You will also:
+
+* see statistics of fraud attempts and determine the size of a fraud attack
+* analyze SIP messages retrieved from blacklisted IPs
+* be able to find a similar fraud attempts pattern in your own traffic from addresses that are not yet added to your blacklist.
+
+Let's see how this works in action!
+
+== User-Defined Function
+
+```groovy
+package io.sip3.udf
+
+import io.vertx.core.AbstractVerticle
+import io.vertx.ext.web.client.WebClient
+import org.slf4j.LoggerFactory
+
+class ApiBanUdf extends AbstractVerticle {
+
+    private final logger = LoggerFactory.getLogger(ApiBanUdf)
+
+    private final APIBAN_URL = 'https://apiban.org/api/%YOUR_API_KEY%/banned'
+    private final UPDATE_PERIOD_MIN = 5
+
+    Set blocked = []
+
+    @Override
+    void start() throws Exception {
+        updateBlocked()
+
+        vertx.eventBus().localConsumer("sip_message_udf") { event ->
+            def packet = event.body()
+
+            if (blocked.contains(packet['src_addr'])) {
+                packet['attributes']['blocked'] = true
+                packet['attributes']['blocked_addr'] = packet['src_addr']
+            }
+
+            event.reply(true)
+        }
+    }
+
+    void updateBlocked(String controlId) {
+        // Let's generate URL based on control ID value (`https://apiban.org/doc.html`)
+        def url = controlId ? "$APIBAN_URL/$controlId" : APIBAN_URL
+
+        WebClient.create(vertx).getAbs(url).send { asr ->
+            if (asr.failed()) {
+                logger.error("APIBAN call failed. Request: $url", asr.cause())
+                // Operation failed, let's repeat downloads in `UPDATE_PERIOD_MIN`
+                vertx.setTimer(UPDATE_PERIOD_MIN * 60000) {
+                    updateBlocked()
+                }
+            }
+
+            def response = asr.result().bodyAsJsonObject()
+            logger.info("APIBAN call succeed. Request: $url, Response: $response")
+
+            def addresses = response.get('ipaddress') as ArrayList
+            blocked.addAll(addresses)
+            if (addresses.size() == 250) {
+                // Seems that we have more data, let's perform incremental downloads immediately
+                updateBlocked(response.get('ID'))
+            } else {
+                // Seems that we are up to date, let's repeat downloads in `UPDATE_PERIOD_MIN`
+                vertx.setTimer(UPDATE_PERIOD_MIN * 60000) {
+                    updateBlocked()
+                }
+            }
+        }
+    }
+}
+```
 
 == Advanced Search
 

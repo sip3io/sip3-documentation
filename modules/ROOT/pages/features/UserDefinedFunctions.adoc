@@ -91,7 +91,7 @@ As an input it receives a SIP3 packet with generic payload represented as a `Map
 
 <3> `"sip_message_udf"` endpoint receives as a payload a SIP message represented as a `Map<String, String>` where keys are SIP header names and values are corresponding SIP header values.
 
-<4> In our example `robocall` is an User-Defined Attribute which is assigned to a SIP3 packet. There is no limit of the amount of user defined attributes that can be assigned to a packet. Every assigned attribute is automatically populated as a search criteria in the `Advanced Search` and all related `Service Metrics`.
+<4> In our example `robocall` is an User-Defined Attribute which is assigned to a SIP3 packet. There is no limit of the amount of user defined attributes that can be assigned to a packet. Every assigned attribute is automatically populated as a search criteria in the Advanced Search and all related Service Metrics.
 
 <5> Each UDF has to return boolean result which may be used by SIP3 Salto to define further message flow.
 
