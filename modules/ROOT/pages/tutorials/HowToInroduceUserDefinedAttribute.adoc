@@ -44,20 +44,20 @@ NOTE: Before you start, make sure you get yourself familiar with the concept of 
 NOTE: The SIP3 team recommends you to use https://www.jetbrains.com/idea[InteliJ IDEA].
 Just clone the https://github.com/sip3io/sip3-salto-ce[SIP3 Salto] project, open it in your IDEA, create `.groovy` file within the project and take an advantage of syntax highlight and autocomplete.
 
-As expected, the use case we are going to implement is a bit more complicated.
+The use case, we are going to implement, is a bit more complicated.
 However, it's enough just to walk though the https://vertx.io/docs/vertx-core/groovy[Vert.x Documentation] to understand what's happening in the code snippet below:
 
 [source,groovy]
 ----
-class ApiBanUdfExample extends AbstractVerticle {                               // <1>
+class ApiBanUdfExample extends AbstractVerticle {                           // <1>
 
-    private final APIBAN_URL = 'https://apiban.org/api/%YOUR_API_KEY%/banned'
+    private final APIBAN_URL = 'https://apiban.org/api/%API_KEY%/banned'
 
     private Set blocked = []
 
     @Override
     void start() throws Exception {
-        vertx.eventBus().localConsumer("sip_message_udf") { event ->            // <2>
+        vertx.eventBus().localConsumer("sip_message_udf") { event ->        // <2>
             def packet = event.body()
 
             if (blocked.contains(packet['src_addr'])) {
@@ -68,14 +68,14 @@ class ApiBanUdfExample extends AbstractVerticle {                               
             event.reply(true)
         }
 
-        asyncUpdateBlocked()                                                    // <3>
+        asyncUpdateBlocked()                                                // <3>
     }
 }
 ----
 
 <1> Don't be confused that our code doesn't look like a Groovy script from xref:features/UserDefinedFunctions.adoc[User-Defined Functions] document.
 This is because every SIP3 User-Defined Function is a verticle which can be written in https://vertx.io/docs/vertx-core/groovy/#_writing_verticles[multiple ways].
-We've chosen to extend `AbstractVerticle` class which gives us more context and control on the IDEA level.
+We've chosen to extend `AbstractVerticle` class because it gives us more control on the IDEA level.
 <2> This part is a very simple and looks exactly like any Groovy script from xref:features/UserDefinedFunctions.adoc[User-Defined Functions] document.
 For the use case, we will analyze packet's `src_addr` attribute. If this attribute is found in the `blocked` list we will assign User-Defined Attributes stated above.
 <3> To update the `blocked` list we need to call APIBAN API. The method `asyncUpdateBlocked` is pretty big that's why you will find it below in a separate code snippet.
@@ -83,11 +83,11 @@ For the use case, we will analyze packet's `src_addr` attribute. If this attribu
 [source,groovy]
 ----
 private void asyncUpdateBlocked(String controlId) {
-    def url = controlId ? "$APIBAN_URL/$controlId" : APIBAN_URL                 // <1>
+    def url = controlId ? "$APIBAN_URL/$controlId" : APIBAN_URL             // <1>
 
-    WebClient.create(vertx).getAbs(url).send { asr ->                           // <2>
+    WebClient.create(vertx).getAbs(url).send { asr ->                       // <2>
         if (asr.failed()) {
-            vertx.setTimer(UPDATE_PERIOD_MIN * 60000) {                         // <3>
+            vertx.setTimer(UPDATE_PERIOD_MIN * 60000) {                     // <3>
                 asyncUpdateBlocked()
             }
         }
@@ -95,13 +95,13 @@ private void asyncUpdateBlocked(String controlId) {
         def response = asr.result().bodyAsJsonObject()
         def addresses = response.get('ipaddress') as ArrayList
 
-        blocked.addAll(addresses)                                               // <4>
+        blocked.addAll(addresses)                                           // <4>
 
         if (addresses.size() == 250) {
-            def id = response.get('ID') as String                               // <5>
+            def id = response.get('ID') as String                           // <5>
             asyncUpdateBlocked(id)
         } else {
-            vertx.setTimer(UPDATE_PERIOD_MIN * 60000) {                         // <6>
+            vertx.setTimer(UPDATE_PERIOD_MIN * 60000) {                     // <6>
                 asyncUpdateBlocked()
             }
         }
