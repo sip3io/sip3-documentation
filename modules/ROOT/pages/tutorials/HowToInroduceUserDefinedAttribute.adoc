@@ -21,11 +21,9 @@ In this tutorial we will define a specific use case, introducing a User-Defined 
 Everyone in the VoIP community knows https://twitter.com/fredposner[Fred Posner] as a great VoIP engeener and very talented baker. Awhile back Fred introduced a new community-driven service called https://apiban.org[APIBAN]. A platform for sharing and retrieving a list of fraud IP addresses.
 
 APIBAN is integrated with https://apiban.org/doc.html#kamailioex[Kamailio] and https://apiban.org/doc.html#iptablesex[iptables] which makes it possible to automatically update firewall rules and block any fraud attempts.
-
 Unfortunately, as with any other open source platform, APIBAN's data may be compromised. Thus, the need of a verification via another service.
 
 Thanks to the SIP3 architecture design you can have a monitoring set in place that works in front of `iptables`.
-
 So even if the traffic has been blocked you will still be able detect fraud attempts and whitelist wrongly blocked IP addresses. You will also:
 
 * see statistics of fraud attempts and determine the size of a fraud attack
@@ -43,9 +41,9 @@ import io.vertx.core.AbstractVerticle
 import io.vertx.ext.web.client.WebClient
 import org.slf4j.LoggerFactory
 
-class ApiBanUdf extends AbstractVerticle {
+class ApiBanUdfExample extends AbstractVerticle {
 
-    private final logger = LoggerFactory.getLogger(ApiBanUdf)
+    private final logger = LoggerFactory.getLogger(ApiBanUdfExample)
 
     private final APIBAN_URL = 'https://apiban.org/api/%YOUR_API_KEY%/banned'
     private final UPDATE_PERIOD_MIN = 5
