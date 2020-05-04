@@ -1,6 +1,6 @@
 name: sip3-documentation
 title: SIP3 Documentation
 version: 1.0.0
-start_page: ROOT:Introduction.adoc
+start_page: ROOT:GettingStartedGuide.adoc
 nav:
   - modules/ROOT/nav.adoc
