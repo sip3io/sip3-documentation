@@ -114,11 +114,17 @@ private void asyncUpdateBlocked(String controlId) {
 <1> When SIP3 is just started we don't have an APIBAN control ID. That's why we will use a generic API method to get the first bulk of the blacklisted IPs.
 Otherwise, we will use control ID to get the next bulk. You can find more information in the official https://apiban.org/doc.html#banned[APIBAN Documentation].
 <2> Once HTTP request retuned us blacklisted IPs we will add them to the `blocked` set.
-<3> If the amount of returned IPs equals to 250 (which is a bulk size) we will do the next API call using the control ID immediately.
+<3> If the amount of returned IPs equals 250(which is a bulk size) we will do the next API call using the control ID immediately.
 <4> Otherwise, we will be checking every 5 minutes for the new portion of the blacklisted IPs.
 
 Our User-Defined Function is ready. Follow the xref:InstallationGuide.adoc[Installation Guide] instructions to deploy it.
 
 == Usage Example
 
-// TODO...
+To make the use case more interesting and show you real data we agreed to deploy the User-Defined Function from above to one of our customers.
+
+As soon as it was deployed we built a metric dashboard using `blocked` attribute. Here is what we've got:
+
+image::CallAttemptsBlockedByApiban.png[Call Attempts Blocked By APIBAN]
+
+As you can see there is a good amount of fraud attempts blocked by the list of IPs retrieved from APIBAN API. Let's see what are those attempts.
