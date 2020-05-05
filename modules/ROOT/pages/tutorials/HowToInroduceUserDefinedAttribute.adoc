@@ -14,7 +14,7 @@ We call each of the criteria above Service Attributes. They are assigned automat
 
 image::CallSetupStatisticByTrunk.png[Statistic Example]
 
-Service Attributes can help you troubleshoot and address various problems. That however is not enough to cover different traffic profile use cases.
+Service Attributes can help you troubleshoot and address various problems. That, however, is not enough to cover different traffic profile use cases.
 
 In this tutorial we will define a specific use case, introducing a User-Defined Attribute, and learn how to use it later.
 
@@ -38,7 +38,7 @@ Let's see how this works in action!
 
 NOTE: Before you start, make sure you get yourself familiar with the concept of xref:features/UserDefinedFunctions.adoc[User-Defined Functions].
 
-For the use case we will introduce two User-Defined Attributes: `blocked` as a Boolean and `blocked_addr` as a String.
+For this use case we will introduce two User-Defined Attributes: `blocked` as a Boolean and `blocked_addr` as a String.
 The first one will let us search for all calls originated from blacklisted IPs while the second one will show us more detailed information per IP.
 
 == User-Defined Function
@@ -46,8 +46,8 @@ The first one will let us search for all calls originated from blacklisted IPs w
 NOTE: The SIP3 team recommends you to use https://www.jetbrains.com/idea[InteliJ IDEA].
 Just clone the https://github.com/sip3io/sip3-salto-ce[SIP3 Salto] project, open it in your IDEA, create `.groovy` file within the project and take an advantage of syntax highlight and autocomplete.
 
-The use case, we are going to implement, is a bit more complicated.
-However, it's enough just to walk though the https://vertx.io/docs/vertx-core/groovy[Vert.x Documentation] to understand what's happening in the code snippet below:
+The use case, we are going to implement, is a bit more complex.
+However, it's enough to just go though the https://vertx.io/docs/vertx-core/groovy[Vert.x Documentation] to understand the logic behind the code snippet below:
 
 [source,groovy]
 ----
@@ -75,12 +75,12 @@ class ApiBanUdfExample extends AbstractVerticle {                           // <
 }
 ----
 
-<1> Don't be confused that our code doesn't look like a Groovy script from xref:features/UserDefinedFunctions.adoc[User-Defined Functions] document.
+<1> Don't be confused by the fact that our code doesn't look like a Groovy script from xref:features/UserDefinedFunctions.adoc[User-Defined Functions] document.
 This is because every SIP3 User-Defined Function is a verticle which can be written in https://vertx.io/docs/vertx-core/groovy/#_writing_verticles[multiple ways].
-We've chosen to extend `AbstractVerticle` class because it gives us more control on the IDEA level.
+We've chosen to extend the `AbstractVerticle` class because it gives more control over the IDEA level.
 <2> This part is a very simple and looks exactly like any Groovy script from xref:features/UserDefinedFunctions.adoc[User-Defined Functions] document.
-For the use case, we will analyze packet's `src_addr` attribute. If this attribute is found in the `blocked` set we will assign User-Defined Attributes stated above.
-<3> To update the `blocked` list we need to call APIBAN API. The method `asyncUpdateBlocked` is pretty big that's why you will find it below in a separate code snippet:
+In our case, we will analyze packet's `src_addr` attribute. If this attribute is found in the `blocked` set we will assign the User-Defined Attributes stated above.
+<3> To update the `blocked` list we need to call APIBAN API. The `asyncUpdateBlocked` method is pretty big. That's why you can find it in a separate code snippet below:
 
 [source,groovy]
 ----
@@ -112,27 +112,33 @@ private void asyncUpdateBlocked(String controlId) {
 }
 ----
 <1> When SIP3 is just started we don't have an APIBAN control ID. That's why we will use a generic API method to get the first bulk of the blacklisted IPs.
-Otherwise, we will use control ID to get the next bulk. You can find more information in the official https://apiban.org/doc.html#banned[APIBAN Documentation].
-<2> Once HTTP request retuned us blacklisted IPs we will add them to the `blocked` set.
-<3> If the amount of returned IPs equals 250(which is a bulk size) we will do the next API call using the control ID immediately.
-<4> Otherwise, we will be checking every 5 minutes for the new portion of the blacklisted IPs.
+Otherwise, we will use control ID to get the next bulk. You can find more information about this in the official https://apiban.org/doc.html#banned[APIBAN Documentation].
+<2> Once the HTTP request retuns a list of blacklisted IPs we will add them to the `blocked` set.
+<3> If the amount of returned IPs equals 250 (which is a bulk size) we will do the following API call using the control ID immediately.
+<4> Otherwise, we will be checking every 5 minutes for new portion of the blacklisted IPs.
 
-Our User-Defined Function is ready. Follow the xref:InstallationGuide.adoc[Installation Guide] instructions to deploy it.
+That's it! Our User-Defined Function is ready. Check out the xref:InstallationGuide.adoc[Installation Guide] for more instructions on how to deploy it.
 
-== Usage Example
+== Real Life Example
 
-To make the use case more interesting and show you real data we agreed to deploy the User-Defined Function from above to one of our customers.
+In order to make this use case more interesting and show you real data, we agreed to deploy the User-Defined Function from above to one of our customers who wasn't sure if they are experiencing fraud attacks.
 
-As soon as it was deployed we built a metric dashboard using `blocked` attribute. Here is what we've got:
+As soon as it was deployed we built a metric dashboard using the `blocked` attribute. Here is what we've got:
 
 image::DashboardForCallAttemptsBlockedByApiban.png[Dashboard For Call Attempts Blocked By APIBAN]
 
-As you can see there is a good amount of fraud attempts blocked by the list of IPs retrieved from APIBAN API. Let's see what are those attempts:
+As you can see there is a good amount of fraud attempts blocked by the list of IPs retrieved from APIBAN API. Let's see what are those:
 
 image::SearchForCallAttemptsBlockedByApiban.png[Search For Call Attempts Blocked By APIBAN]
 
-Now let's see how many blacklisted IPs are sending data to our VoIP servers:
+Now let's see how many blacklisted IPs are attacking the customer's VoIP servers:
 
 image::ShowIpListBlockedByApiban.png[Show IP List Blocked By APIBAN]
 
-TODO: Conclusions about SIP3 providing you full visibility in fighting with VOIP fraud
+After seeing this data, our customer decided to leave the SIP3 integration with APIBAN working hoping that the APIBAN database will keep expanding in future and help more businesses like his.
+
+== Minimizing VoIP fraud attempts with SIP3
+
+As the VoIP fraud attempts have begun to rise in the last few years, it is important to understand how you can minimize the impact they have on your business.
+
+While it might be difficult to prevent VoIP fraud from happening, the right tools in place could help you reduce your chances of becoming a victim. Why to wait fo fraud attacks to effect your business when SIP3 can give you 360-degree service visibility?
