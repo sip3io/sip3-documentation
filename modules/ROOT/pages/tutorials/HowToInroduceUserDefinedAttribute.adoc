@@ -80,7 +80,7 @@ This is because every SIP3 User-Defined Function is a verticle which can be writ
 We've chosen to extend `AbstractVerticle` class because it gives us more control on the IDEA level.
 <2> This part is a very simple and looks exactly like any Groovy script from xref:features/UserDefinedFunctions.adoc[User-Defined Functions] document.
 For the use case, we will analyze packet's `src_addr` attribute. If this attribute is found in the `blocked` set we will assign User-Defined Attributes stated above.
-<3> To update the `blocked` list we need to call APIBAN API. The method `asyncUpdateBlocked` is pretty big that's why you will find it below in a separate code snippet.
+<3> To update the `blocked` list we need to call APIBAN API. The method `asyncUpdateBlocked` is pretty big that's why you will find it below in a separate code snippet:
 
 [source,groovy]
 ----
@@ -111,13 +111,13 @@ private void asyncUpdateBlocked(String controlId) {
     }
 }
 ----
-<1> When SIP3 is just started we don't have an APIBAN control ID. That's why we will use a generic API method to get the first bulk of blacklisted IPs.
-Otherwise, we will use control ID to update existing IPs. You can find more information in the official https://apiban.org/doc.html#banned[APIBAN documentation].
+<1> When SIP3 is just started we don't have an APIBAN control ID. That's why we will use a generic API method to get the first bulk of the blacklisted IPs.
+Otherwise, we will use control ID to get the next bulk. You can find more information in the official https://apiban.org/doc.html#banned[APIBAN Documentation].
 <2> Once HTTP request retuned us blacklisted IPs we will add them to the `blocked` set.
 <3> If the amount of returned IPs equals to 250 (which is a bulk size) we will do the next API call using the control ID immediately.
 <4> Otherwise, we will be checking every 5 minutes for the new portion of the blacklisted IPs.
 
-Our User-Defined Function is ready. Follow the xfer:InstallationGuide.adoc[Installation Guide] instructions to deploy it.
+Our User-Defined Function is ready. Follow the xref:InstallationGuide.adoc[Installation Guide] instructions to deploy it.
 
 == Usage Example
 
