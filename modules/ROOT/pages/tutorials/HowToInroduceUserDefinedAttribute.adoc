@@ -77,7 +77,7 @@ class ApiBanUdfExample extends AbstractVerticle {                           // <
 
 <1> Don't be confused by the fact that our code doesn't look like a Groovy script from xref:features/UserDefinedFunctions.adoc[User-Defined Functions] document.
 This is because every SIP3 User-Defined Function is a verticle which can be written in https://vertx.io/docs/vertx-core/groovy/#_writing_verticles[multiple ways].
-We've chosen to extend the `AbstractVerticle` class because it gives more control over the IDEA level.
+We've chosen to extend the `AbstractVerticle` class because it gives more control on the IDEA level.
 <2> This part is a very simple and looks exactly like any Groovy script from xref:features/UserDefinedFunctions.adoc[User-Defined Functions] document.
 In our case, we will analyze packet's `src_addr` attribute. If this attribute is found in the `blocked` set we will assign the User-Defined Attributes stated above.
 <3> To update the `blocked` list we need to call APIBAN API. The `asyncUpdateBlocked` method is pretty big. That's why you can find it in a separate code snippet below:
@@ -141,4 +141,4 @@ After seeing this data, our customer decided to leave the SIP3 integration with 
 
 As the VoIP fraud attempts have begun to rise in the last few years, it is important to understand how you can minimize the impact they have on your business.
 
-While it might be difficult to prevent VoIP fraud from happening, the right tools in place could help you reduce your chances of becoming a victim. Why to wait fo fraud attacks to effect your business when SIP3 can give you 360-degree service visibility?
+While it might be difficult to prevent VoIP fraud from happening, the right tools in place could help you reduce your chances of becoming a victim. Why to wait for fraud attacks to effect your business when SIP3 can give you 360-degree service visibility?
