@@ -135,7 +135,7 @@ Now let's see how many blacklisted IPs are attacking the customer's VoIP servers
 
 image::ShowIpListBlockedByApiban.png[Show IP List Blocked By APIBAN]
 
-After seeing this data, our customer decided to leave the SIP3 integration with APIBAN working hoping that the APIBAN database will keep expanding in future and help more businesses like his.
+After seeing this data, our customer decided to leave the SIP3 integration with APIBAN working, hoping that the APIBAN database will keep expanding in future and help more businesses like his.
 
 == Minimizing VoIP fraud attempts with SIP3
 
