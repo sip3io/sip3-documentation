@@ -36,10 +36,10 @@ So even if the traffic has been blocked you will still be able detect fraud atte
 
 Let's see how this works in action!
 
+NOTE: Before you start, make sure you get yourself familiar with the concept of xref:features/UserDefinedFunctions.adoc[User-Defined Functions].
+
 For the use case we will introduce two User-Defined Attributes: `blocked` as a Boolean and `blocked_addr` as a String.
 The first one will let us search for all calls originated from blacklisted IPs while the second one will show us more detailed information per IP.
-
-NOTE: Before you start, make sure you get yourself familiar with the concept of xref:features/UserDefinedFunctions.adoc[User-Defined Functions].
 
 == User-Defined Function
 
@@ -125,6 +125,14 @@ To make the use case more interesting and show you real data we agreed to deploy
 
 As soon as it was deployed we built a metric dashboard using `blocked` attribute. Here is what we've got:
 
-image::CallAttemptsBlockedByApiban.png[Call Attempts Blocked By APIBAN]
+image::DashboardForCallAttemptsBlockedByApiban.png[Dashboard For Call Attempts Blocked By APIBAN]
 
-As you can see there is a good amount of fraud attempts blocked by the list of IPs retrieved from APIBAN API. Let's see what are those attempts.
+As you can see there is a good amount of fraud attempts blocked by the list of IPs retrieved from APIBAN API. Let's see what are those attempts:
+
+image::SearchForCallAttemptsBlockedByApiban.png[Search For Call Attempts Blocked By APIBAN]
+
+Now let's see how many blacklisted IPs are sending data to our VoIP servers:
+
+image::ShowIpListBlockedByApiban.png[Show IP List Blocked By APIBAN]
+
+TODO: Conclusions about SIP3 providing you full visibility in fighting with VOIP fraud
