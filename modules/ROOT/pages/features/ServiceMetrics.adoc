@@ -1,5 +1,4 @@
 = Metrics
-
 :description: SIP3 Metrics.
 
 == Overview
@@ -64,7 +63,7 @@ The list below contains entire set of SIP QoS metrics aggregated and reported by
 
 == RTP/RTCP Metrics
 
-The list below contains entire set of RTP/RTCP QoS metrics aggregated and reported by SIP3. 
+The list below contains entire set of RTP/RTCP QoS metrics aggregated and reported by SIP3.
 
 [%header,cols=4*]
 |====================

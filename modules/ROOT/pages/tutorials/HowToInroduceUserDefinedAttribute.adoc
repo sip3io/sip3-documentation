@@ -1,5 +1,4 @@
 = How To Introduce a User-Defined Attribute
-
 :description: SIP3 How To Introduce a User-Defined Attribute Tutorial.
 
 == Overview

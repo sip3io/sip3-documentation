@@ -1,5 +1,4 @@
 = Getting Started
-
 :description: SIP3 Getting Started Guide
 
 This document will be updated soon...

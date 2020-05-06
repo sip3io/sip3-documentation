@@ -1,5 +1,4 @@
 = Installation
-
 :description: SIP3 Installation Guide
 
 This document will be updated soon...
