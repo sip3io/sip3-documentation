@@ -11,7 +11,7 @@ We designed the SIP3 platform with generic VoIP systems in mind. User-Defined Fu
 
 At the moment the SIP3 platform lets you write UDFs using Groovy or JavaScript.
 
-This document will walk you though the process of writing UDFs. For more information about deployment, please read the xref:InstallationGuied.adoc[SIP3 Installation Guide].
+This document will walk you though the process of writing UDFs. For more information about deployment, please read the xref:InstallationGuide.adoc[SIP3 Installation Guide].
 
 == User-Defined Function Base Structure
 
