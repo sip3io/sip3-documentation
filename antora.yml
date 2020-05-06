@@ -1,5 +1,5 @@
 name: docs
-title: SIP3 Docs
+title: SIP3 Documentation
 version: master
 start_page: ROOT:GettingStartedGuide.adoc
 nav:
