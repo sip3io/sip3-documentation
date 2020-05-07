@@ -1,10 +1,6 @@
 # SIP3 Documentation #
 
-**SIP3 Documentation** is a documentation as a code project structured and built with [Antora](https://antora.org/).
-
-## Site
-
-You can find built **SIP3 Documentation** site [here](https://sip3.io/docs/GettingStartedGuide.html)
+**SIP3 Documentation** is a documentation as a code project structured and built with [Antora](https://antora.org/). Please follow [this link](https://sip3.io/docs/GettingStartedGuide.html) to get started with the **SIP3 Documentation**
 
 ## Support
 
