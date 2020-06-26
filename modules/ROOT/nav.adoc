@@ -5,3 +5,4 @@
 ** xref:features/ServiceMetrics.adoc[Service Metrics]
 * Tutorials
 ** xref:tutorials/HowToInroduceUserDefinedAttribute.adoc[How To Introduce a User-Defined Attribute]
+* xref:ReleaseNotes.adoc[Release Notes]

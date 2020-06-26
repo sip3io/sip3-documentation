@@ -1,0 +1,32 @@
+= Release Notes
+:description: SIP3 Release Notes
+
+== Version: 2020.1.1
+
+=== Captain
+
+* Payload compression to avoid problems with MTU
+* https://en.wikipedia.org/wiki/TZSP[TZSP] protocol support
+* `sip3-libpcap` integration
+* https://dev.to/sip3/how-to-monitor-remote-jvm-applications-with-logback-webhook-appender-2oc5[`logback-webhook-appender`] integration
+* Various performance improvements and bugfixes
+
+=== Salto
+
+* https://sip3.io/docs/features/UserDefinedFunctions.html#_packet_udf[`packet_udf`] endpoint
+* SIP Register handling support
+* https://dev.to/sip3/how-to-monitor-remote-jvm-applications-with-logback-webhook-appender-2oc5[`logback-webhook-appender`] integration
+* Various performance improvements and bugfixes
+
+=== Twig
+
+* SIP Register handling support
+* `/session/media` API endpoint
+* Various performance improvements and bugfixes
+
+=== Hoof
+
+* Media QoS widget
+* Dynamic (per participant) call flow
+* Time scale switcher
+* Various performance improvements and bugfixes
