@@ -127,3 +127,5 @@ all:
 ----
 
 <1> Each SIP3 Captain instance can be configured specifically by re-assigning global variables withing the host section.
+
+This document will be updated soon...
