@@ -1,4 +1,4 @@
-= Installation
+= Installation Guide
 :description: SIP3 Installation Guide
 
 == Overview
@@ -8,6 +8,9 @@ SIP3 leverages a traditional microservice architecture that makes easy to scale,
 Having each one of the SIP3 components deployed independently saves you money, time and resources, but it also brings a layer of extra complexity to the deployment process.
 To make your life easier the SIP3 team introduced the https://github.com/sip3io/sip3-ansible[`sip3-ansible`] Github project.
 
+NOTE: At the moment you can use `sip3-ansible` to deploy each of the SIP3 components as a service to CentOS or as a docker container to any Linux OS.
+Please, contact mailto:support@sip3.io[the SIP3 team] if you need help with specific environment.
+
 By following the traditional Ansible approach, you will be creating an inventory file that describes the SIP3 installation process.
 By doing so, you will be able to quickly deploy your project to any infrastructure, regardless of the size and amount of its traffic.
 
@@ -15,7 +18,112 @@ NOTE: The `sip3-ansible` project requires Ansible version 2.9 or higher
 
 == Basic Installation
 
-In the following section you will find out how to deploy SIP3 to a simple VoIP network, consisting of one FreeSWITCH server, as shown on the diagram below.
-SIP3 Captain will be deployed as an agent to the same server. Afterwards, all the SIP3 backend components will be deployed to another server as a monolithic application.
+In the following section you will find out how to deploy SIP3 to a simple VoIP network, consisting of one PBX server, as shown on the diagram below.
+SIP3 Captain will be deployed as an agent to the same server.
+Afterwards, all the SIP3 backend components will be deployed to another server as a monolithic application.
 
-This document will be updated soon...
+TODO: Place for the diagram...
+
+=== Installing SIP3 Captain To The PBX
+
+To install SIP3 Captain we will create a `sip3-captain.yml` file inside the `inventories` directory:
+
+[source,yaml]
+----
+all:
+  hosts:
+    captain:
+      ansible_host: 23.08.20.15                       // 1
+  vars:
+    ansible_user: root
+    ansible_port: 22
+    ansible_become: true
+
+    platform: centos                                  // 2
+    edition: ce
+    version: 2020.1.1
+
+    features:
+      - rtcp
+
+    captain:
+      pcap:                                           // 3
+        dev: eth0
+        bpf_filter: udp
+      sender:                                         // 4
+        uri: udp://192.168.1.2:15060
+      management:                                     // 5
+        uri: udp://192.168.1.2:15090
+      metrics:                                        // 6
+        logging:
+          step: 5000
+----
+
+<1> SSH address.
+
+<2> Platform and component version. At the moment you can choose between `centos` and `docker` platforms.
+
+<3> Standard `libpcap` settings. Specify on which interface you want to capture VoIP traffic and set BPF filter to avoid capturing extra packets (e.g. If you capture only SIP protocol on port 5060 use `udp and port 5060` as a filter).
+
+<4> SIP3 Salto address.
+
+<5> Management interface. Must be defined if `rtp` or `rtcp` features enabled. SIP3 Salto and Captain use this interface to exchange SDP information.
+
+Our minimalistic SIP3 Captain configuration is ready. Now, let's install SIP3 Captain to the PBX with the command below:
+```
+# ansible-playbook -i inventories/sip3-captain.yml playbooks/sip3.yml
+```
+
+To uninstall SIP3 Captain use the same command with additional `extra-vars` parameter:
+```
+# ansible-playbook -i inventories/sip3-captain.yml playbooks/sip3.yml --extra-vars "state=absent"
+```
+
+Check `/var/log/sip3-captain/default.log` and `/var/log/sip3-captain/metrics.log` to ensure that SIP3 Captain is up and capturing VoIP traffic.
+
+=== Adding SIP3 Captain To Another PBX
+
+In the previous section we configured SIP3 Captain for single PBX. However, in real life we usually have multiple VoIP nodes.
+
+Let's add another PBX to our previous example. Let's define a group of hosts called `captain` as it shown in the example below:
+
+[source,yaml]
+----
+all:
+  children:
+    captain:
+      hosts:
+        pbx1:
+          ansible_host: 23.08.20.15
+        pbx2:
+          ansible_host: 26.03.19.93
+          platform: docker                            // 1
+          captain:
+            pcap:
+              dev: eth1
+  vars:
+    ansible_user: root
+    ansible_port: 22
+    ansible_become: true
+
+    platform: centos
+    edition: ce
+    version: 2020.1.1
+
+    features:
+      - rtcp
+
+    captain:
+      pcap:
+        dev: eth0
+        bpf_filter: udp
+      sender:
+        uri: udp://192.168.1.2:15060
+      management:
+        uri: udp://192.168.1.2:15090
+      metrics:
+        logging:
+          step: 5000
+----
+
+<1> Each SIP3 Captain instance can be configured specifically by re-assigning global variables withing the host section.

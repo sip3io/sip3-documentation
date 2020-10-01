@@ -1,6 +1,6 @@
 name: docs
 title: SIP3 Documentation
 version: master
-start_page: ROOT:GettingStartedGuide.adoc
+start_page: ROOT:InstallationGuide.adoc
 nav:
   - modules/ROOT/nav.adoc

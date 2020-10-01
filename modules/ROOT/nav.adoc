@@ -1,4 +1,3 @@
-* xref:GettingStartedGuide.adoc[Getting Started]
 * xref:InstallationGuide.adoc[Installation Guide]
 * Features
 ** xref:features/UserDefinedFunctions.adoc[User-Defined Functions]
