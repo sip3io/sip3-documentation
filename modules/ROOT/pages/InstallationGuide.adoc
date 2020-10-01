@@ -16,14 +16,6 @@ NOTE: The `sip3-ansible` project requires Ansible version 2.9 or higher
 == Basic Installation
 
 In the following section you will find out how to deploy SIP3 to a simple VoIP network, consisting of one FreeSWITCH server, as shown on the diagram below.
-`sip3-captain` will be deployed as an agent to the same server. Afterwards, all the SIP3 backend components will be deployed to another server as a monolithic application.
+SIP3 Captain will be deployed as an agent to the same server. Afterwards, all the SIP3 backend components will be deployed to another server as a monolithic application.
 
-// TODO...
-
-=== Installing `sip3-captain`
-
-// TODO ...
-
-=== Installing SIP3 backend components
-
-// TODO...
+This document will be updated soon...

@@ -248,19 +248,19 @@ eventBus.localConsumer("packet_udf", function (event) {
 ++++
 
 
-=== `"sip3_message_udf"`
+=== `"sip_message_udf"`
 
 ==== 1. Description
 
-`"sip3_message_udf"` UDF is called for every SIP message receieved by SIP3 Salto. UDAs and Service Attributes assigned within the UDF are used for futher registration and call aggregation.
+`"sip_message_udf"` UDF is called for every SIP message received by SIP3 Salto. UDAs and Service Attributes assigned within the UDF are used for further registration, call aggregation and search.
 
 ==== 2. Payload
 
-`"sip3_message_udf"` UDF receives as a payload a `Map<String, String>` where keys are SIP header names and values are corresponding SIP header values.
+`"sip_message_udf"` UDF receives as a payload a `Map<String, String>` where keys are SIP header names and values are corresponding SIP header values.
 
 ==== 3. User-Defined and Service Attributes
 
-`"sip3_message_udf"` UDF has no restrictions on assigning User-Defined Attributes. However it considers `caller`, `callee` and `x_call_id` as a Service Attributes used to resolve various call correlation problems.
+`"sip_message_udf"` UDF has no restrictions on assigning User-Defined Attributes. However, it considers `caller`, `callee` and `x_call_id` as a Service Attributes used to resolve various call correlation problems.
 
 ==== 4. Usage Example
 
@@ -322,6 +322,107 @@ eventBus.localConsumer("sip_message_udf", function (event) {
     var sip_message = packet['payload'];
     if (sip_message['from'].match('<sip:100@.*')) {
         packet['attributes']['robocall'] = true;
+    }
+
+    event.reply(true);
+});
+----
+++++
+</details>
+++++
+
+=== `"sip_call_udf"`
+
+==== 1. Description
+
+`"sip_call_udf"` UDF is called for every SIP session aggregated by SIP3 Salto. UDAs and Service Attributes assigned within the UDF are used for further registration, call aggregation and search. Also, this UDF is a perfect source of real-time CDRs.
+
+==== 2. Payload
+
+`"sip_call_udf"` UDF receives as a payload a `Map<String, Any>` of session attributes.
+
+==== 3. User-Defined and Service Attributes
+
+`"sip_call_udf"` UDF has no restrictions on assigning User-Defined Attributes. However, it considers `caller`, `callee` and `x_call_id` as a Service Attributes used to resolve various call correlation problems.
+
+==== 4. Usage Example
+
+Following example shows how to define and assign `problematic` attribute to a call with `setup_time` greater than 5 seconds:
+++++
+<details open>
+<summary>Groovy</summary>
+++++
+[source,groovy]
+----
+def eventBus = vertx.eventBus()
+eventBus.localConsumer("sip_call_udf", { event ->
+    // `event.body` is a Map<String, Object>:
+    // {
+    //  "src_addr" : String,
+    //  "src_host" : String (Optional),
+    //  "src_port" : Integer,
+    //  "dst_addr" : String,
+    //  "dst_host" : String (Optional),
+    //  "dst_port" : Integer,
+    //  "payload" : Map<String, Object>,
+    //      "created_at" : Long,
+    //      "terminated_at" : Long,
+    //      "state" : String,
+    //      "caller" : String,
+    //      "callee" : String,
+    //      "call_id" : String,
+    //      "duration" : Long (Optional),
+    //      "setup_time" : Long (Optional),
+    //      "establish_time" : Long (Optional),
+    //   "attributes" : Map<String, String|Boolean>
+    // }
+    def session = event.body()
+
+    def setup_time = session['payload']['setup_time']
+    if (setup_time != null && setup_time > 5000) {
+        session['attributes']['problematic'] = true
+    }
+
+    event.reply(true)
+})
+----
+++++
+</details>
+++++
+
+++++
+<details>
+<summary>JS</summary>
+++++
+[source,js]
+----
+var eventBus = vertx.eventBus();
+eventBus.localConsumer("sip_call_udf", function (event) {
+    // `event.body` is a Map<String, Object>:
+    // {
+    //  "src_addr" : String,
+    //  "src_host" : String (Optional),
+    //  "src_port" : Integer,
+    //  "dst_addr" : String,
+    //  "dst_host" : String (Optional),
+    //  "dst_port" : Integer,
+    //  "payload" : Map<String, Object>,
+    //      "created_at" : Long,
+    //      "terminated_at" : Long,
+    //      "state" : String,
+    //      "caller" : String,
+    //      "callee" : String,
+    //      "call_id" : String,
+    //      "duration" : Long (Optional),
+    //      "setup_time" : Long (Optional),
+    //      "establish_time" : Long (Optional),
+    //   "attributes" : Map<String, String|Boolean>
+    // }
+    var session = event.body();
+
+    var setup_time = session['payload']['setup_time'];
+    if (setup_time != null && setup_time > 5000) {
+        session['attributes']['problematic'] = true;
     }
 
     event.reply(true);
