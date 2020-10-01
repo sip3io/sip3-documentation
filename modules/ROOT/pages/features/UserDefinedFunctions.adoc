@@ -335,7 +335,7 @@ eventBus.localConsumer("sip_message_udf", function (event) {
 
 ==== 1. Description
 
-`"sip_call_udf"` UDF is called for every SIP session aggregated by SIP3 Salto. UDAs and Service Attributes assigned within the UDF are used for further registration, call aggregation and search. Also, this UDF is a perfect source of real-time CDRs.
+`"sip_call_udf"` UDF is called for every SIP call session aggregated by SIP3 Salto. UDAs and Service Attributes assigned within the UDF are used for further registration, call aggregation and search. Also, this UDF is a perfect source of real-time CDRs.
 
 ==== 2. Payload
 
