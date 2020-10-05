@@ -31,7 +31,7 @@ The list below contains entire set of SIP QoS metrics aggregated and reported by
 
 |`sip_call_duration`
 |Timer
-|`src_host`, `dst_host`, `state`, `error_code`, `error_type`, `expired`, `retransmits`
+|`src_host`, `dst_host`, `state`, `distribution`, `error_code`, `error_type`, `expired`, `retransmits`
 |Call duration
 
 |`sip_call_established`
