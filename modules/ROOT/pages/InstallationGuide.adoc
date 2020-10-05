@@ -38,7 +38,7 @@ To install SIP3 Captain create a `sip3-captain.yml` file inside the `inventories
 all:
   hosts:
     captain:
-      ansible_host: 23.08.20.15                        // <1>
+      ansible_host: 23.08.20.15                       // <1>
   vars:
     ansible_user: root
     ansible_port: 22
