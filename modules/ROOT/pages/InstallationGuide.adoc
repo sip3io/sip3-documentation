@@ -19,10 +19,10 @@ NOTE: The `sip3-ansible` project requires Ansible version 2.9 or higher.
 == Basic Installation
 
 In the following section we will deploy SIP3 to a simple VoIP network, consisting of one PBX server, as shown on the diagram below.
-SIP3 Captain will be deployed as an agent to the same server.
-Afterwards, all the SIP3 backend components will be deployed to another server as a monolithic application.
+In the beginning SIP3 Captain will be installed as an agent to the same server.
+Afterwards, all the SIP3 backend components will be installed to another server as a monolithic application.
 
-TODO: Place for the diagram...
+image::InstallationGuideBasicInstallationDiagram.jpg[Installation Guide Basic Installation Diagram]
 
 === Installing SIP3 Captain To Single PBX
 
@@ -83,19 +83,21 @@ Our minimalistic SIP3 Captain configuration is ready. Now, let's install SIP3 Ca
 ansible-playbook -i inventories/sip3-captain.yml playbooks/sip3.yml
 ```
 
-Once Ansible finished with the playbook we can check that SIP3 Captain is actually working. First, let's check bootstrap information from `/var/log/sip3-captain/default.log` if you deployed SIP3 Captain without Docker or in other case from `~/sip3/var/log/sip3-captain/default.log`:
+Once Ansible successfully finished with the playbook we can check that SIP3 Captain is actually working. At the first check bootstrap information from `/var/log/sip3-captain/default.log` if you deployed SIP3 Captain without Docker or `~/sip3/var/log/sip3-captain/default.log` in other case:
 ```
-TODO: Add default.log
+05-10-2020 11:36:34.758 [vert.x-eventloop-thread-0] INFO  i.s.captain.ce.capturing.PcapEngine - Listening network interface: eth0
+05-10-2020 11:36:34.885 [vert.x-eventloop-thread-1] INFO  io.sip3.captain.ce.sender.Sender - UDP connection opened: udp://192.168.1.2:15060
 ```
 
 Now let's check `/var/log/sip3-captain/metrics.log` and `~/sip3/var/log/sip3-captain/metrics.log` accordingly to get some insights on the amount of traffic captured by SIP3 Captain and to make sure that the traffic goes to the SIP3 Salto:
 ```
-TODO: Add metrics.log
+05-10-2020 12:27:09.298 - packets_captured{name=sip3-captain,source=pcap} throughput=2.4/s
+05-10-2020 12:27:09.299 - packets_sent{name=sip3-captain} throughput=1.2/s
 ```
 
 Congratulations, SIP3 Captain is up and capturing traffic. So, we can move to the next section of the document.
 
-=== Adding SIP3 Captain To Multiple PBXs
+=== Installing SIP3 Captain To Multiple PBXs
 
 In the previous section we configured SIP3 Captain for single PBX. However, in real life we usually have multiple VoIP nodes.
 
@@ -110,7 +112,7 @@ all:
         pbx1:
           ansible_host: 23.08.20.15
         pbx2:
-          ansible_host: 26.03.19.93
+          ansible_host: 29.11.19.88
           platform: docker                            // <1>
           captain:
             pcap:
@@ -155,5 +157,7 @@ To uninstall SIP3 Captain use the command bellow. Please, take a look at additio
 ```
 ansible-playbook -i inventories/sip3-captain.yml playbooks/sip3.yml --extra-vars "state=absent"
 ```
+
+=== Installing SIP3 Backend Components
 
 This document will be updated soon...
