@@ -31,7 +31,7 @@ Clone `sip3-ansible` repository:
 git clone git@github.com:sip3io/sip3-ansible.git
 ```
 
-To install SIP3 Captain create a `sip3-captain.yml` file inside the `inventories` directory:
+Create a `sip3-captain.yml` file inside the `inventories` directory:
 
 [source,yaml]
 ----
@@ -159,5 +159,67 @@ ansible-playbook -i inventories/sip3-captain.yml playbooks/sip3.yml --extra-vars
 ```
 
 === Installing SIP3 Backend Components
+
+Let's create a `sip3-backend.yml` file inside the `inventories` directory in analogy with what we've done in the <<Installing SIP3 Captain To Single PBX, previous section>>:
+[source,yaml]
+----
+all:
+  hosts:
+    backend:
+      ansible_host: 26.03.19.23                       // <1>
+
+  vars:
+    ansible_user: root
+    ansible_port: 22
+    ansible_become: true
+
+    platform: centos                                  // <2>
+    edition: ce
+    version: 2020.1.1
+
+    features:                                         // <3>
+      - call
+      - register
+      - rtcp
+
+    mongodb:                                          // <4>
+      version: 4.2
+      path: /var/lib/mongodb
+      db: sip3
+    influxdb:                                         // <5>
+      path: /var/lib/influxdb
+      db: sip3
+    grafana:                                          // <6>
+      datasources:
+        database: sip3
+    salto:
+      server:                                         // <7>
+        uri: udp://0.0.0.0:15060
+      management:
+        uri: udp://0.0.0.0:15090                      // <8>
+----
+
+Let's take a closer look at the inventory file:
+
+<1> SSH address. Ansible uses it to connect to the SIP3 backend via SSH.
+
+<2> Platform and the component version. At the moment you can choose between `centos` and `docker` platforms.
+
+<3> Features help to customize SIP3 behaviour and enable/disable certain functionality. They also help to separate CE and EE configuration. You can find more information in the corresponding section of this document.
+
+<4> MongoDB section where you can put a specific version, path and name of the database.
+
+<5> InfluxDB section where you can put a specific version, path and name of the database.
+
+<6> Grafana section where you can configure `sip3` datasource.
+
+<7> SIP3 Salto data interface. SIP3 Captain uses this interface to send application data.
+
+<8> Management interface. Must be defined if `rtp` or `rtcp` features enabled. SIP3 Salto and Captain use this interface to exchange SDP information.
+
+As you can see our default configuration file is pretty small and simple. However, there are lots of additional properties we will explore in further sections of this document. Now let's install SIP3 backend components by running the same simple command:
+```
+ansible-playbook -i inventories/sip3-backend.yml playbooks/sip3.yml
+```
 
 This document will be updated soon...
