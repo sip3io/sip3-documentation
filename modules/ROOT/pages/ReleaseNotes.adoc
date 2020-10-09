@@ -1,6 +1,30 @@
 = Release Notes
 :description: SIP3 Release Notes
 
+== Version: 2020.2.1
+
+=== Captain
+
+* `pcap.dlt` property to support various https://www.tcpdump.org/linktypes.html[DataLink] types
+
+=== Salto
+
+* Search registrations by `sip.duration` attribute
+* Call duration distribution statistic
+* https://sip3.io/docs/features/UserDefinedFunctions.html#sip_call_udf[`sip_call_udf`] endpoint
+* Various performance improvements and bugfixes
+
+=== Twig
+
+* Switch to https://github.com/sip3io/sip3-twig-ce[`sip3-twig-ce`] from the Github
+* Various performance improvements and bugfixes
+
+=== Hoof
+
+* `Today` option in datetimepicker
+* Advanced call flow implementation
+* Various performance improvements and bugfixes
+
 == Version: 2020.1.1
 
 === Captain
