@@ -57,7 +57,27 @@ The list below contains entire set of SIP QoS metrics aggregated and reported by
 |`sip_call_disconnect-time`
 |Timer
 |`src_host`, `dst_host`, `retransmits`
-|The time interval between the first `BYE` message and corresponding `200` response.
+|The time interval between the first `BYE` message and corresponding `200` response
+
+|`sip_call_established`
+|Counter
+|`src_host`, `dst_host`
+|The amount of established (active) calls
+
+|`sip_transaction_response-delay`
+|Timer
+|`src_host`, `dst_host`
+|The time interval between SIP request message and corresponding response
+
+|`sip_register_request-delay`
+|Timer
+|`src_host`, `dst_host`
+|The time interval between initial `REGISTER` message and corresponding `200` response
+
+|`sip_register_active`
+|Timer
+|`src_host`, `dst_host`
+|The amount of active registrations
 
 |====================
 
