@@ -3,6 +3,10 @@
 
 == Overview
 
+WARNING: This document is `work in progress`. For instance, at the moment `sip3-ansible` has no support for `all.hosts.backend` property.
+Still, you can use this document to get an idea of how to deploy the product using `sip3-ansible`.
+In case of any problems we recommend you to compare configuration with the https://github.com/sip3io/sip3-ansible/blob/master/inventories/inventory.yml[default invetory file] or ask us a question in the SIP3 community channels.
+
 SIP3 leverages a traditional microservice architecture that makes it easy to scale, in the cloud and on-premise.
 
 Having each one of the SIP3 components deployed independently saves you money, time and resources, but it also brings a layer of extra complexity to the deployment process.
