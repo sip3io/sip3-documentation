@@ -1,6 +1,26 @@
 = Release Notes
 :description: SIP3 Release Notes
 
+== Version: 2020.3.1
+
+=== Captain
+
+* Moved RTCP related calculations to the SIP3 Salto
+* Added `timestamp` parameter to the management socket exchange
+* Various performance improvements and bugfixes
+
+=== Salto
+
+* Added RTCP related calculations support
+* Added HEP3 RTCP packets processing
+* Added dynamic codecs support
+* Various performance improvements and bugfixes
+
+=== Twig
+
+* Fixed Swagger UI integration
+* Various performance improvements and bugfixes
+
 == Version: 2020.2.1
 
 === Captain
