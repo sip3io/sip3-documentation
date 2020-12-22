@@ -373,7 +373,9 @@ eventBus.localConsumer("sip_call_udf", { event ->
     //      "call_id" : String,
     //      "duration" : Long (Optional),
     //      "setup_time" : Long (Optional),
+    //      "cancel_time" : Long (Optional),
     //      "establish_time" : Long (Optional),
+    //      "terminated_by" : String (Optional)
     //   "attributes" : Map<String, String|Boolean>
     // }
     def session = event.body()
@@ -415,7 +417,9 @@ eventBus.localConsumer("sip_call_udf", function (event) {
     //      "call_id" : String,
     //      "duration" : Long (Optional),
     //      "setup_time" : Long (Optional),
+    //      "cancel_time" : Long (Optional),
     //      "establish_time" : Long (Optional),
+    //      "terminated_by" : String (Optional)
     //   "attributes" : Map<String, String|Boolean>
     // }
     var session = event.body();

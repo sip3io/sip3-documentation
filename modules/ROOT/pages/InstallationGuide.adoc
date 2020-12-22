@@ -3,7 +3,8 @@
 
 == Overview
 
-WARNING: This document is `work in progress`. For instance, at the moment `sip3-ansible` has no support for `all.hosts.backend` property.
+WARNING: This document is `work in progress`.
+For instance, at the moment `sip3-ansible` has no support for `all.hosts.backend` property.
 Still, you can use this document to get an idea of how to deploy the product using `sip3-ansible`.
 In case of any problems we recommend you to compare configuration with the https://github.com/sip3io/sip3-ansible/blob/master/inventories/inventory.yml[default invetory file] or ask us a question in the SIP3 community channels.
 
@@ -12,7 +13,7 @@ SIP3 leverages a traditional microservice architecture that makes it easy to sca
 Having each one of the SIP3 components deployed independently saves you money, time and resources, but it also brings a layer of extra complexity to the deployment process.
 To make your life easier the SIP3 team introduced the https://github.com/sip3io/sip3-ansible[`sip3-ansible`] Github project.
 
-NOTE: At the moment you can use `sip3-ansible` to deploy each of the SIP3 components as a service to CentOS or as a docker container to any Linux OS.
+NOTE: At the moment you can use `sip3-ansible` to deploy each of the SIP3 components as a service to CentOS, Debian or as a docker container to any Linux OS.
 Please, contact mailto:support@sip3.io[the SIP3 team] if you need help with specific environment.
 
 By following the traditional Ansible approach, you will be creating an inventory file that describes the SIP3 installation process.
@@ -31,6 +32,7 @@ image::InstallationGuideBasicInstallationDiagram.jpg[Installation Guide Basic In
 === Installing SIP3 Captain To Single PBX
 
 Clone `sip3-ansible` repository:
+
 ```
 git clone git@github.com:sip3io/sip3-ansible.git
 ```
@@ -70,36 +72,50 @@ all:
 
 Let's take a closer look at the inventory file:
 
-<1> SSH address. Ansible uses it to connect to the PBX via SSH.
+<1> SSH address.
+Ansible uses it to connect to the PBX via SSH.
 
-<2> Platform and the component version. At the moment you can choose between `centos` and `docker` platforms.
+<2> Platform and the component version.
+At the moment you can choose between `centos` and `docker` platforms.
 
-<3> Features help to customize SIP3 behaviour and enable/disable certain functionality. They also help to separate CE and EE configuration. You can find more information in the corresponding section of this document.
+<3> Features help to customize SIP3 behaviour and enable/disable certain functionality.
+They also help to separate CE and EE configuration.
+You can find more information in the corresponding section of this document.
 
-<4> Standard `libpcap` settings. Specify on which interface you want to capture VoIP traffic and set https://biot.com/capstats/bpf.html[BPF filter] to avoid capturing all the packets (e.g. If you want to capture only SIP protocol on port 5060 use `udp and port 5060` as a filter).
+<4> Standard `libpcap` settings.
+Specify on which interface you want to capture VoIP traffic and set https://biot.com/capstats/bpf.html[BPF filter] to avoid capturing all the packets (e.g. If you want to capture only SIP protocol on port 5060 use `udp and port 5060` as a filter).
 
-<5> SIP3 Salto data interface. SIP3 Captain uses this interface to send application data.
+<5> SIP3 Salto data interface.
+SIP3 Captain uses this interface to send application data.
 
-<6> Management interface. Must be defined if `rtp` or `rtcp` features enabled. SIP3 Salto and Captain use this interface to exchange SDP information.
+<6> Management interface.
+Must be defined if `rtp` or `rtcp` features enabled.
+SIP3 Salto and Captain use this interface to exchange SDP information.
 
-Our minimalistic SIP3 Captain configuration is ready. Now, let's install SIP3 Captain to the PBX using the command below:
+Our minimalistic SIP3 Captain configuration is ready.
+Now, let's install SIP3 Captain to the PBX using the command below:
+
 ```
 ansible-playbook -i inventories/sip3-captain.yml playbooks/sip3.yml
 ```
 
-Once Ansible successfully finished with the playbook we can check that SIP3 Captain is actually working. At the first check bootstrap information from `/var/log/sip3-captain/default.log` if you deployed SIP3 Captain without Docker or `~/sip3/var/log/sip3-captain/default.log` in other case:
+Once Ansible successfully finished with the playbook we can check that SIP3 Captain is actually working.
+At the first check bootstrap information from `/var/log/sip3-captain/default.log` if you deployed SIP3 Captain without Docker or `~/sip3/var/log/sip3-captain/default.log` in other case:
+
 ```
 05-10-2020 11:36:34.758 [vert.x-eventloop-thread-0] INFO  i.s.captain.ce.capturing.PcapEngine - Listening network interface: eth0
 05-10-2020 11:36:34.885 [vert.x-eventloop-thread-1] INFO  io.sip3.captain.ce.sender.Sender - UDP connection opened: udp://192.168.1.2:15060
 ```
 
 Now let's check `/var/log/sip3-captain/metrics.log` and `~/sip3/var/log/sip3-captain/metrics.log` accordingly to get some insights on the amount of traffic captured by SIP3 Captain and to make sure that the traffic goes to the SIP3 Salto:
+
 ```
 05-10-2020 12:27:09.298 - packets_captured{name=sip3-captain,source=pcap} throughput=2.4/s
 05-10-2020 12:27:09.299 - packets_sent{name=sip3-captain} throughput=1.2/s
 ```
 
-Congratulations, SIP3 Captain is up and capturing traffic. So, we can move to the next section of the document.
+Congratulations, SIP3 Captain is up and capturing traffic.
+So, we can move to the next section of the document.
 
 === Installing SIP3 Captain To Multiple PBXs
 
@@ -146,9 +162,11 @@ all:
           step: 5000
 ----
 
-<1> Each SIP3 Captain instance can be configured separately by re-assigning global variables withing the host section. Re-assigned variables will be merged with the global one accordingly to https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable[Ansible precedence convention].
+<1> Each SIP3 Captain instance can be configured separately by re-assigning global variables withing the host section.
+Re-assigned variables will be merged with the global one accordingly to https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable[Ansible precedence convention].
 
 Now we can use the same command from the previous section to install both SIP3 Captains:
+
 ```
 ansible-playbook -i inventories/sip3-captain.yml playbooks/sip3.yml
 ```
@@ -157,7 +175,9 @@ As you can see installing multiple SIP3 Captains as easy as installing one.
 
 === Uninstalling SIP3 Captain
 
-To uninstall SIP3 Captain use the command bellow. Please, take a look at additional `extra-vars` parameter:
+To uninstall SIP3 Captain use the command bellow.
+Please, take a look at additional `extra-vars` parameter:
+
 ```
 ansible-playbook -i inventories/sip3-captain.yml playbooks/sip3.yml --extra-vars "state=absent"
 ```
@@ -165,6 +185,7 @@ ansible-playbook -i inventories/sip3-captain.yml playbooks/sip3.yml --extra-vars
 === Installing SIP3 Backend Components
 
 Let's create a `sip3-backend.yml` file inside the `inventories` directory in analogy with what we've done in the <<Installing SIP3 Captain To Single PBX, previous section>>:
+
 [source,yaml]
 ----
 all:
@@ -205,11 +226,15 @@ all:
 
 Let's take a closer look at the inventory file:
 
-<1> SSH address. Ansible uses it to connect to the SIP3 backend via SSH.
+<1> SSH address.
+Ansible uses it to connect to the SIP3 backend via SSH.
 
-<2> Platform and the component version. At the moment you can choose between `centos` and `docker` platforms.
+<2> Platform and the component version.
+At the moment you can choose between `centos` and `docker` platforms.
 
-<3> Features help to customize SIP3 behaviour and enable/disable certain functionality. They also help to separate CE and EE configuration. You can find more information in the corresponding section of this document.
+<3> Features help to customize SIP3 behaviour and enable/disable certain functionality.
+They also help to separate CE and EE configuration.
+You can find more information in the corresponding section of this document.
 
 <4> MongoDB section where you can put a specific version, path and name of the database.
 
@@ -217,11 +242,17 @@ Let's take a closer look at the inventory file:
 
 <6> Grafana section where you can configure `sip3` datasource.
 
-<7> SIP3 Salto data interface. SIP3 Captain uses this interface to send application data.
+<7> SIP3 Salto data interface.
+SIP3 Captain uses this interface to send application data.
 
-<8> Management interface. Must be defined if `rtp` or `rtcp` features enabled. SIP3 Salto and Captain use this interface to exchange SDP information.
+<8> Management interface.
+Must be defined if `rtp` or `rtcp` features enabled.
+SIP3 Salto and Captain use this interface to exchange SDP information.
 
-As you can see our default configuration file is pretty small and simple. However, there are lots of additional properties we will explore in further sections of this document. Now let's install SIP3 backend components by running the same simple command:
+As you can see our default configuration file is pretty small and simple.
+However, there are lots of additional properties we will explore in further sections of this document.
+Now let's install SIP3 backend components by running the same simple command:
+
 ```
 ansible-playbook -i inventories/sip3-backend.yml playbooks/sip3.yml
 ```
