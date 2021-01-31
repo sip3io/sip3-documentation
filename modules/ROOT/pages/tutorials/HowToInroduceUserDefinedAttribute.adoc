@@ -1,5 +1,5 @@
-= How To Introduce a User-Defined Attribute
-:description: SIP3 How To Introduce a User-Defined Attribute Tutorial.
+= How To Introduce a User-Defined Attribute or Integration with APIBAN Example
+:description: SIP3 How To Introduce a User-Defined Attribute Tutorial or Integration with APIBAN Example.
 
 == Overview
 

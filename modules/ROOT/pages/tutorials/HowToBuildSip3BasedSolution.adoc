@@ -1,0 +1,51 @@
+= How To Build a SIP3 Based Solution or Wangiri Fraud Detection Example
+:description: How To Build a SIP3 Based Solution or Wangiri Fraud Detection Example.
+
+== Overview
+
+== Use Case
+
+There was an average size VoIP provider who had at around 1K Call Attempts per Second (at around 20M Call Attempts per Day). A few months ago the amount of Call Attempts started growing. However, the amount of active clients stayed the same.
+
+With the growing number of Call Attempts this provider had to choose - either to buy more licences from his VoIP hardware and software vendors, or to introduce throttling policies for some of his clients.
+
+Also, our provider started noticing more and more https://en.wikipedia.org/wiki/Phone_fraud[Wangiri] fraud activities while troubleshooting support tickets.
+
+That was the moment when he came to the SIP3 team and asked if we can find all the Wangiri clients and help to estimate their presence within the network.
+
+Let's see how did we do it.
+
+== Solution
+
+=== User-Defined Function
+
+[source,groovy]
+----
+package udf
+
+import io.vertx.core.AbstractVerticle
+import io.vertx.core.json.Json
+
+class SipCallUdfHandler extends AbstractVerticle {
+
+    def udp = vertx.createDatagramSocket()                          // 1
+
+    @Override
+    void start() throws Exception {
+        vertx.eventBus().localConsumer("sip_call_udf") { event ->   // 2
+
+            def buffer = Json.encodeToBuffer(event.body())          // 3
+
+            udp.send(buffer, 15080, "127.0.0.1") {}                 // 4
+
+            event.reply(true)                                       // 5
+        }
+    }
+}
+----
+
+=== Profiler
+
+=== Basic Analisys
+
+== Conclusions
