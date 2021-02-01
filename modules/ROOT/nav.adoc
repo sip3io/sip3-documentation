@@ -4,5 +4,5 @@
 ** xref:features/ServiceMetrics.adoc[Service Metrics]
 * Tutorials
 ** xref:tutorials/HowToInroduceUserDefinedAttribute.adoc[How To Introduce a User-Defined Attribute or Integration with APIBAN Example]
-** xref:tutorials/HowToBuildSip3BasedSolution.adoc[How To Build a SIP3 Based Solution or Wangiri Fraud Detection Example]
+** xref:tutorials/HowToBuildSip3BasedSolutions.adoc[How To Build SIP3 Based Solutions or Wangiri Fraud Detection Example]
 * xref:ReleaseNotes.adoc[Release Notes]

@@ -1,0 +1,110 @@
+= How To Build SIP3 Based Solutions or Wangiri Fraud Detection Example
+:description: How To Build SIP3 Based Solutions or Wangiri Fraud Detection Example.
+
+== Overview
+
+For the last 2 years SIP3 has become a mission critical system for many telecom companies of different sizes and business orientations.
+
+The reason why it happened is very simple. The SIP3 team has been always trying to look beyond monitoring and troubleshooting questions. That's why we try to help our customers to stand out among of their competitors by finding non-standard ways of solving visibility issues.
+
+This tutorial is a real story of one of our customers, which explains why and how to build SIP3 based solutions.
+
+== Use Case
+
+There was an average size VoIP provider who had at around 1K Call Attempts per Second (at around 20M Call Attempts per Day). A few months ago the amount of Call Attempts started growing. However, the amount of active clients stayed the same.
+
+With the growing number of Call Attempts this provider had to choose - either to buy more licences from his VoIP hardware and software vendors, or to introduce throttling policies for some of his clients.
+
+Also, our provider started noticing more and more https://en.wikipedia.org/wiki/Phone_fraud[Wangiri] fraud activities while troubleshooting support tickets.
+
+That was the moment when he came to the SIP3 team and asked if we can find all the Wangiri clients and help to estimate their presence within the network.
+
+Let's see how did we do it.
+
+== Solution
+
+All the SIP3 solutions are based on xref:features/UserDefinedFunctions.adoc[User-Defined Functions]. In our use case, the best function to use is `sip_call_udf`.
+
+If you think about it `sip_call_udf` is nothing else, but a real-time CDR which will be used to build subscriber profiles for further analysis.
+
+Let's take a closer look at a schema of our solution:
+
+image::WangiriFraudDetectionSolutionArchitecture.png[Wangiri Fraud Detection Solution Architecture]
+
+<1> A very important moment is that we won't be implementing entire solution within the `sip_call_udf`, but will send all the real-time CDRs as a Json via UDP socket. With this approach we don't need to touch the SIP3 business logic every time when we want to adjust subscriber profiles data.
+<2> Another good thing is that `Profiler` is just a UDP server with just a bit of business logic. So, it could be implemented not only in Groovy and Javascript, but in any language popular among of your team.
+<3> `CSV` is a clean and simple format integrated into most of the popular ML engines. That's why we recommend to use it while prototyping.
+<4> Once `CSV` files are analized and all profile patterns are defined, you can train a `TenserFlow model` and integrate it back in your system.
+
+The schema has defined, so we can move forward to the implementation details.
+
+=== User-Defined Function
+
+As we discussed in the previous section `sip_call_udf` will be used only to send CDRs as a Json via UDP socket. With the power of the https://vertx.io[Vert.x Framework] it might be implemented in less than 10 lines of code (excluding blank lines and comments):
+
+[source,groovy]
+----
+package udf
+
+import io.vertx.core.AbstractVerticle
+import io.vertx.core.json.Json
+
+class SipCallUdfHandler extends AbstractVerticle {
+
+    def udp = vertx.createDatagramSocket()                          // 1
+
+    @Override
+    void start() throws Exception {
+        vertx.eventBus().localConsumer("sip_call_udf") { event ->
+            // `event.body` is a Map<String, Object>:
+            // {
+            //  "src_addr" : String,
+            //  "src_host" : String (Optional),
+            //  "src_port" : Integer,
+            //  "dst_addr" : String,
+            //  "dst_host" : String (Optional),
+            //  "dst_port" : Integer,
+            //  "payload" : Map<String, Object>,
+            //      "created_at" : Long,
+            //      "terminated_at" : Long,
+            //      "state" : String,
+            //      "caller" : String,
+            //      "callee" : String,
+            //      "call_id" : String,
+            //      "duration" : Long (Optional),
+            //      "setup_time" : Long (Optional),
+            //      "establish_time" : Long (Optional),
+            //      "terminated_by" : String(Optional),
+            //   "attributes" : Map<String, String|Boolean>
+            // }
+            def session = event.body()                              // 2
+
+            def buffer = Json.encodeToBuffer(session)               // 3
+
+            udp.send(buffer, 15080, "127.0.0.1") {}                 // 4
+
+            event.reply(true)                                       // 5
+        }
+    }
+}
+----
+
+<1> Create UDP socket
+<2> Retrieve a CDR
+<3> Encode it as a Json
+<4> Send it via UDP
+<5> Return control back to SIP3
+
+You can use the code snippet above in your own SIP3 solutions. Also, read the https://vertx.io/docs[Vert.x Documentation], if you are looking for a way to send data to various databases, message brokers or HTTP webhooks.
+
+=== Profiler
+
+TODO...
+
+=== Basic Analysis
+
+TODO...
+
+== Conclusions
+
+TODO...
