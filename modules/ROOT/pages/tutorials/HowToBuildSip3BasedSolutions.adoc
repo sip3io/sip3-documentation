@@ -51,7 +51,7 @@ import io.vertx.core.json.Json
 
 class SipCallUdfHandler extends AbstractVerticle {
 
-    def udp = vertx.createDatagramSocket()                          // 1
+    def udp = vertx.createDatagramSocket()                          // <1>
 
     @Override
     void start() throws Exception {
@@ -77,13 +77,13 @@ class SipCallUdfHandler extends AbstractVerticle {
             //      "terminated_by" : String(Optional),
             //   "attributes" : Map<String, String|Boolean>
             // }
-            def session = event.body()                              // 2
+            def session = event.body()                              // <2>
 
-            def buffer = Json.encodeToBuffer(session)               // 3
+            def buffer = Json.encodeToBuffer(session)               // <3>
 
-            udp.send(buffer, 15080, "127.0.0.1") {}                 // 4
+            udp.send(buffer, 15080, "127.0.0.1") {}                 // <4>
 
-            event.reply(true)                                       // 5
+            event.reply(true)                                       // <5>
         }
     }
 }
@@ -112,16 +112,16 @@ class Profile {
 
     class CallStats {
 
-        var totalCalls = 0                                          // 1
+        var totalCalls = 0                                          // <1>
 
-        var totalDuration = 0                                       // 2
+        var totalDuration = 0                                       // <2>
         var chargedMinutes = 0
 
-        var failedCalls = 0                                         // 3
+        var failedCalls = 0                                         // <3>
         var canceledCalls = 0
         var answeredCalls = 0
 
-        var terminatedCalls = 0                                     // 4
+        var terminatedCalls = 0                                     // <4>
         var threeSecondsCalls = 0
     }
 }
@@ -136,18 +136,13 @@ Have a look at the example of `Profiler` implementation in Kotlin:
 
 [code,kotlin]
 ----
-private fun handle(msisdn: String, callType: String, cdr: JsonObject) {
+fun handleCdr(msisdn: String, callType: String, cdr: JsonObject) {
     val newTimeSuffix = timeSuffix.format(System.currentTimeMillis())
-
     if (currentTimeSuffix < newTimeSuffix) {
-        profiles.remove(currentTimeSuffix)?.let {
-            vertx.eventBus().localRequest<Any>(RoutesML.writer, Pair(currentTimeSuffix, it))
-        }
         currentTimeSuffix = newTimeSuffix
     }
 
-    val profile = profiles.getOrPut(currentTimeSuffix) { mutableMapOf() }
-        .getOrPut(msisdn) { Profile() }
+    val profile = profiles.getOrPut(currentTimeSuffix) { mutableMapOf() }.getOrPut(msisdn) { Profile() }
 
     val callStats = when (callType) {
         CallType.OUTGOING -> profile.outgoingCallStats
@@ -160,6 +155,7 @@ private fun handle(msisdn: String, callType: String, cdr: JsonObject) {
         totalCalls++
         duration?.let { duration ->
             totalDuration += duration
+
             if (duration < 3) {
                 threeSecondsCalls++
             } else {
