@@ -1,6 +1,34 @@
 = Release Notes
 :description: SIP3 Release Notes
 
+== Version: 2021.1.1
+
+=== Captain
+
+* Switched to the new version of SIP3 protocol
+* Added `VXLAN` encapsulation support
+* Added `sender.dns-cache-ttl` property
+* Various performance improvements and bugfixes
+
+=== Salto
+
+* Switched to the new version of SIP3 protocol
+* Introduced a new RTP/RTCP correlation engine
+* Added a set of `media.xxx` attributes
+* Added `sip.cancel_time` and `sip.terminated_by` attributes
+* Various performance improvements and bugfixes
+
+=== Twig
+
+* Added new media correlation engine support
+* Various performance improvements and bugfixes
+
+=== Hoof
+
+* Removed simple search `caller` and `callee` restrictions
+* Added `media.xxx` attributes support
+* Various performance improvements and bugfixes
+
 == Version: 2020.3.1
 
 === Captain
