@@ -33,10 +33,11 @@ image::InstallationGuideBasicInstallationDiagram.jpg[Installation Guide Basic In
 
 Clone `sip3-ansible` repository and checkout the latest release branch:
 
-```
+[source,ssh]
+----
 git clone https://github.com/sip3io/sip3-ansible.git
 git checkout -b release/2021.1.1
-```
+----
 
 Create a `sip3-captain.yml` file inside the `inventories` directory:
 
