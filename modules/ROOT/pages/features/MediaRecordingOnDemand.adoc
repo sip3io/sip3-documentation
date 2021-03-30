@@ -1,0 +1,33 @@
+= Media Recording On Demand
+:description: SIP3 Media Recording On Demand.
+
+== Overview
+
+Here is an example of the SIP3 `Media Quality Widget` which helps to classify most of the problems within just a few seconds:
+
+However, there are some situations where detailed quality analysis is still required. In such situations, VoIP engineers usually have to capture an entire call session (including RTP streams) and analyze it in Wireshark manually.
+
+Often case, capturing an entire call session is not an easy thing because of the amount of servers and VoIP traffic. To automate it and provide a better user experience the SIP3 team designed and implemented `Media Recording On Demand` feature.
+
+Let's see how you can configure a set of filters to capture entire call session (including RTP streams in `FULL` or `GDPR` modes) and analyze it later in Wireshark.
+
+== Usage
+
+Here is an example of `recording.yml` file with `Media Recording On Demand` configured:
+
+[source,yaml]
+----
+recording:
+  enabled: true
+  filters:
+    - filter: "ip.src_addr=26.03.19.93 sip.user=desi"                       // <1>
+      mode : 0                                                              // <2>
+    - filter: "ip.host=RTP_ENGINE_1 media.duration>10000 media.r_factor<75"   // <3>
+      mode : 1                                                              // <4>
+
+----
+
+<1> - SIP signaling filter. It may contain next list of attributes: `ip.src_addr`, `ip_dst_addr`, `ip.addr`, `sip.caller`, `sip.calle`, `sip.user`.
+<2> - `FULL` mode. In this mode SIP3 will record full RTP packets including voice payload.
+<3> - Media quality filter. It may contain next list of attributes: `ip.src_addr`, `ip_dst_addr`, `ip.addr`, `media.duration`, `media.mos`, `media.r_factor`.
+<4> - `GDRP` mode. In this mode SIP3 will record only headers of RTP packets without voice payload.

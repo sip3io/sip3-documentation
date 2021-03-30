@@ -1,6 +1,7 @@
 * xref:InstallationGuide.adoc[Installation Guide]
 * Features
 ** xref:features/UserDefinedFunctions.adoc[User-Defined Functions]
+** xref:features/MediaRecordingOnDemand.adoc[Media Recording On Demand]
 ** xref:features/ServiceMetrics.adoc[Service Metrics]
 * Tutorials
 ** xref:tutorials/HowToInroduceUserDefinedAttribute.adoc[How To Introduce a User-Defined Attribute or Integration with APIBAN Example]
