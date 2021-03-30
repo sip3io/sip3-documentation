@@ -1,6 +1,31 @@
 = Release Notes
 :description: SIP3 Release Notes
 
+== Version: 2021.2.1
+
+=== Captain
+
+* Added `Media Recording On Demand` feature
+* Various performance improvements and bugfixes
+
+=== Salto
+
+* Added `Media Recording On Demand` feature
+* Added `sip.overlapped_interval` and `sip.overlapped_fraction` attributes
+* Optimized SIP messages processing
+* Optimized SIP registrations handling
+* Various performance improvements and bugfixes
+
+=== Twig
+
+* Added `Media Recording On Demand` feature
+* Various performance improvements and bugfixes
+
+=== Hoof
+
+* Added `Media Recording On Demand` feature
+* Various performance improvements and bugfixes
+
 == Version: 2021.1.1
 
 === Captain
