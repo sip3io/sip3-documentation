@@ -5,6 +5,8 @@
 
 Here is an example of the SIP3 `Media Quality Widget` which helps to classify most of the problems within just a few seconds:
 
+image::MediaQualityWidget.png[Media Quality Widget]
+
 However, there are some situations where detailed quality analysis is still required. In such situations, VoIP engineers usually have to capture an entire call session (including RTP streams) and analyze it in Wireshark manually.
 
 Often case, capturing an entire call session is not an easy thing because of the amount of servers and VoIP traffic. To automate it and provide a better user experience the SIP3 team designed and implemented `Media Recording On Demand` feature.
@@ -20,10 +22,10 @@ Here is an example of `recording.yml` file with `Media Recording On Demand` conf
 recording:
   enabled: true
   filters:
-    - filter: "ip.src_addr=26.03.19.93 sip.user=desi"                       // <1>
-      mode : 0                                                              // <2>
+    - filter: "ip.src_addr=26.03.19.93 sip.user=desi"                         // <1>
+      mode : 0                                                                // <2>
     - filter: "ip.host=RTP_ENGINE_1 media.duration>10000 media.r_factor<75"   // <3>
-      mode : 1                                                              // <4>
+      mode : 1                                                                // <4>
 
 ----
 
