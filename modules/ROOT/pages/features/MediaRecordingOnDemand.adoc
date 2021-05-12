@@ -75,7 +75,7 @@ Filter is matched when all Expressions will be `True`.
 | `Integer`, `Float`
 | Less than
 
-| `=~'
+| `=~`
 | `String`
 | Regular expression
 |===
