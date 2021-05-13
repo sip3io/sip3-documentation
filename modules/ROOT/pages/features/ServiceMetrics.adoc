@@ -130,3 +130,29 @@ The list below contains entire set of RTP/RTCP QoS metrics aggregated and report
 |====================
 
 
+== Media Metrics
+
+The list below contains entire set of Media stream metrics aggregated and reported by SIP3.
+
+[%header,cols=4*]
+|====================
+|Name
+|Type
+|Tags
+|Description
+
+|`media_bad-reports`
+|Summary
+|`src_host`, `dst_host`, `codec_name`
+|Number of bad reports
+
+|`media_bad-reports-fraction`
+|Summary
+|`src_host`, `dst_host`, `codec_name`
+|Bad reports fraction
+
+|`media_duration`
+|Timer
+|`src_host`, `dst_host`, `codec_name`
+|Media stream duration
+|====================
