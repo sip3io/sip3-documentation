@@ -45,6 +45,27 @@ There are two types of filters in `SIP3` for `Media Recording On Demand`:
 
 Configuration of `Media Recording On Demand` may contain multiple filters both of types. All filters will be loaded to `SIP3` and checking in order from configuration. The first matching filter's recording mode will be applied to matched Call/Media session.
 
+=== Modes
+
+Each filter controls Media Recording Mode. SIP3 supports `FULL` and `GDPR` modes:
+
+[%header,cols=3*]
+|===
+|Mode |Value |Description
+
+|`FULL`
+|`0`
+|Full RTP/RTCP and related ICMP packets including voice payload
+
+|`GDPR`
+|`1`
+|Only headers of RTP/RTCP and related ICMP packets without voice payload.
+|===
+
+In addition to GDPR compliance of `GDPR` mode requires much less storage space (about 3-4 times less).
+
+NOTE: Recording Mode can't be overridden for the same Media Session.
+
 === Expressions
 
 Each Filter contains one or more `Expression` separated with `Space`. `Expression` has simple structure `<attribute><operator><value>`:
@@ -116,6 +137,7 @@ Filter is matched when all Expressions will be `True`.
 
 === Media quality filter attributes
 
+[%header,cols=3*]
 |===
 |Attribute |Type |Description
 
