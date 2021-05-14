@@ -128,5 +128,3 @@ The list below contains entire set of RTP/RTCP QoS metrics aggregated and report
 |`src_host`, `dst_host`, `codec`
 |Rejected RTP packets
 |====================
-
-
