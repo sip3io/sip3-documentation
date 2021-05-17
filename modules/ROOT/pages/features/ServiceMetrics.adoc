@@ -17,6 +17,27 @@ image:SIPQoSMetricsDashboardDatadog.png[SIP QoS Metrics in Datadog]
 Grafana:
 image:SIPQoSMetricsDashboardGrafana.png[SIP QoS Metrics in Grafana]
 
+=== Building a chart
+
+Under the hood of most charts there are simple expressions. Let's look closer to `Answer Seizure Ratio (ASR)` metric with formula:
+
+asciimath:[ASR = "Seizures resulting in answer signal"/"Total seizures" * 100]
+
+In the case of using InfluxDB and Grafana query for chart will be:
+[source,sql]
+----
+SELECT sum(Answered)/sum(Seizure)*100 FROM
+(SELECT sum("value") as Answered FROM "sip_call_attempts" WHERE ("state" = 'answered') AND $timeFilter GROUP BY time($__interval) fill(null)),
+(SELECT sum("value") as Seizure FROM "sip_call_attempts" WHERE $timeFilter GROUP BY time($__interval) fill(null))
+GROUP BY time($__interval) fill(null)
+----
+
+For Datadog query is pretty simple:
+[source,text]
+----
+(sum:sip_call_attempts{state:answered}.as_count()/sum:sip_call_attempts{state:*}.as_count())*100
+----
+
 === SIP Metrics
 
 The list below contains entire set of SIP QoS metrics aggregated and reported by SIP3. You can use it to retrieve the most important QoS metrics described in RFC 6076.
@@ -181,3 +202,4 @@ You can build custom dashboards to improve troubleshooting and monitoring. With 
 
 Datadog:
 image:CustomMetricsDashboardDatadog.png[Custom dashboard with UDAs]
+
