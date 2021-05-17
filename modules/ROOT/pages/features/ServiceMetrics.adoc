@@ -7,10 +7,19 @@ SIP3 uses vendor-neutral application metric facade called http://micrometer.io/[
 
 Please read http://micrometer.io/docs[Micrometer Documentation] to get more information about basic concepts, metric types, dimensional data models and specific implementation details.
 
-== SIP Metrics
+== SIP Quality of Service Dashboard
+
+You can use SIP QoS Metrics to retrieve the most important QoS metrics described in RFC 6076 and build informative dashboards for monitoring and troubleshooting
+
+Datadog:
+image:SIPQoSMetricsDashboardDatadog.png[SIP QoS Metrics in Datadog]
+
+Grafana:
+image:SIPQoSMetricsDashboardGrafana.png[SIP QoS Metrics in Grafana]
+
+=== SIP Metrics
 
 The list below contains entire set of SIP QoS metrics aggregated and reported by SIP3. You can use it to retrieve the most important QoS metrics described in RFC 6076.
-
 
 [%header,cols=4*]
 |====================
@@ -81,7 +90,17 @@ The list below contains entire set of SIP QoS metrics aggregated and reported by
 
 |====================
 
-== RTP/RTCP Metrics
+== Media Quality of Service Dashboard
+
+You can use RTP/RTCP Metrics and Media Metrics to retrieve the most important QoS metrics such as R-Factor, Mean Opinion Score(MOS) according to `ITU-T Recommendation G.107: The E-model: a computational model for use in transmission planning`, Jitter, etc. Creating Dashboards with this metrics helps to investigate Media issues more effectively:
+
+Datadog:
+image:MediaQoSMetricsDashboardDatadog.png[Media QoS Metrics in Datadog]
+
+Grafana:
+image:MediaQoSMetricsDashboardGrafana.png[Media QoS Metrics in Grafana]
+
+=== RTP/RTCP Metrics
 
 The list below contains entire set of RTP/RTCP QoS metrics aggregated and reported by SIP3.
 
@@ -129,8 +148,7 @@ The list below contains entire set of RTP/RTCP QoS metrics aggregated and report
 |Rejected RTP packets
 |====================
 
-
-== Media Metrics
+== Media Session Metrics
 
 The list below contains entire set of Media stream metrics aggregated and reported by SIP3.
 
@@ -156,3 +174,10 @@ The list below contains entire set of Media stream metrics aggregated and report
 |`src_host`, `dst_host`, `codec_name`
 |Media stream duration
 |====================
+
+== Custom Dashboards
+
+You can build custom dashboards to improve troubleshooting and monitoring. With xref::features/UserDefinedFunctions.adoc#_user_defined_attributes[User Defined Attributes], like `User-Agent` or custom `Reason` Attribute:
+
+Datadog:
+image:CustomMetricsDashboardDatadog.png[Custom dashboard with UDAs]
