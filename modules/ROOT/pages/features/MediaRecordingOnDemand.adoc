@@ -24,14 +24,14 @@ recording:
   filters:
     - filter: "ip.src_addr=26.03.19.93 sip.user=desi"                         // <1>
       mode : 0                                                                // <2>
-    - filter: "ip.host=RTP_ENGINE_1 media.r_factor<75 media.duration>10000"   // <3>
+    - filter: "ip.host=RTP_ENGINE_1 rtp.r_factor<75 rtp.duration>10000"       // <3>
       mode : 1                                                                // <4>
 
 ----
 
 <1> SIP signaling filter that enables recording of session from `26.03.19.93` and to or from user `desi`.
 <2> `FULL` mode. In this mode SIP3 will record full RTP packets including voice payload.
-<3> Media quality filter that enables recording of Media sessions with host `RTP_ENGINE_1`, R-Factor less that 75 and duration of media more than 10000ms (10 seconds)
+<3> Media quality filter that enables recording of Media sessions with host `RTP_ENGINE_1`, R-Factor calculated from RTP less that 75 and duration of RTP stream more than 10000ms (10 seconds)
 <4> `GDPR` mode. In this mode SIP3 will record only headers of RTP packets without voice payload.
 
 Now more about filters.
@@ -147,15 +147,15 @@ Filter is matched when all Expressions will be `True`.
 | String
 | Source or Destination IP address
 
-|`media.duration`
+|`rtp.duration`, `rtcp.duration`
 | Integer
-| Duration of media stream in milliseconds
+| RTP/RTCP Duration of media stream in milliseconds
 
-|`media.mos`
+|`rtp.mos`, `rtcp.mos`
 | Float
-| MoS value
+| RTP/RTCP MoS value
 
-|`media.r_factor`
+|`rtp.r_factor`, `rtcp.r_factor`
 | Float
-| R-Factor value
+| RTP/RTCP R-Factor value
 |===
