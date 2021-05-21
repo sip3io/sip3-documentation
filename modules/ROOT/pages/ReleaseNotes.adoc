@@ -1,7 +1,7 @@
 = Release Notes
 :description: SIP3 Release Notes
 
-== Version: 2021.2.1
+== Version: 2021.2.2
 
 === Captain
 
