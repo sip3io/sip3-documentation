@@ -5,6 +5,32 @@
 
 === Captain
 
+* Added duration limit for `Media Recording On Demand`
+* Various performance improvements and bugfixes
+
+=== Salto
+
+* Added `Media Recording On Demand` feature
+* Added distribution tag to `rtpr_rtp_r-factor` and `rtpr_rtcp_r-factor` metrics
+* Added IPv6 binding for Salto
+* Fixed SIP retransmits handling
+* Optimized RTCP processing
+* Various performance improvements and bugfixes
+
+=== Twig
+
+* Added `Media Recording On Demand` feature
+* Various performance improvements and bugfixes
+
+=== Hoof
+
+* Fixed timestamps in `Media Widget`
+* Various performance improvements and bugfixes
+
+== Version: 2021.2.1
+
+=== Captain
+
 * Added `Media Recording On Demand` feature
 * Various performance improvements and bugfixes
 
