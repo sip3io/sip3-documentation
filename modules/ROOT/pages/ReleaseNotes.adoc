@@ -1,6 +1,29 @@
 = Release Notes
 :description: SIP3 Release Notes
 
+== Version: 2021.2.3
+
+=== Captain
+
+* Added IPv6 support
+* Various performance improvements and bugfixes
+
+=== Salto
+
+* Added IPv6 support
+* Added `ranked` attribute for filtering reliable QoS metrics
+* Various performance improvements and bugfixes
+
+=== Twig
+
+* Introduced an algorithm of positioning `media` participants on the call flow
+* Various performance improvements and bugfixes
+
+=== Hoof
+
+* Introduced an algorithm of positioning `media` participants on the call flow
+* Various performance improvements and bugfixes
+
 == Version: 2021.2.2
 
 === Captain
