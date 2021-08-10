@@ -19,6 +19,7 @@ nano examples/sip3-captain.yml
 
 Next, run ansible command:
 
+1) If the installation is performed on a remote machine:
 [source,ssh]
 ----
 From backend:
@@ -27,4 +28,12 @@ From captain:
 ansible-playbook -i examples/sip3-captain.yml playbooks/sip3.yml
 ----
 
+2) If the installation is performed on a local machine:
+[source,ssh]
+----
+From backend:
+ansible-playbook --connection=local -i examples/sip3-backend.yml playbooks/sip3.yml
+From captain:
+ansible-playbook --connection=local -i examples/sip3-captain.yml playbooks/sip3.yml
+----
 This document will be updated soon...
