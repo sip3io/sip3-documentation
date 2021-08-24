@@ -1,0 +1,42 @@
+= Call Details
+:desription: SIP3 Call Details
+
+== Overview
+Here is an example of the SIP3 `Call Details Widget` which allows to effectively inspect visualized information about any particular call.
+
+image::CallDetailsWidget.png[Call Details Widget]
+
+=== Structure
+Call Details Widget consists of 3 main areas
+
+==== Header
+Header is used for navigation. Currently, you could switch between 3 sections.
+
+image::CallDetailsWidgetHeader.png[Call Details Widget Header]
+
+`Flow`
+====
+The `flow` tab shows a xref:features/CallFlowSequenceDiagram.adoc[Call Flow Sequence Diagram].
+====
+`Legs`
+====
+The `legs` tab shows info about call legs.
+====
+`Messages`
+====
+The `messages` tab shows info about call messages.
+====
+
+Also, there is a secret disabled `Media` tab.
+
+==== Info
+Info always shows main information about the call, that needs to be easily accessible from any tab.
+
+image::CallDetailsWidgetInfo.png[Call Details Widget Info]
+
+The killer feature of the `info` section is `export ... to ...` dropdown. It allows to export either all or selected call legs in _PNG_ and _PCAP_.
+
+
+
+==== Body
+Body is used to show the content of a currently selected tab.

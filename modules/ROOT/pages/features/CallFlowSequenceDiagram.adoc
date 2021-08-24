@@ -1,0 +1,7 @@
+= Call Flow Sequence Diagram
+:desription: SIP3 Call Flow Sequence Diagram
+
+== Overview
+Here is an example of the SIP3 `Call Flow Sequence Diagram` which allows to analyze a call as a sequence diagram
+
+image::CallFlowSequenceDiagram.png[Call Flow Sequence Diagram]
