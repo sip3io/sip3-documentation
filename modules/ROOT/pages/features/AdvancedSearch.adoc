@@ -16,5 +16,3 @@ Now let's take a closer look to each one of the search attributes groupings.
 == RTP and RTCP
 
 // TODO...
-
-== RTP and RTCP
