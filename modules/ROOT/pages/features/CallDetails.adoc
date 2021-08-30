@@ -7,36 +7,29 @@ Here is an example of the SIP3 `Call Details Widget` which allows to effectively
 image::CallDetailsWidget.png[Call Details Widget]
 
 === Structure
-Call Details Widget consists of 3 main areas
+Call Details Widget consists of 3 main areas.
 
 ==== Header
-Header is used for navigation. Currently, you could switch between 3 sections.
+Header is used for navigation. Currently, you could switch between 3 different tabs.
 
 image::CallDetailsWidgetHeader.png[Call Details Widget Header]
 
-`Flow`
-====
-The `flow` tab shows a xref:features/CallFlowSequenceDiagram.adoc[Call Flow Sequence Diagram].
-====
-`Legs`
-====
-The `legs` tab shows info about call legs.
-====
-`Messages`
-====
-The `messages` tab shows info about call messages.
-====
 
-Also, there is a secret disabled `Media` tab.
+- The `Flow` tab shows a xref:features/CallFlowDiagram.adoc[Call Flow Diagram].
+- The `Legs` tab shows info about call legs.
+- The `Messages` tab shows info about call messages.
+
+NOTE: Also, there is a secret disabled `Media` tab. Follow us on https://twitter.com/sip3_io[twitter] for updates regarding this tab.
 
 ==== Info
-Info always shows main information about the call, that needs to be easily accessible from any tab.
+Info always shows main information, that needs to be easily accessible from any tab, like call's __caller__ and __callee__, __start time__, __status__ and __duration__.
 
 image::CallDetailsWidgetInfo.png[Call Details Widget Info]
 
-The killer feature of the `info` section is `export ... to ...` dropdown. It allows to export either all or selected call legs in _PNG_ and _PCAP_.
+The killer feature of the `Info` section is `Export ... to ...` dropdown. It allows to export either all or selected call legs in _PNG_ and _PCAP_.
 
+image::ExportToDropdown.png[Export To Dropdown]
 
 
 ==== Body
-Body is used to show the content of a currently selected tab.
+Body is used to show the content of a currently selected tab. It shows either the xref:features/CallFlowDiagram.adoc[Call Flow Diagram], a Call Legs list or a Call Messages list.
