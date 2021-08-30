@@ -1,0 +1,20 @@
+= Advanced Search
+:description: SIP3 Advanced Search.
+
+== Overview
+
+`Advanced Search` is a very minimalistic user interface to very powerful SIP3 search API. Its syntax was inspired by Wireshark filters and includes three main groupings of search attributes - `sip`, `rtp` and `rtcp`. One or many search attributes combined via logical `AND` operator represent a call query:
+
+// TODO...
+
+Now let's take a closer look to each one of the search attributes groupings.
+
+== SIP
+
+// TODO...
+
+== RTP and RTCP
+
+// TODO...
+
+== RTP and RTCP

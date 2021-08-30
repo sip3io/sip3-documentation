@@ -1,5 +1,6 @@
 * xref:InstallationGuide.adoc[Installation Guide]
 * Features
+** xref:features/AdvancedSearch.adoc[Advanced Search]
 ** xref:features/ServiceMetrics.adoc[Service Metrics]
 ** xref:features/MediaRecordingOnDemand.adoc[Media Recording On Demand]
 ** xref:features/UserDefinedFunctions.adoc[User-Defined Functions]
