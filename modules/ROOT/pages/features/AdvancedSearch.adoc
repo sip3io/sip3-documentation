@@ -50,9 +50,9 @@ image::SearchAttributeWithInfiniteAmountOfPossibleValues.png[Search Attribute Wi
 
 == Groupings
 
-As it was mentioned above every SIP3 query is a combination of multiple search attributes expressions. And here you have no limitations. Feel free to combine as many attributes as you need. They also can be from different groupings like `sip.caller=plami rtp.r_factor<30`. There is only one thing you need to account for:
+As it was mentioned above every SIP3 query is a combination of multiple search attributes expressions. And here you have no limitations. Feel free to combine as many attributes as you need. They also can be from different groupings like `"sip.caller=plami rtp.r_factor<30"`. There is only one thing you need to account for:
 
-IMPORTANT: Queries `sip.caller=plami rtp.r_factor<30` and `rtp.r_factor<30 sip.caller=plami` are not the same because SIP3 uses different database collections for signaling and media data indexes. It's up to you to decide which one of these queries will be faster.
+IMPORTANT: Queries `"sip.caller=plami rtp.r_factor<30"` and `"rtp.r_factor<30 sip.caller=plami"` are not the same because SIP3 uses different database collections for signaling and media data indexes. It's up to you to decide which one of these queries will be faster.
 
 === `"sip"`
 
@@ -222,11 +222,11 @@ It doesn't make sense to separate `rtp` and `rtcp` groupings definition because 
 | Media session duration in milliseconds
 |===
 
-== History Of Searches
+== History of Searches
 
 It happens that we can go into wrong direction while troubleshooting a particular problem. In such cases it might be good to be able to get a few steps back. That's why `Advanced Search` has a history of searches section:
 
-image::HistoryOfSearches.png[History Of Searches]
+image::HistoryOfSearches.png[History of Searches]
 
 == Conclusions
 
