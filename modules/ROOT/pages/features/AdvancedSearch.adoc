@@ -3,13 +3,15 @@
 
 == Overview
 
-`Advanced Search` is a very minimalistic user interface to very powerful SIP3 search API. Its syntax was inspired by Wireshark filters and includes three main groupings of search attributes - `sip`, `rtp` and `rtcp`. One or many search attributes combined via logical `AND` operator represent a call query:
+`Advanced Search` is a very minimalistic user interface to very powerful SIP3 search API. Its syntax was inspired by Wireshark filters and includes three main groupings of search attributes - `sip`, `rtp` and `rtcp`. One or many search attributes combined via logical `AND` operator represent a SIP3 query:
 
 // TODO...
 
-Now let's take a closer look to each one of the search attributes groupings.
+Now let's explore each one of the groupings separately.
 
 == SIP
+
+As you already got it the `sip` grouping is a set of attributes corresponding to the SIP protocol. The `sip` grouping consists of 25 default search attributes but could be extended with xref:tutorials/HowToInroduceUserDefinedAttribute.adoc[user-defined attributes].
 
 // TODO...
 
