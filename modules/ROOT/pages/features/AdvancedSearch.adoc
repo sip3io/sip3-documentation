@@ -3,18 +3,59 @@
 
 == Overview
 
-`Advanced Search` is a very minimalistic user interface to very powerful SIP3 search API. Its syntax was inspired by Wireshark filters and includes three main groupings of search attributes - `sip`, `rtp` and `rtcp`. One or many search attributes combined via logical `AND` operator represent a SIP3 query:
+`Advanced Search` is a very minimalistic user interface which calls at the same time a very powerful SIP3 search API. Its syntax was inspired by Wireshark filters and includes three main groupings of search attributes: `sip`, `rtp` and `rtcp`. Selected time range plus one or many search attributes, turned into search attributes expressions, connected via logical `AND` operator represent a SIP3 query:
 
-// TODO...
+image::AdvancedSearchQueryExample.png[Advanced Search Query Example]
 
-Now let's explore each one of the groupings separately.
+== Search Attributes Expressions
 
-== SIP
+Search attributes expressions is a very simple syntactic constructions:
+```
+<attribute><operator><value>
+```
 
-As you already got it the `sip` grouping is a set of attributes corresponding to the SIP protocol. The `sip` grouping consists of 25 default search attributes but could be extended with xref:tutorials/HowToInroduceUserDefinedAttribute.adoc[user-defined attributes].
+SIP3 supports 3 main attributes types: `String`, `Boolean` and `Number`. In meantime each of the types support a certain list of operators:
 
-// TODO...
+|===
+|Operator | Types | Description
 
-== RTP and RTCP
+| `=`
+| `String`, `Boolean`, `Number`
+| Equals
 
-// TODO...
+| `!=`
+| `String`, `Boolean`, `Number`
+| Not equals
+
+| `>`
+| `Number`
+| More than
+
+| `<`
+| `Number`
+| Less than
+
+| `=~`
+| `String`
+| Regular expression
+|===
+
+If search attribute has finite amount of possible values (as for instance any `Boolean` or some `String` attributes do) all its values will be shown in a dropdown menu:
+
+image::SearchAttributeWithFiniteAmountOfPossibleValues.png[Search Attribute With Finite Amount Of Possible Values]
+
+Otherwise, you can just write anything as its value:
+
+image::SearchAttributeWithInfiniteAmountOfPossibleValues.png[Search Attribute With Infinite Amount Of Possible Values]
+
+== Groupings
+
+=== `sip`
+
+As you already got it the `sip` grouping is a set of attributes corresponding to the SIP protocol. The `sip` grouping consists of 25 default search attributes but could be easily extended with xref:tutorials/HowToInroduceUserDefinedAttribute.adoc[User-Defined Attributes].
+
+TODO...
+
+=== `rtp` and `rtcp`
+
+TODO...
