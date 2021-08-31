@@ -3,13 +3,13 @@
 
 == Overview
 
-`Advanced Search` is a very minimalistic user interface which calls at the same time a very powerful SIP3 search API. Its syntax was inspired by Wireshark filters and includes three main groupings of search attributes: `sip`, `rtp` and `rtcp`. Selected time range plus one or many search attributes, turned into search attributes expressions, connected via logical `AND` operator represent a SIP3 query:
+`Advanced Search` is a very minimalistic user interface to a very powerful SIP3 search API. Its syntax was inspired by Wireshark filters and includes three main groupings of search attributes: `sip`, `rtp` and `rtcp`. `Advanced Search` input represents a SIP3 query which consists of selected time range and one or many search attributes expressions connected via logical `AND` operator:
 
 image::AdvancedSearchQueryExample.png[Advanced Search Query Example]
 
 == Search Attributes Expressions
 
-Search attributes expressions is a very simple syntactic constructions:
+Search attributes expressions are very simple syntactic constructions:
 ```
 <attribute><operator><value>
 ```
@@ -52,9 +52,117 @@ image::SearchAttributeWithInfiniteAmountOfPossibleValues.png[Search Attribute Wi
 
 === `sip`
 
-As you already got it the `sip` grouping is a set of attributes corresponding to the SIP protocol. The `sip` grouping consists of 25 default search attributes but could be easily extended with xref:tutorials/HowToInroduceUserDefinedAttribute.adoc[User-Defined Attributes].
+As you already got it the `sip` grouping is a set of attributes corresponding to the SIP protocol. The `sip` grouping consists of 25 default search attributes but could be easily extended with xref::features/UserDefinedFunctions.adoc#_user_defined_attributes[User-Defined Attributes].
 
-TODO...
+Let's take a closer look at `sip` attributes:
+
+|===
+|Attribute |Type |Description
+
+| `sip.addr`
+| `String`
+| Source or destination IP address. Virtual attribute which helps to cover queries like `sip.src_addr=127.0.0.1 or sip.dst_addr=127.0.0.1`
+
+| `sip.src_addr`
+| `String`
+| Source IP address
+
+| `sip.dst_addr`
+| `String`
+| Destination IP address
+
+| `sip.host`
+| `String (with options)`
+| Source or destination host. Virtual attribute which helps to cover queries like `sip.src_host=PBX-1 or sip.dst_host=PBX-1`
+
+| `sip.src_host`
+| `String (with options)`
+| Source host
+
+| `sip.dst_host`
+| `String (with options)`
+| Destination host
+
+| `sip.user`
+| `String`
+| `From` or `To` SIP headers user. Virtual attribute which helps to cover queries like `sip.caller=plami or sip.callee=plami`
+
+| `sip.caller`
+| `String`
+| `From` SIP header user. Take into account that `sip.caller` might be re-assigned within a xref::features/UserDefinedFunctions.adoc#_service_attributes[User-Defined Function]
+
+| `sip.callee`
+| `String`
+| `To` SIP header user. Take into account that `sip.callee` might be re-assigned within a xref::features/UserDefinedFunctions.adoc#_service_attributes[User-Defined Function]
+
+| `sip.method`
+| `String(with options)`
+| SIP method. Helps to optimize your search request performance by querying corresponding data only
+
+| `sip.call_id`
+| `String`
+| `Call-ID` SIP header
+
+| `sip.state`
+| `String(with options)`
+| Call, registration or transaction state. For instance, possible call states are `unknown`, `redirected`, `answered`, `canceled` and `failed`
+
+| `sip.error_code`
+| `String(with options)`
+| Last SIP session's transaction error code
+
+| `sip.error_type`
+| `String(with options)`
+| Last SIP session's transaction error type: `client`, `server` or `global`
+
+| `sip.duration`
+| `Number`
+| SIP call duration in milliseconds
+
+| `sip.trying_delay`
+| `Number`
+| Time in milliseconds between SIP INVITE request and corresponding 100 SIP response
+
+| `sip.setup_time`
+| `Number`
+| Time in milliseconds between SIP INVITE request and corresponding 18x SIP response
+
+| `sip.cancel_time`
+| `Number`
+| Time in milliseconds between SIP INVITE request and corresponding 487 SIP response
+
+| `sip.establish_time`
+| `Number`
+| Time in milliseconds between SIP INVITE request and corresponding 200 SIP response
+
+| `sip.disconnect_time`
+| `Number`
+| Time in milliseconds between SIP BYE request and corresponding 200 SIP response
+
+| `sip.transactions`
+| `Number`
+| Amount of SIP transactions
+
+| `sip.retransmits`
+| `Number`
+| Amount of SIP retransmits
+
+| `sip.terminated_by`
+| `String(with options)`
+| Party terminated SIP session: `caller` or `callee`
+
+| `sip.overlapped_interval`
+| `Number`
+| Difference in milliseconds between a time when REGISTER session is supposed be expired and a time when renewal SIP REGISTER message came. Helps to find SIP user agents who ignore `Expiration` SIP header contract
+
+| `sip.overlapped_fraction`
+| `Number`
+| `sip.overlapped_interval` ratio. Helps to find SIP user agents who ignore `Expiration` SIP header contract
+
+| `sip.my_custom_attribute`
+| `String(with or without options)`, `Boolean`
+| Custom xref::features/UserDefinedFunctions.adoc#_user_defined_attributes[User-Defined Attributes]
+|===
 
 === `rtp` and `rtcp`
 
