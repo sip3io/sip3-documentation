@@ -166,4 +166,56 @@ Let's take a closer look at `sip` attributes:
 
 === `rtp` and `rtcp`
 
-TODO...
+It doesn't make sense to separate `rtp` and `rtcp` groupings definition because after all both groupings have the same set of attributes. The only one difference between these two - is a source of data: RTP or RTCP protocols.
+
+|===
+|Attribute |Type |Description
+
+| `rtp.addr`, `rtcp.addr`
+| `String`
+| Source or destination IP address. Virtual attribute which helps to cover queries like `sip.src_addr=127.0.0.1 or sip.dst_addr=127.0.0.1`
+
+| `rtp.src_addr`, `rtcp.src_addr`
+| `String`
+| Source IP address
+
+| `rtp.dst_addr`, `rtcp.dst_addr`
+| `String`
+| Destination IP address
+
+| `rtp.host`, `rtcp.host`
+| `String (with options)`
+| Source or destination host. Virtual attribute which helps to cover queries like `sip.src_host=PBX-1 or sip.dst_host=PBX-1`
+
+| `rtp.src_host`, `rtcp.src_host`
+| `String (with options)`
+| Source host
+
+| `rtp.dst_host`, `rtcp.dst_host`
+| `String (with options)`
+| Destination host
+
+| `rtp.mos`, `rtcp.mos`
+| `Number`
+| Mean Opinion Score. Always stays in from 0 to 5 range
+
+| `rtp.r_factor`, `rtcp.r_factor`
+| `Number`
+| R-Factor. Always stays in from 0 to 100 range
+
+| `rtp.codec`, `rtcp.codec`
+| `String (with options)`
+| Codec used for media data processing
+
+| `rtp.bad_report_fraction`, `rtcp.bad_report_fraction`
+| `Number`
+| During a media session participants generate and send multiple RTCP messages. Each of the messages represents a single report. This metric helps to find media sessions with problems during entire time of the session
+
+| `rtp.one_way`, `rtcp.one_way`
+| `Boolean`
+| Helps to find one-way media streams
+
+| `rtp.duration`, `rtcp.duration`
+| `Number`
+| Media session duration in milliseconds
+|===
