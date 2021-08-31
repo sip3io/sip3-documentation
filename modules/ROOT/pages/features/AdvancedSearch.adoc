@@ -7,7 +7,7 @@
 
 image::AdvancedSearchQueryExample.png[Advanced Search Query Example]
 
-== Search Attributes Expressions
+== Expressions
 
 Search attributes expressions are very simple syntactic constructions:
 ```
@@ -50,11 +50,13 @@ image::SearchAttributeWithInfiniteAmountOfPossibleValues.png[Search Attribute Wi
 
 == Groupings
 
-=== `sip`
+As it was mentioned above every SIP3 query is a combination of multiple search attributes expressions. And here you have no limitations. Feel free to combine as many attributes as you need. They also can be from different groupings like `sip.caller=plami rtp.r_factor<30`. There is only one thing you need to account for:
+
+IMPORTANT: Queries `sip.caller=plami rtp.r_factor<30` and `rtp.r_factor<30 sip.caller=plami` are not the same because SIP3 uses different database collections for signaling and media data indexes. It's up to you to decide which one of these queries will be faster.
+
+=== `"sip"`
 
 As you already got it the `sip` grouping is a set of attributes corresponding to the SIP protocol. The `sip` grouping consists of 25 default search attributes but could be easily extended with xref::features/UserDefinedFunctions.adoc#_user_defined_attributes[User-Defined Attributes].
-
-Let's take a closer look at `sip` attributes:
 
 |===
 |Attribute |Type |Description
@@ -164,7 +166,7 @@ Let's take a closer look at `sip` attributes:
 | Custom xref::features/UserDefinedFunctions.adoc#_user_defined_attributes[User-Defined Attributes]
 |===
 
-=== `rtp` and `rtcp`
+=== `"rtp"` and `"rtcp"`
 
 It doesn't make sense to separate `rtp` and `rtcp` groupings definition because after all both groupings have the same set of attributes. The only one difference between these two - is a source of data: RTP or RTCP protocols.
 
@@ -219,3 +221,13 @@ It doesn't make sense to separate `rtp` and `rtcp` groupings definition because 
 | `Number`
 | Media session duration in milliseconds
 |===
+
+== History Of Searches
+
+It happens that we can go into wrong direction while troubleshooting a particular problem. In such cases it might be good to be able to get a few steps back. That's why `Advanced Search` has a history of searches section:
+
+image::HistoryOfSearches.png[History Of Searches]
+
+== Conclusions
+
+Now when you know how to use `Advanced Search` let's take a look at xref::features/CallDetails.adoc[Call Details] section.
