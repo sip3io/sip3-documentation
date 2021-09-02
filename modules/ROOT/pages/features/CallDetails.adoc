@@ -6,10 +6,10 @@ Here is an example of the SIP3 `Call Details Widget` which allows to effectively
 
 image::CallDetailsWidget.png[Call Details Widget]
 
-=== Structure
+== Structure
 Call Details Widget consists of 3 main areas.
 
-==== Header
+=== Header
 Header is used for navigation. Currently, you could switch between 3 different tabs.
 
 image::CallDetailsWidgetHeader.png[Call Details Widget Header]
@@ -21,7 +21,7 @@ image::CallDetailsWidgetHeader.png[Call Details Widget Header]
 
 NOTE: Also, there is a secret disabled `Media` tab. Follow us on https://twitter.com/sip3_io[twitter] for updates regarding this tab.
 
-==== Info
+=== Info
 Info always shows main information, that needs to be easily accessible from any tab, like call's __caller__ and __callee__, __start time__, __status__ and __duration__.
 
 image::CallDetailsWidgetInfo.png[Call Details Widget Info]
@@ -32,15 +32,15 @@ NOTE: Check out the Display settings section of xref:features/CallFlowDiagram.ad
 
 image::ExportToDropdown.png[Export To Dropdown]
 
-==== Body
+=== Body
 Body is used to show the content of a currently selected tab. It shows either the xref:features/CallFlowDiagram.adoc[Call Flow Diagram], the Call Legs list or the Call Messages list.
 
-===== Call Legs
+==== Call Legs
 The Call Legs tab allows going through information about each call leg in the call.
 
 image::CallDetailsWidgetLegs.png[Call Details Widget Legs]
 
-===== Call Messages
+==== Call Messages
 The Call Messages tab provides detailed information about all call messages in the call.
 
 image::CallDetailsWidgetMessages.png[Call Details Widget Messages]

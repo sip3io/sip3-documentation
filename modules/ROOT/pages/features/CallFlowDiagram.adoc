@@ -8,12 +8,12 @@ image::CallFlowSequenceDiagram.png[Call Flow Sequence Diagram]
 
 The diagram visualizes cryptic information about the call and represents it as a combination of call events between participants.
 
-=== Events
+== Events
 Both `SIP Events` and `Media Events` are placed in chronological order.
 
 NOTE: Keep in mind, that each `Media Event` stay in place on scroll between its start and finish timestamp in the call.
 
-==== SIP Events
+=== SIP Events
 Each `SIP Event` has short info about its method and timestamp. If you hover a `SIP Event`, all sip events, that belongs to the same transaction highlights.
 
 image::CallFlowSipEventsHighlighting.png[Call Flow Sip Events Highlighting]
@@ -26,7 +26,7 @@ Each `SIP Event` timestamp is clickable and cycles through `Absolute`, `Delta` a
 
 NOTE: There is another way to change timestamps settings from call flow sidebar menu, and it's discussed later in this manual.
 
-==== Media Events
+=== Media Events
 Each `Media Event` has info about its codecs and r-factor value.
 
 image::CallFlowMediaEventsSitcking.png[Call Flow Media Events Sticking]
@@ -54,13 +54,13 @@ The `Call Flow` sidebar has a `Display settings` and `Time settings` control.
 
 NOTE: All settings and controls are going to be placed inside the call flow sidebar. Follow us on https://twitter.com/sip3_io[twitter] to keep up to date with latest and greatest additions to the controls of the call flow diagram.
 
-==== Display settings
+=== Display settings
 
 The `Display Settings` control allow selecting different legs. It affects which legs are shown on the call flow diagram and which legs are exported as a PNG and PCAP from the `Export ... to ...` dropdown. Also, the control shows info about leg's participants on hover.
 
 image::CallFlowSidebarDisplaySettingsControl.png[Call Flow Sidebar Display Settings Control]
 
-===== Selection logic
+=== Selection logic
 [options="header"]
 |=======================
 | Action | Result
