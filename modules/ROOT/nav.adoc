@@ -2,7 +2,7 @@
 * Features
 ** xref:features/AdvancedSearch.adoc[Advanced Search]
 ** xref:features/CallDetails.adoc[Call Details]
-** xref:features/CallFlowSequenceDiagram.adoc[Call Flow Sequence Diagram]
+** xref:features/CallFlowDiagram.adoc[Call Flow Diagram]
 ** xref:features/ServiceMetrics.adoc[Service Metrics]
 ** xref:features/MediaRecordingOnDemand.adoc[Media Recording On Demand]
 ** xref:features/UserDefinedFunctions.adoc[User-Defined Functions]
