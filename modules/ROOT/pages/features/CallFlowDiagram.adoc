@@ -14,7 +14,9 @@ Both `SIP Events` and `Media Events` are placed in chronological order.
 NOTE: Keep in mind, that each `Media Event` stay in place on scroll between its start and finish timestamp in the call.
 
 ==== SIP Events
-Each `SIP Event` has short info about its method and timestamp.
+Each `SIP Event` has short info about its method and timestamp. If you hover a `SIP Event`, all sip events, that belongs to the same transaction highlights.
+
+image::CallFlowSipEventsHighlighting.png[Call Flow Sip Events Highlighting]
 
 The more detailed info is shown on event click and looks like this:
 
@@ -26,6 +28,8 @@ NOTE: There is another way to change timestamps settings from call flow sidebar 
 
 ==== Media Events
 Each `Media Event` has info about its codecs and r-factor value.
+
+image::CallFlowMediaEventsSitcking.png[Call Flow Media Events Sticking]
 
 The xref:features/MediaRecordingOnDemand.adoc[Media Quality Widget] is shown on event click.
 
@@ -56,6 +60,15 @@ The `Display Settings` control allow selecting different legs. It affects which 
 
 image::CallFlowSidebarDisplaySettingsControl.png[Call Flow Sidebar Display Settings Control]
 
+===== Selection logic
+[options="header"]
+|=======================
+| Action | Result
+| Single click on any leg | Only this leg is selected.
+| Single click on a selected leg | Selection resets. All legs are selected.
+| Ctrl click on a non-selected leg | All previously selected legs and this one is selected.
+| Ctrl click on a selected leg | Legs is deselected. All previously selected legs, except this one is selected.
+|=======================
 ==== Time settings
 
 The `Time Settings` control allow changing timestamps type of all events, except the first and the last one.
