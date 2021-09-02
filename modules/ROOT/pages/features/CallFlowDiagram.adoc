@@ -31,6 +31,13 @@ The xref:features/MediaRecordingOnDemand.adoc[Media Quality Widget] is shown on 
 
 image::CallFlowMediaMessage.png[Call Flow Media Message]
 
+=== Zoom Controls
+The `Call Flow` interface has zoom controls. Plus and minus buttons allow zooming in and zooming out respectively.
+
+NOTE: You could control zoom level with `Ctrl` + scroll (with Touchpad or Mouse Wheel).
+
+image::CallFlowZoomControls.png[Call Flow Zoom Controls]
+
 === Call Flow Sidebar
 
 Also, the `Call Flow` interface has sidebar, where all main controls live.
@@ -45,12 +52,20 @@ NOTE: All settings and controls are going to be placed inside the call flow side
 
 ==== Display settings
 
-The `Display Settings` control allow adjusting which legs are shown on the call flow diagram.
+The `Display Settings` control allow selecting different legs. It affects which legs are shown on the call flow diagram and which legs are exported as a PNG and PCAP from the `Export ... to ...` dropdown. Also, the control shows info about leg's participants on hover.
 
 image::CallFlowSidebarDisplaySettingsControl.png[Call Flow Sidebar Display Settings Control]
 
 ==== Time settings
 
-The `Time Settings` control allow changing timestamps type of all events.
+The `Time Settings` control allow changing timestamps type of all events, except the first and the last one.
+
+[options="header"]
+|=======================
+|Time setting|Explanation
+|Absolute time    |A timestamps displays the "real" time.
+|Delta time    |A timestamp of any given event displays the time from previous event.
+|Relative time    |A timestamp of any given event displays time from the first event.
+|=======================
 
 image::CallFlowSidebarTimeSettingsControl.png[Call Flow Sidebar Time Settings Control]

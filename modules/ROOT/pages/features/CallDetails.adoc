@@ -16,8 +16,8 @@ image::CallDetailsWidgetHeader.png[Call Details Widget Header]
 
 
 - The `Flow` tab shows a xref:features/CallFlowDiagram.adoc[Call Flow Diagram].
-- The `Legs` tab shows info about call legs.
-- The `Messages` tab shows info about call messages.
+- The `Legs` tab shows info about Call Legs list.
+- The `Messages` tab shows info about Call Messages list.
 
 NOTE: Also, there is a secret disabled `Media` tab. Follow us on https://twitter.com/sip3_io[twitter] for updates regarding this tab.
 
@@ -28,8 +28,19 @@ image::CallDetailsWidgetInfo.png[Call Details Widget Info]
 
 The killer feature of the `Info` section is `Export ... to ...` dropdown. It allows to export either all or selected call legs in _PNG_ and _PCAP_.
 
+NOTE: Check out the Display settings section of xref:features/CallFlowDiagram.adoc[Call Flow Diagram page] to find out how to select call legs.
+
 image::ExportToDropdown.png[Export To Dropdown]
 
-
 ==== Body
-Body is used to show the content of a currently selected tab. It shows either the xref:features/CallFlowDiagram.adoc[Call Flow Diagram], a Call Legs list or a Call Messages list.
+Body is used to show the content of a currently selected tab. It shows either the xref:features/CallFlowDiagram.adoc[Call Flow Diagram], the Call Legs list or the Call Messages list.
+
+===== Call Legs
+The Call Legs tab allows going through information about each call leg in the call.
+
+image::CallDetailsWidgetLegs.png[Call Details Widget Legs]
+
+===== Call Messages
+The Call Messages tab provides detailed information about all call messages in the call.
+
+image::CallDetailsWidgetMessages.png[Call Details Widget Messages]
