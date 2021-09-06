@@ -59,6 +59,16 @@ The list below contains entire set of SIP QoS metrics aggregated and reported by
 |`src_host`, `dst_host`, `state`, `error_code`, `error_type`, `expired`, `retransmits`
 |Call attempts
 
+|`sip_call_transactions`
+|Counter
+|`src_host`, `dst_host`, `state`, `error_code`, `error_type`, `expired`, `retransmits`
+|Call transactions
+
+|`sip_call_retransmits`
+|Counter
+|`src_host`, `dst_host`, `state`, `error_code`, `error_type`, `expired`, `retransmits`
+|Call retransmits
+
 |`sip_call_duration`
 |Timer
 |`src_host`, `dst_host`, `state`, `distribution`, `error_code`, `error_type`, `expired`, `retransmits`
@@ -89,15 +99,15 @@ The list below contains entire set of SIP QoS metrics aggregated and reported by
 |`src_host`, `dst_host`, `retransmits`
 |The time interval between the first `BYE` message and corresponding `200` response
 
-|`sip_call_established`
-|Counter
-|`src_host`, `dst_host`
-|The amount of established (active) calls
-
 |`sip_transaction_response-delay`
 |Timer
 |`src_host`, `dst_host`
 |The time interval between SIP request message and corresponding response
+
+|`sip_register_messages`
+|Counter
+|`src_host`, `dst_host`, `cseq_method`, `method`, `status_code`, `status_type`
+|Registration messages
 
 |`sip_register_request-delay`
 |Timer
@@ -167,33 +177,21 @@ The list below contains entire set of RTP/RTCP QoS metrics aggregated and report
 |Summary
 |`src_host`, `dst_host`, `codec`
 |Rejected RTP packets
-|====================
 
-== Media Session Metrics
-
-The list below contains entire set of Media stream metrics aggregated and reported by SIP3.
-
-[%header,cols=4*]
-|====================
-|Name
-|Type
-|Tags
-|Description
-
-|`media_bad-reports`
+|`rtpr_rtp_bad-reports`, `rtpr_rtcp_bad`
 |Summary
 |`src_host`, `dst_host`, `codec_name`
 |Number of bad reports
 
-|`media_bad-reports-fraction`
+|`rtpr_rtp_bad-reports-fraction`, `rtpr_rtcp_bad-reports-fraction`
 |Summary
 |`src_host`, `dst_host`, `codec_name`
 |Bad reports fraction
 
-|`media_duration`
+|`rtpr_rtp_duration`, `rtpr_rtcp_duration`
 |Timer
 |`src_host`, `dst_host`, `codec_name`
-|Media stream duration
+|RTP/RTCP stream duration
 |====================
 
 == Custom Dashboards

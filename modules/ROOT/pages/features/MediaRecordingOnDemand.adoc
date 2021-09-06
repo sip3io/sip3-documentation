@@ -22,9 +22,9 @@ Here is an example of `recording.yml` file with `Media Recording On Demand` conf
 recording:
   enabled: true
   filters:
-    - filter: "ip.src_addr=26.03.19.93 sip.user=desi"                         // <1>
+    - filter: "sip.src_addr=26.03.19.93 sip.user=desi"                        // <1>
       mode : 0                                                                // <2>
-    - filter: "ip.host=RTP_ENGINE_1 rtp.r_factor<75 rtp.duration>10000"       // <3>
+    - filter: "rtp.host=RTP_ENGINE_1 rtp.r_factor<75 rtp.duration>10000"      // <3>
       mode : 1                                                                // <4>
 
 ----
@@ -38,16 +38,16 @@ Now more about filters.
 
 == Filters
 
-There are two types of filters in `SIP3` for `Media Recording On Demand`:
+The `Media Recording On Demand` feature support two types of filters:
 
-1. `SIP signaling filters` - applied at the codec negotiation phase.
-2. `Media quality filters` - applied to each periodic RTP Report handled by `Salto`.
+1. `Signaling filters` - applied at the codec negotiation phase.
+2. `Media filters` - applied to each periodic RTP Report handled by `Salto`.
 
 Configuration of `Media Recording On Demand` may contain multiple filters of both types. SIP3 loads and uses filters in the order defined in configuration. The first matching filter's recording mode will be applied to matched Call/Media session.
 
 === Modes
 
-Each filter controls Media Recording Mode. SIP3 supports `FULL` and `GDPR` modes:
+Each filter controls a `Media Recording Mode`. SIP3 supports `FULL` and `GDPR` modes:
 
 [%header,cols=3*]
 |===
@@ -55,39 +55,43 @@ Each filter controls Media Recording Mode. SIP3 supports `FULL` and `GDPR` modes
 
 |`FULL`
 |`0`
-|Full RTP/RTCP and related ICMP packets including voice payload
+|Full RTP/RTCP and related ICMP packets with the voice payload included.
 
 |`GDPR`
 |`1`
-|Only headers of RTP/RTCP and related ICMP packets without voice payload.
+|Only headers of RTP/RTCP and related ICMP packets without the voice payload.
 |===
 
-In addition to GDPR compliance of `GDPR` mode requires much less storage space (about 3-4 times less).
+In addition to GDPR compliance `GDPR` mode also requires way less storage space (economy is about 75%).
 
 NOTE: Recording Mode can't be overridden for the same Media Session.
 
 === Expressions
 
-Each Filter contains one or more `Expression` separated with `Space`. `Expression` has a simple structure `<attribute><operator><value>`. SIP3 supports four attributes types: `String`, `Boolean`, `Integer` or `Float` type. In meantime each attributes type supports a certain list of operators.
-Filter is matched when all Expressions will be `True`.
+Each filter consists of one or more attributes expressions (similar to what you could see in the xref::features/AdvancedSearch.adoc#_expressions[`Advanced Search` document]) separated with a space. Attributes expressions are very simple syntactic constructions:
+```
+<attribute><operator><value>
+```
+
+SIP3 supports 3 main attributes types: `String`, `Boolean`, `Number`. In meantime each of the types support a certain list of operators:
 
 |===
 |Operator | Types | Description
 
 | `=`
-| `String`, `Boolean`, `Integer`, `Float`
+| `String`, `Boolean`, `Number`
 | Equals
 
 | `!=`
-| `String`, `Boolean`, `Integer`, `Float`
+| `String`, `Boolean`, `Number`
 | Not equals
 
 | `>`
-| `Integer`, `Float`
+| `Number`
 | More than
 
 | `<`
-| `Integer`, `Float`
+| `Number`
 | Less than
 
 | `=~`
@@ -95,67 +99,97 @@ Filter is matched when all Expressions will be `True`.
 | Regular expression
 |===
 
-=== SIP signaling filters attributes
+NOTE: A filter is matched when all attributes expressions are `True`.
+
+=== "'sip'" attributes
 
 |===
 |Attribute |Type |Description
 
-|`ip.src_addr`
-| String
-| Source IP address
+|`sip.src_addr`
+| `String`
+| Signaling source IP address
 
-|`ip.dst_addr`
-| String
-| Destination IP address
+|`sip.dst_addr`
+| `String`
+| Signaling destination IP address
 
-|`ip.addr`
-| String
-| Source or Destination IP address
+|`sip.addr`
+| `String`
+| Signaling source or destination IP address
+
+|`sip.src_host`
+| `String`
+| Signaling source host
+
+|`sip.dst_hodt`
+| `String`
+| Signaling destination host
+
+|`sip.host`
+| `String`
+| Signaling source or destination host
 
 |`sip.caller`
-| String
-| Caller from SIP Signaling
+| `String`
+| Caller
 
 |`sip.callee`
-| String
-| Callee from SIP Signaling
+| `String`
+| Callee
 
 |`sip.user`
-| String
-| Caller or Callee from SIP Signaling
+| `String`
+| Caller or Callee
 
 | Custom `sip.*`
-| String, Boolean
-| Custom xref::features/UserDefinedFunctions.adoc#_user_defined_attributes[User Defined Attributes]
+| `String`, `Boolean`
+| Custom xref::features/UserDefinedFunctions.adoc#_user_defined_attributes[User Defined Attribute]
 |===
 
-=== Media quality filters attributes
+=== "`rtp`" and "`rtcp`" attributes
 
 [%header,cols=3*]
 |===
 |Attribute |Type |Description
 
-|`ip.src_addr`
-| String
-| Source IP address
+|`rtp.src_addr`, `rtcp.src_addr`
+| `String`
+| RTP/RTCP source IP address
 
-|`ip.dst_addr`
-| String
-| Destination IP address
+|`rtp.dst_addr`, `rtcp.dst_addr`
+| `String`
+| RTP/RTCP destination IP address
 
-|`ip.addr`
-| String
-| Source or Destination IP address
+|`rtp.addr`, `rtcp.addr`
+| `String`
+| RTP/RTCP source or destination IP address
 
-|`rtp.duration`, `rtcp.duration`
-| Integer
-| RTP/RTCP Duration of media stream in milliseconds
+|`rtp.src_host`, `rtcp.src_host`
+| `String`
+| RTP/RTCP source host
+
+|`rtp.dst_host`, `rtcp.dst_host`
+| `String`
+| RTP/RTCP destination host
+
+|`rtp.host`, `rtcp.host`
+| `String`
+| RTP/RTCP source or destination host
 
 |`rtp.mos`, `rtcp.mos`
-| Float
+| `Float`
 | RTP/RTCP MoS value
 
 |`rtp.r_factor`, `rtcp.r_factor`
-| Float
+| `Float`
 | RTP/RTCP R-Factor value
+
+|`rtp.duration`, `rtcp.duration`
+| `Integer`
+| RTP/RTCP media stream duration in milliseconds
+
+|`rtp.one_way`
+| `Boolean`
+| One-way RTP media stream. Please, use this attribute in combination with `rtp.duration` to make sure that RTP stream has already started some time ago.
 |===

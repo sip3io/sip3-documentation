@@ -54,7 +54,7 @@ As it was mentioned above every SIP3 query is a combination of multiple search a
 
 IMPORTANT: Queries `"sip.caller=plami rtp.r_factor<30"` and `"rtp.r_factor<30 sip.caller=plami"` are not the same because SIP3 uses different database collections for signaling and media data indexes. It's up to you to decide which one of these queries will be faster.
 
-=== `"sip"`
+=== `"sip"` attributes
 
 As you already got it the `sip` grouping is a set of attributes corresponding to the SIP protocol. The `sip` grouping consists of 25 default search attributes but could be easily extended with xref::features/UserDefinedFunctions.adoc#_user_defined_attributes[User-Defined Attributes].
 
@@ -166,7 +166,7 @@ As you already got it the `sip` grouping is a set of attributes corresponding to
 | Custom xref::features/UserDefinedFunctions.adoc#_user_defined_attributes[User-Defined Attributes]
 |===
 
-=== `"rtp"` and `"rtcp"`
+=== `"rtp"` and `"rtcp"` attributes
 
 It doesn't make sense to separate `rtp` and `rtcp` groupings definition because after all both groupings have the same set of attributes. The only one difference between these two - is a source of data: RTP or RTCP protocols.
 
