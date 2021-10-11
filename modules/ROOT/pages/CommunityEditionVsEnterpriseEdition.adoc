@@ -5,12 +5,12 @@
 
 Every SIP3 release comes with Community and Enterprise versions. In this document we put together most of the differences between these two.
 
-== CE vs EE
+== Comparison
 
 |===
 ||CE |EE
 
-3+| *Data Sources*
+3+^| *Data Sources*
 
 | SIP3 Captain real-time capture agent
 | Yes
@@ -32,7 +32,7 @@ Every SIP3 release comes with Community and Enterprise versions. In this documen
 | Yes
 | Yes
 
-3+| *Transport Protocols*
+3+^| *Transport Protocols*
 
 | UDP
 | Yes
@@ -46,7 +46,7 @@ Every SIP3 release comes with Community and Enterprise versions. In this documen
 |
 | Yes
 
-3+| *Data Processing*
+3+^| *Data Processing*
 
 | SIP analysis
 | Yes
@@ -80,7 +80,7 @@ Every SIP3 release comes with Community and Enterprise versions. In this documen
 |
 | Yes
 
-3+| *Service Metrics*
+3+^| *Service Metrics*
 
 | Elasticsearch
 | Yes
@@ -102,13 +102,13 @@ Every SIP3 release comes with Community and Enterprise versions. In this documen
 |
 | Yes
 
-3+| *Customizations and Integrations*
+3+^| *Customizations and Integrations*
 
 | xref:features/UserDefinedFunctions.adoc[User-Defined Functions (UDFs)]
 | Yes
 | Yes
 
-3+| *Authorization*
+3+^| *Authorization*
 
 | Grafana authorization
 | Yes
@@ -122,7 +122,7 @@ Every SIP3 release comes with Community and Enterprise versions. In this documen
 |
 | Yes
 
-3+| *Deployment*
+3+^| *Deployment*
 
 | xref:InstallationGuide.adoc[Ansible automation]
 | Yes
@@ -132,7 +132,7 @@ Every SIP3 release comes with Community and Enterprise versions. In this documen
 |
 | Yes
 
-3+| *Services*
+3+^| *Services*
 
 | Cloud and on-premise deployment
 |
