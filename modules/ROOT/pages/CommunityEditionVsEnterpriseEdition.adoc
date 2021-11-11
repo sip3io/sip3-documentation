@@ -57,7 +57,7 @@ Every SIP3 release comes with Community and Enterprise versions. In this documen
 |
 | Yes
 
-| RCTP analysis
+| RTCP analysis
 | Yes
 | Yes
 
