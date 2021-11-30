@@ -22,7 +22,6 @@
 
 === Hoof
 
-* Added time zones selector
 * Added ability to share a link to search results and a particular call
 * Various performance improvements and bugfixes
 
