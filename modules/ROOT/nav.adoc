@@ -10,7 +10,7 @@
 ** xref:tutorials/HowToInroduceUserDefinedAttribute.adoc[How To Introduce a User-Defined Attribute or Integration with APIBAN Example]
 ** xref:tutorials/HowToBuildSip3BasedSolutions.adoc[How To Build SIP3 Based Solutions or Wangiri Fraud Detection Example]
 * Media
-** link:assets/pdf/SIP3_CommCon2021.pdf[CommCon2021 Slides - SIP3 Usage Guide and Features Overview]
+** link:attachments/SIP3_CommCon2021.pdf[CommCon2021 Slides - SIP3 Usage Guide and Features Overview]
 ** https://www.youtube.com/watch?v=__CvehK71vg[CommCon2021 Video - SIP3 Usage Guide and Features Overview]
 * xref:CommunityEditionVsEnterpriseEdition.adoc[CE vs EE]
 * xref:ReleaseNotes.adoc[Release Notes]
