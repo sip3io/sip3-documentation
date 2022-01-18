@@ -120,7 +120,7 @@ m:robo_call                 // <4>
 <2> `do:operation_system` - The UDA `operation_system` will be provisioned to a database and available in the Advanced Search expression `sip.operation_system` with options for autocompletion.
 <3> `d:x_session_id` - `x_session_id` provisioned to a database and available in the Advanced Search expression `sip.x_session_id` without options.
 <4> `m:robo_call` - will be provisioned as Metrics tag `robo_call`.
-<5> `:wangiri_candidate` - `wangiri_candidate` will be available only in xref:features/UserDefinedFunctions.adoc[User-Defined Functions] and unavailable as a Advanced Search expression `sip.wangiri_candidate` or as Metrics tag.
+<5> `:wangiri_candidate` - `wangiri_candidate` will be available only in xref:features/UserDefinedFunctions.adoc[User-Defined Functions]. Nighter the Advanced Search expression nor the Metrics tag will be provisioned.
 
 UDAs can bring your SIP3 experience to a next level if you follow the following rule:
 
