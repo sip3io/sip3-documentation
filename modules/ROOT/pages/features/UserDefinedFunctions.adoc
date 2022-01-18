@@ -98,23 +98,15 @@ As an input it receives a SIP3 packet with generic payload represented as a `Map
 
 As mentioned in the previous section, the main purpose of any SIP3 UDF is assigning `String` or `Boolean` attribute to a SIP3 packet according to its business logic.
 
-We call such attributes User-Defined Attributes (UDAs). Each UDA by default is available in Search query and as Tag in metrics.
+We call such attributes User-Defined Attributes (UDAs). Each UDA by default will be provisioned as an xref::features/AdvancedSearch.adoc#_expressions[Advanced Search expression] and as a xref::features/ServiceMetrics.adoc[Metrics tag].
 
-But in some cases write UDA as Tag in metrics will be enough. To configure how UDA will be processed there are 3 processing mode:
+However, in some cases you may want to have more control over your UDAs provisioning by using a special SIP3 UDAs syntax in attributes names.
 
-- _Database_ - with this mode attribute will be saved in database and available in SIP3 UI Search query.
-- _Options_ - enables writing options for attribute with *String* type. It will be available for autocompletion in SIP3 UI Search query.
-- _Metrics_ - enables recording metrics for attribute.
+- _Database_ (*d*) - in this mode your attribute will be saved to a database and provisioned as an Advanced Search expression.
+- _Options_ (*o*) - enables autocompletion for Advanced Search expression.
+- _Metrics_ (*m*) - in this mode your attribute will be saved to a database and provisioned as a Metrics tag.
 
-Enable only certain mode for UDA is possible by adding prefix to name of attribute. Prefix separated from name with delimiter `:` and may contain:
-
-- `d` for _Database_
-- `o` for _Options_
-- `m` for _Metrics_
-
-Empty prefix means that attribute is used in processing only and will not appear in Search query, Database or Metrics.
-
-Let's take a closer look at processing modes:
+Let's take a closer look at provisioning modes:
 [source,text]
 ----
 user_agent                  // <1>
@@ -124,11 +116,11 @@ m:robo_call                 // <4>
 :wangiri_candidate          // <5>
 ----
 
-<1> `user_agent` - UDA with default behaviour: available for Search in UI with autocomplete options and as Tag in metrics.
-<2> `do:operation_system` - UDA `operation_system` will be saved in database and available in Search query as `sip.operation_system` with options for select.
-<3> `d:x_session_id` - `x_session_id` will be saved in database and available in Search query as `sip.x_session_id`.
-<4> `m:robo_call` - `robo_call` will be available only as Tag for Metrics.
-<5> `:wangiri_candidate` - `wangiri_candidate` will be available only in xref:features/UserDefinedFunctions.adoc[User-Defined Functions] and never be saved.
+<1> `user_agent` - The UDA with default behaviour: provisioning as the Advanced Search expression `sip.user_agent` and as the Metrics tag `user_agent`.
+<2> `do:operation_system` - The UDA `operation_system` will be provisioned to a database and available in the Advanced Search expression `sip.operation_system` with options for autocompletion.
+<3> `d:x_session_id` - `x_session_id` provisioned to a database and available in the Advanced Search expression `sip.x_session_id` without options.
+<4> `m:robo_call` - will be provisioned as Metrics tag `robo_call`.
+<5> `:wangiri_candidate` - `wangiri_candidate` will be available only in xref:features/UserDefinedFunctions.adoc[User-Defined Functions] and unavailable as a Advanced Search expression `sip.wangiri_candidate` or as Metrics tag.
 
 UDAs can bring your SIP3 experience to a next level if you follow the following rule:
 
