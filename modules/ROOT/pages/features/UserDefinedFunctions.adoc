@@ -103,8 +103,8 @@ We call such attributes User-Defined Attributes (UDAs). Each UDA by default will
 However, in some cases you may want to have more control over your UDAs provisioning by using a special SIP3 UDAs syntax in attributes names.
 
 - _Database_ (*d*) - in this mode your attribute will be saved to a database and provisioned as an Advanced Search expression.
-- _Options_ (*o*) - enables autocompletion for Advanced Search expression.
-- _Metrics_ (*m*) - in this mode your attribute will be saved to a database and provisioned as a Metrics tag.
+- _Options_ (*o*) - enables autocompletion for Advanced Search expressions.
+- _Metrics_ (*m*) - in this mode your attribute will be provisioned as a Metrics tag.
 
 Let's take a closer look at provisioning modes:
 [source,text]
@@ -120,7 +120,7 @@ m:robo_call                 // <4>
 <2> `do:operation_system` - The UDA `operation_system` will be provisioned to a database and available in the Advanced Search expression `sip.operation_system` with options for autocompletion.
 <3> `d:x_session_id` - `x_session_id` provisioned to a database and available in the Advanced Search expression `sip.x_session_id` without options.
 <4> `m:robo_call` - will be provisioned as Metrics tag `robo_call`.
-<5> `:wangiri_candidate` - `wangiri_candidate` will be available only in xref:features/UserDefinedFunctions.adoc[User-Defined Functions]. Nighter the Advanced Search expression nor the Metrics tag will be provisioned.
+<5> `:wangiri_candidate` - `wangiri_candidate` will be available only in xref:features/UserDefinedFunctions.adoc[User-Defined Functions]. Neither the Advanced Search expression nor the Metrics tag will be provisioned.
 
 UDAs can bring your SIP3 experience to a next level if you follow the following rule:
 
