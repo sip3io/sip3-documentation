@@ -137,10 +137,6 @@ all:
     ansible_port: 22
     ansible_become: true
 
-    platform: centos
-    edition: ce
-    version: 2021.2.3
-
     features:
       - rtcp
 
@@ -193,30 +189,26 @@ all:
     ansible_port: 22
     ansible_become: true
 
-    platform: centos                                  // <2>
-    edition: ce
-    version: 2021.2.3
-
-    features:                                         // <3>
+    features:                                         // <2>
       - call
       - register
       - rtcp
 
-    mongodb:                                          // <4>
+    mongodb:                                          // <3>
       version: 4.2
       path: /var/lib/mongodb
       db: sip3
-    influxdb:                                         // <5>
+    influxdb:                                         // <4>
       path: /var/lib/influxdb
       db: sip3
-    grafana:                                          // <6>
+    grafana:                                          // <5>
       datasources:
         database: sip3
     salto:
-      server:                                         // <7>
+      server:                                         // <6>
         uri: udp://0.0.0.0:15060
       management:
-        uri: udp://0.0.0.0:15090                      // <8>
+        uri: udp://0.0.0.0:15090                      // <7>
 ----
 
 Let's take a closer look at the inventory file:
@@ -224,23 +216,20 @@ Let's take a closer look at the inventory file:
 <1> SSH address.
 Ansible uses it to connect to the SIP3 backend via SSH.
 
-<2> Platform and the component version.
-At the moment you can choose between `centos` and `docker` platforms.
-
-<3> Features help to customize SIP3 behaviour and enable/disable certain functionality.
+<2> Features help to customize SIP3 behaviour and enable/disable certain functionality.
 They also help to separate CE and EE configuration.
 You can find more information in the corresponding section of this document.
 
-<4> MongoDB section where you can put a specific version, path and name of the database.
+<3> MongoDB section where you can put a specific version, path and name of the database.
 
-<5> InfluxDB section where you can put a specific version, path and name of the database.
+<4> InfluxDB section where you can put a specific version, path and name of the database.
 
-<6> Grafana section where you can configure `sip3` datasource.
+<5> Grafana section where you can configure `sip3` datasource.
 
-<7> SIP3 Salto data interface.
+<6> SIP3 Salto data interface.
 SIP3 Captain uses this interface to send application data.
 
-<8> Management interface.
+<7> Management interface.
 Must be defined if `rtp` or `rtcp` features enabled.
 SIP3 Salto and Captain use this interface to exchange SDP information.
 
