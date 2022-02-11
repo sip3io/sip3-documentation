@@ -1,6 +1,44 @@
 = Release Notes
 :description: SIP3 Release Notes
 
+== Version: 2022.1.1
+
+=== Salto
+
+* Added optional management connection to MongoDB
+* Added `sip.message.parser.mode` parameter
+* Introduced UDAs provisioning modes
+* Various performance improvements and bugfixes
+
+=== Twig
+
+* Fixed critical cache performance issue
+* Various performance improvements and bugfixes
+
+== Version: 2021.3.2
+
+=== Captain
+
+* Shutdown SIP3 Captain via management socket
+* Optimized performance with `PeriodicallyExpiringHashMap`
+* Various performance improvements and bugfixes
+
+=== Salto
+
+* Added `publish-media-control-mode` parameter
+* Optimized performance with `PeriodicallyExpiringHashMap`
+* Added UDFs dynamic re-deployment
+* Various performance improvements and bugfixes
+
+=== Twig
+
+* Various performance improvements and bugfixes
+
+=== Hoof
+
+* Added ability to share a link to search results and a particular call
+* Various performance improvements and bugfixes
+
 == Version: 2021.3.1
 
 === Captain

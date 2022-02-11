@@ -1,0 +1,161 @@
+= Community Edition vs Enterprise Edition
+:description: SIP3 Community Edition vs Enterprise Edition
+
+== Overview
+
+Every SIP3 release comes with Community and Enterprise versions. In this document we put together most of the differences between these two.
+
+== Comparison
+
+[cols="66,~,~"]
+|===
+||CE |EE
+
+3+^| *1. Data Sources*
+
+| SIP3 Captain real-time capture agent
+| Yes
+|
+
+| SIP3 Captain high-load optimized capture agent
+|
+| Yes
+
+| DPDK support
+|
+| Yes
+
+| HEP support
+| Yes
+| Yes
+
+| SPAN/RSPAN/ERSPAN/IP-in-IP support
+| Yes
+| Yes
+
+3+^| *2. Transport Protocols*
+
+| UDP
+| Yes
+| Yes
+
+| TCP
+| Yes
+| Yes
+
+| SCTP
+|
+| Yes
+
+3+^| *3. Data Processing*
+
+| SIP analysis
+| Yes
+| Yes
+
+| SIP-I(ISUP encapsulation) analysis
+|
+| Yes
+
+| RTCP analysis
+| Yes
+| Yes
+
+| RTP/SRTP analysis
+|
+| Yes
+
+| Custom events analysis (i.e. Push Notifications)
+|
+| Yes
+
+| RTP recording
+| Yes
+|
+
+| RTP recording on demand
+|
+| Yes
+
+| RTP recording in GDPR-compliant mode
+|
+| Yes
+
+3+^| *4. Service Metrics*
+
+| Elasticsearch
+| Yes
+| Yes
+
+| InfluxDB
+| Yes
+| Yes
+
+| Prometheus
+|
+| Yes
+
+| Datadog
+| Yes
+|
+
+| Datadog cost optimized
+|
+| Yes
+
+3+^| *5. Customizations and Integrations*
+
+| xref:features/UserDefinedFunctions.adoc[User-Defined Functions (UDFs)]
+| Yes
+| Yes
+
+3+^| *6. Authorization*
+
+| Grafana authorization
+| Yes
+| Yes
+
+| LDAP authorization
+|
+| Yes
+
+| OAuth and OIDC authorization (Google, Okta, etc)
+|
+| Yes
+
+3+^| *7. Deployment*
+
+| xref:InstallationGuide.adoc[Ansible automation]
+| Yes
+| Yes
+
+| High-availability cluster
+|
+| Yes
+
+3+^| *8. Services*
+
+| Cloud and on-premise deployment
+|
+| Yes
+
+| Integrations and customizations
+|
+| Yes
+
+| Community support
+| Yes
+| Yes
+
+| SLA support
+|
+| Yes
+
+| Audit and consultament (fraud detection, traffic profiling, etc)
+|
+| Yes
+|===
+
+== Contacts
+
+If you have additional questions please contact us though https://join.slack.com/t/sip3-community/shared_invite/enQtOTIyMjg3NDI0MjU3LWUwYzhlOTFhODYxMTEwNjllYjZjNzc1M2NmM2EyNDM0ZjJmNTVkOTg1MGQ3YmFmNWU5NjlhOGI3MWU1MzUwMjE[Slack] or https://t.me/sip3io[Telegram] for the community support and though mailto:contact@sip3.io[email] for the enterprise support. We will be happy to help you.

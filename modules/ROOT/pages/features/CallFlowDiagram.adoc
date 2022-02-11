@@ -54,13 +54,13 @@ The `Call Flow` sidebar has a `Display settings` and `Time settings` control.
 
 NOTE: All settings and controls are going to be placed inside the call flow sidebar. Follow us on https://twitter.com/sip3_io[twitter] to keep up to date with latest and greatest additions to the controls of the call flow diagram.
 
-== Display settings
+== Display Settings
 
 The `Display Settings` control allow selecting different legs. It affects which legs are shown on the call flow diagram and which legs are exported as a PNG and PCAP from the `Export ... to ...` dropdown. Also, the control shows info about leg's participants on hover.
 
 image::CallFlowSidebarDisplaySettingsControl.png[Call Flow Sidebar Display Settings Control]
 
-=== Selection logic
+=== Selection Logic
 [options="header"]
 |=======================
 | Action | Result
@@ -69,7 +69,7 @@ image::CallFlowSidebarDisplaySettingsControl.png[Call Flow Sidebar Display Setti
 | Ctrl click on a non-selected leg | All previously selected legs and this one is selected.
 | Ctrl click on a selected leg | Legs is deselected. All previously selected legs, except this one is selected.
 |=======================
-=== Time settings
+=== Time Settings
 
 The `Time Settings` control allow changing timestamps type of all events, except the first and the last one.
 
