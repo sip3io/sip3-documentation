@@ -35,8 +35,7 @@ Clone `sip3-ansible` repository and checkout the latest release branch:
 
 [source,ssh]
 ----
-git clone https://github.com/sip3io/sip3-ansible.git
-git checkout -b release/2021.2.3
+git clone https://github.com/sip3io/sip3-ansible.git -b release/20XX.X.X (20XX.X.X - current release)
 ----
 
 Create a `sip3-captain.yml` file inside the `inventories` directory:
