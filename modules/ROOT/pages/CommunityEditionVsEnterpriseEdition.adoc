@@ -53,7 +53,7 @@ Every SIP3 release comes with Community and Enterprise versions. In this documen
 | Yes
 | Yes
 
-| SIP-I(ISUP encapsulation) analysis
+| SIP-I (ISUP encapsulation) analysis
 |
 | Yes
 
@@ -64,6 +64,11 @@ Every SIP3 release comes with Community and Enterprise versions. In this documen
 | RTP/SRTP analysis
 |
 | Yes
+
+| DTMF analysis
+|
+| Yes
+
 
 | Custom events analysis (i.e. Push Notifications)
 |
