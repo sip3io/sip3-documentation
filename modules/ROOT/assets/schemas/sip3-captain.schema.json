@@ -1,0 +1,383 @@
+{
+  "$id": "sip3-captain-configuration",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "SIP3 Captain configuration",
+  "description": "SIP3 Captain application configuration",
+  "properties": {
+    "name": {
+      "title": "Name for SIP3 Captain instance",
+      "description": "Name for SIP3 Captain instance",
+      "type": "string",
+      "default": "sip3-captain"
+    },
+    "vertx": {
+      "$ref": "sip3-commons.schema.json#/definitions/vertx"
+    },
+    "dpdk": {
+      "title": "DPDK",
+      "description": "DPDK configuration section",
+      "type": "object",
+      "properties": {
+        "port": {
+          "title": "Port number",
+          "description": "DPDK port number",
+          "type": "integer",
+          "default": 0
+        },
+        "rx-queue-size": {
+          "title": "RX queue size",
+          "description": "DPDK RX queue size",
+          "type": "integer",
+          "default": 1
+        },
+        "bulk-size": {
+          "title": "Bulk size",
+          "description": "DPDK bulk size",
+          "type": "integer",
+          "default": 256
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "port",
+        "rx-queue-size"
+      ]
+    },
+    "pcap": {
+      "title": "Pcap",
+      "description": "Pcap (libpcap, WinPcap, Npcap) configuration section",
+      "type": "object",
+      "properties": {
+        "dir": {
+          "title": "Path to pcap files",
+          "description": "Path to pcap files to work offline",
+          "type": "string",
+          "default": "/tmp/sip3-captain"
+        },
+        "dev": {
+          "title": "Interface name",
+          "description": "Interface name to capture traffic online",
+          "type": "string",
+          "default": "eth0"
+        },
+        "dlt": {
+          "title": "Data link type",
+          "description": "Data link type",
+          "type": "string",
+          "enum": [
+            "EN10MB",
+            "RAW"
+          ],
+          "default": "EN10MB"
+        },
+        "sll": {
+          "title": "Linux cooked mode",
+          "description": "Linux cooked mode enabled",
+          "type": "boolean",
+          "default": false
+        },
+        "bpf-filter": {
+          "title": "BPF filter",
+          "description": "BPF filter",
+          "type": "string",
+          "default": "ip and udp"
+        },
+        "bulk-size": {
+          "title": "Bulk size",
+          "description": "PCAP bulk size",
+          "type": "integer",
+          "default": 256
+        },
+        "snaplen": {
+          "title": "Snap length",
+          "description": "PCAP snap length",
+          "type": "integer",
+          "default": 65535
+        },
+        "buffer-size": {
+          "title": "Buffer size",
+          "description": "PCAP buffer size",
+          "type": "integer",
+          "default": 2097152
+        },
+        "timeout-millis": {
+          "title": "Timeout in ms",
+          "description": "PCAP timeout in millis",
+          "type": "integer",
+          "default": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "tcp": {
+      "title": "TCP",
+      "description": "TCP configuration section",
+      "type": "object",
+      "properties": {
+        "expiration-delay": {
+          "title": "Expiration delay",
+          "description": "TCP expiration delay",
+          "type": "integer",
+          "default": 100
+        },
+        "aggregation-timeout": {
+          "title": "Aggregation timeout",
+          "description": "TCP aggregation timeout",
+          "type": "integer",
+          "default": 100
+        },
+        "idle-connection-timeout":  {
+          "title": "Idle connection timeout",
+          "description": "TCP idle connection timeout",
+          "type": "integer",
+          "default": 300000
+        }
+      },
+      "additionalProperties": false
+    },
+    "rtcp": {
+      "title": "RTCP",
+      "description": "RTCP configuration section",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "title": "Enabled",
+          "description": "RTCP enabled",
+          "type": "boolean",
+          "default": false
+        },
+        "bulk-size": {
+          "title": "Bulk size",
+          "description": "RTCP bulk size",
+          "type": "integer",
+          "default": 1
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "enabled"
+      ]
+    },
+    "rtp": {
+      "title": "RTP",
+      "description": "RTP configuration section",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "title": "Enabled",
+          "description": "RTP enabled",
+          "type": "boolean",
+          "default": false
+        },
+        "bulk-size": {
+          "title": "Bulk size",
+          "description": "RTP bulk size",
+          "type": "integer",
+          "default": 1
+        },
+        "payload-types": {
+          "title": "Payload types",
+          "description": "RTP payload types to be processed",
+          "type": "array",
+          "items": {
+            "title": "Integer range or value",
+            "description": "Integer range `0..10` or Integer value `1`",
+            "pattern": "^(\\d+\\.\\.\\d+|\\d+)$",
+            "default": "0..127"
+          },
+          "uniqueItems": true,
+          "default": ["0..10, 100"]
+        },
+        "collector": {
+          "title": "RTP Collector",
+          "description": "RTP Collector configuration section",
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "title": "Enabled",
+              "description": "RTP Collector enabled",
+              "type": "boolean",
+              "default": false
+            },
+            "bulk-size": {
+              "title": "Bulk size",
+              "description": "RTP bulk size",
+              "type": "integer",
+              "default": 1
+            },
+            "report-size": {
+              "title": "Report size",
+              "description": "RTP report size",
+              "type": "integer",
+              "default": 256
+            },
+            "recovery-size": {
+              "title": "Recovery size",
+              "description": "RTP recovery size",
+              "type": "integer",
+              "default": 16
+            },
+            "expiration-delay": {
+              "title": "Expiration delay",
+              "description": "RTP expiration delay",
+              "type": "integer",
+              "default": 4000
+            },
+            "aggregation-timeout": {
+              "title": "Aggregation timeout",
+              "description": "RTP aggregation timeout",
+              "type": "integer",
+              "default": 30000
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "enabled"
+          ],
+          "default": {
+            "enabled": false
+          }
+        },
+        "events": {
+          "title": "RTP Events",
+          "description": "RTP Events configuration section",
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "title": "Enabled",
+              "description": "RTP Events enabled",
+              "type": "boolean",
+              "default": false
+            },
+            "mode": {
+              "title": "RTP Events mode",
+              "description": "RTP Events mode. 0 - FULL, 1 - GDPR",
+              "type": "integer",
+              "enum": [
+                0,
+                1
+              ],
+              "default": 0
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "enabled"
+          ],
+          "default": {
+            "enabled": false
+          }
+        }
+
+      },
+      "additionalProperties": false,
+      "required": [
+        "enabled",
+        "collector"
+      ]
+    },
+    "recording": {
+      "title": "Recording",
+      "description": "Recording configuration section",
+      "type": "object",
+      "properties": {
+        "expiration-delay": {
+          "title": "Expiration delay",
+          "description": "Recording expiration delay",
+          "type": "integer",
+          "default": 1000
+        },
+        "aggregation-timeout": {
+          "title": "Aggregation timeout",
+          "description": "Recording aggregation timeout",
+          "type": "integer",
+          "default": 30000
+        },
+        "duration-timeout": {
+          "title": "Duration timeout",
+          "description": "Recording duration timeout",
+          "type": "integer",
+          "default": 60000
+        }
+      },
+      "additionalProperties": false
+    },
+    "encoder": {
+      "title": "Encoder",
+      "description": "Encoder configuration section",
+      "type": "object",
+      "properties": {
+        "mtu-size": {
+          "title": "MTU size",
+          "description": "Encoder MTU size",
+          "type": "integer",
+          "default": 1450
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "mtu-size"
+      ]
+    },
+    "sender": {
+      "title": "Sender",
+      "description": "Sender configuration section",
+      "type": "object",
+      "properties": {
+        "uri": {
+          "type": "string",
+          "format": "uri",
+          "description": "SIP3 Salto URI",
+          "default": "udp://127.0.0.1:15060"
+        },
+        "reconnection-timeout": {
+          "type": "integer",
+          "description": "Sender reconnection timeout",
+          "default": 1000
+        },
+        "ssl": {
+          "$ref": "sip3-commons.schema.json#/definitions/ssl"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "uri"
+      ]
+    },
+    "management": {
+      "title": "Management Socket",
+      "description": "Management Socket configuration section",
+      "type": "object",
+      "properties": {
+        "uri": {
+          "title": "URI",
+          "description": "SIP3 Salto Management Socket URI",
+          "type": "string",
+          "format": "uri",
+          "default": "udp://127.0.0.1:15090"
+        },
+        "register-delay": {
+          "title": "Register delay",
+          "description": "Management Socket register delay",
+          "type": "integer",
+          "default": 60000
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "uri"
+      ]
+    },
+    "host": {
+      "$ref": "sip3-commons.schema.json/#/definitions/host"
+    },
+    "metrics": {
+      "$ref": "sip3-commons.schema.json/#/definitions/metrics"
+    }
+  },
+  "additionalProperties": true,
+  "default": {
+    "name": "sip3-captain"
+  }
+}

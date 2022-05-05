@@ -1,0 +1,792 @@
+{
+  "$id": "sip3-salto-configuration",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SIP3 Salto configuration",
+  "description": "SIP3 Salto application configuration",
+  "type": "object",
+  "properties": {
+    "name": {
+      "title": "Name for SIP3 Salto instance",
+      "description": "Name for SIP3 Salto instance",
+      "type": "string",
+      "default": "sip3-salto"
+    },
+    "vertx": {
+      "$ref": "sip3-commons.schema.json#/definitions/vertx"
+    },
+    "server": {
+      "title": "Server",
+      "description": "Server configuration section",
+      "type": "object",
+      "properties": {
+        "uri": {
+          "title": "URI",
+          "description": "SIP3 Salto URI",
+          "type": "string",
+          "format": "uri",
+          "default": "udp://0.0.0.0:15060"
+        },
+        "buffer-size": {
+          "title": "Buffer size",
+          "description": "Server buffer size",
+          "type": "integer",
+          "default": 65535
+        },
+        "ssl": {
+          "$ref": "sip3-commons.schema.json#/definitions/ssl"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "uri"
+      ]
+    },
+    "management": {
+      "title": "Management Socket",
+      "description": "Management Socket configuration section",
+      "type": "object",
+      "properties": {
+        "uri": {
+          "title": "URI",
+          "description": "SIP3 Salto Management Socket URI",
+          "type": "string",
+          "default": "udp://0.0.0.0:15090"
+        },
+        "expiration-delay": {
+          "title": "Expiration delay",
+          "description": "Management Socket expiration delay",
+          "type": "integer",
+          "default": 60000
+        },
+        "expiration-timeout": {
+          "title": "Expiration delay",
+          "description": "Management Socket expiration delay",
+          "type": "integer",
+          "default": 120000
+        },
+        "publish-media-control-mode": {
+          "title": "Publish media control mode",
+          "description": "Publish media control mode. 0 - Send to all hosts, 1 - Send to media participants only.",
+          "type": "integer",
+          "enum": [
+            0,
+            1
+          ],
+          "default": 0
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "uri"
+      ]
+    },
+    "time-suffix": {
+      "title": "Time suffix",
+      "description": "Application time suffix",
+      "type": "string",
+      "default": "yyyyMMdd"
+    },
+    "udf": {
+      "title": "UDF",
+      "description": "UDF configuration section",
+      "type": "object",
+      "properties": {
+        "check-period": {
+          "title": "Check period",
+          "description": "UDF check period",
+          "type": "integer",
+          "default": 10000
+        },
+        "execution-timeout": {
+          "title": "Execution timeout",
+          "description": "UDF execution timeout",
+          "type": "integer",
+          "default": 100
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "check-period",
+        "execution-timeout"
+      ],
+      "default": {
+        "check-period": 10000,
+        "execution-timeout": 100
+      }
+    },
+    "attributes": {
+      "title": "Attributes",
+      "description": "Attributes configuration section",
+      "type": "object",
+      "properties": {
+        "record-ip-addresses": {
+          "title": "Record IP addresses",
+          "description": "Record IP addresses to attributes",
+          "type": "boolean",
+          "default": false
+        },
+        "record-call-users": {
+          "title": "Record Call users",
+          "description": "Record Call users to attributes",
+          "type": "boolean",
+          "default": false
+        },
+        "check-period": {
+          "title": "Check period",
+          "description": "Attributes check period",
+          "type": "integer",
+          "default": 5000
+        }
+      },
+      "additionalProperties": false
+    },
+    "sip": {
+      "title": "SIP",
+      "description": "SIP configuration section",
+      "type": "object",
+      "properties": {
+        "message": {
+          "title": "SIP Message",
+          "description": "SIP Message configuration section",
+          "type": "object",
+          "properties": {
+            "exclusions": {
+              "title": "Exclusions",
+              "description": "SIP Message exclusions by SIP Method",
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "INVITE",
+                  "REGISTER",
+                  "ACK",
+                  "CANCEL",
+                  "BYE",
+                  "OPTIONS",
+                  "PRACK",
+                  "MESSAGE",
+                  "SUBSCRIBE",
+                  "NOTIFY",
+                  "PUBLISH",
+                  "UPDATE",
+                  "REFER",
+                  "INFO"
+                ]
+              },
+              "uniqueItems": true
+            },
+            "x-correlation-header": {
+              "title": "Correlation header",
+              "description": "Name of SIP Message header for correlation",
+              "type": "string",
+              "default": "X-Call-ID"
+            },
+            "parser": {
+              "title": "SIP Message Parser",
+              "description": "SIP Message Parser configuration section",
+              "type": "object",
+              "properties": {
+                "mode": {
+                  "title": "SIP Message Parser mode",
+                  "description": "SIP Message Parser mode. 0 - ALL, 1 - EXTENSION_HEADERS",
+                  "type": "integer",
+                  "enum": [
+                    0,
+                    1
+                  ],
+                  "default": "1"
+                },
+                "extension-headers": {
+                  "title": "SIP Message Headers",
+                  "description": "SIP Message Header list to be parsed",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "uniqueItems": true,
+                  "default": [
+                    "Reason"
+                  ]
+                }
+              },
+              "additionalProperties": false,
+              "minProperties": 1,
+              "default": {
+                "mode": 1,
+                "extension-headers": [
+                  "Reason"
+                ]
+              }
+            }
+          },
+          "additionalProperties": false,
+          "minProperties": 1
+        },
+        "transaction": {
+          "title": "SIP Transaction",
+          "description": "SIP Transaction configuration section",
+          "type": "object",
+          "properties": {
+            "expiration-delay": {
+              "title": "Expiration delay",
+              "description": "SIP Transaction expiration delay",
+              "type": "integer",
+              "default": 1000
+            },
+            "response-timeout": {
+              "title": "Response timeout",
+              "description": "SIP Transaction response timeout",
+              "type": "integer",
+              "default": 3000
+            },
+            "aggregation-timeout": {
+              "title": "Aggregation timeout",
+              "description": "SIP Transaction aggregation timeout",
+              "type": "integer",
+              "default": 60000
+            },
+            "termination-timeout": {
+              "title": "Termination timeout",
+              "description": "SIP Transaction termination timeout",
+              "type": "integer",
+              "default": 60000
+            },
+            "save-sip-message-payload-mode": {
+              "title": "Save SIP Message payload mode",
+              "description": "Save SIP Message payload mode. 0 - Save all payload, 1 - Save only SIP Request payload",
+              "type": "integer",
+              "enum": [
+                0,
+                1
+              ],
+              "default": 0
+            }
+          },
+          "additionalProperties": false,
+          "minProperties": 1
+        },
+        "call": {
+          "title": "SIP Call",
+          "description": "SIP Call configuration section",
+          "type": "object",
+          "properties": {
+            "expiration-delay": {
+              "title": "Expiration delay",
+              "description": "SIP Call expiration delay",
+              "type": "integer",
+              "default": 1000
+            },
+            "aggregation-timeout": {
+              "title": "Aggregation timeout",
+              "description": "SIP Call aggregation timeout",
+              "type": "integer",
+              "default": 60000
+            },
+            "termination-timeout": {
+              "title": "Termination timeout",
+              "description": "SIP Call termination timeout",
+              "type": "integer",
+              "default": 2000
+            },
+            "duration-timeout": {
+              "title": "Duration timeout",
+              "description": "SIP Call duration timeout",
+              "type": "integer",
+              "default": 3600000
+            },
+            "duration-distributions": {
+              "title": "Duration distributions.",
+              "description": "SIP Call duration distributions.",
+              "type": "array",
+              "items": {
+                "title": "Distribution",
+                "description": "Distribution in `ms`, `s`, `m` or `h`",
+                "type": "string",
+                "pattern": "^\\d+(ms|s|m|h)$",
+                "default": "1s"
+              }
+            },
+            "correlation": {
+              "title": "Correlation",
+              "description": "SIP Call Correlation configuration section",
+              "type": "object",
+              "properties": {
+                "role": {
+                  "title": "Role",
+                  "description": "Correlation role",
+                  "type": "string",
+                  "enum": [
+                    "reporter",
+                    "aggregator"
+                  ],
+                  "default": "reporter"
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "role"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "minProperties": 1
+        },
+        "register": {
+          "title": "SIP Register",
+          "description": "SIP Register configuration section",
+          "type": "object",
+          "properties": {
+            "expiration-delay": {
+              "title": "Expiration delay",
+              "description": "SIP Register expiration delay",
+              "type": "integer",
+              "default": 1000
+            },
+            "aggregation-timeout": {
+              "title": "Aggregation timeout",
+              "description": "SIP Register aggregation timeout",
+              "type": "integer",
+              "default": 10000
+            },
+            "update-period": {
+              "title": "Update period",
+              "description": "SIP Register update period",
+              "type": "integer",
+              "default": 60000
+            },
+            "duration-timeout": {
+              "title": "Duration timeout",
+              "description": "SIP Register duration timeout",
+              "type": "integer",
+              "default": 900000
+            }
+          },
+          "additionalProperties": false,
+          "minProperties": 1
+        }
+      },
+      "additionalProperties": false,
+      "minProperties": 1
+    },
+    "media": {
+      "title": "Media",
+      "description": "Media configuration section",
+      "type": "object",
+      "properties": {
+        "rtcp": {
+          "title": "RTCP",
+          "description": "RTCP configuration section",
+          "type": "object",
+          "properties": {
+            "expiration-delay": {
+              "title": "Expiration delay",
+              "description": "RTCP expiration delay",
+              "type": "integer",
+              "default": 1000
+            },
+            "aggregation-timeout": {
+              "title": "Aggregation timeout",
+              "description": "RTCP aggregation timeout",
+              "type": "integer",
+              "default": 30000
+            }
+          },
+          "additionalProperties": false,
+          "minProperties": 1
+        },
+        "rtp-r": {
+          "title": "RTP Report",
+          "description": "RTP Report configuration section",
+          "type": "object",
+          "properties": {
+            "expiration-delay": {
+              "title": "Expiration delay",
+              "description": "RTP Report expiration delay",
+              "type": "integer",
+              "default": 1000
+            },
+            "aggregation-timeout": {
+              "title": "Aggregation timeout",
+              "description": "RTP Report aggregation timeout",
+              "type": "integer",
+              "default": 30000
+            },
+            "min-expected-packets": {
+              "title": "Minimal expected packets",
+              "description": "RTP Report minimal expected packets",
+              "type": "integer",
+              "default": 100
+            },
+            "r-factor-distributions": {
+              "title": "R-Factor distributions",
+              "description": "RTP Report R-Factor distributions",
+              "type": "array",
+              "items": {
+                "title": "R-factor value",
+                "description": "R-factor value",
+                "type": "integer"
+              },
+              "default": "[30, 50, 75, 95]"
+            },
+            "duration-distributions": {
+              "title": "Duration distributions",
+              "description": "RTP Report duration distributions",
+              "type": "array",
+              "items": {
+                "title": "Distribution",
+                "description": "Distribution in `ms`, `s`, `m` or `h`",
+                "type": "string",
+                "pattern": "^\\d+(ms|s|m|h)$"
+              },
+              "default": "[10s, 30s, 1m, 5m, 1h]"
+            }
+          },
+          "additionalProperties": false,
+          "minProperties": 1
+        }
+      },
+      "additionalProperties": false,
+      "minProperties": 1,
+      "default": {}
+    },
+    "metrics": {
+      "$ref": "sip3-commons.schema.json/#/definitions/metrics"
+    },
+    "mongo": {
+      "title": "MongoDB",
+      "description": "MongoDB configuration section",
+      "type": "object",
+      "properties": {
+        "uri": {
+          "title": "URI",
+          "description": "MongoDB URI",
+          "type": "string",
+          "format": "uri",
+          "default": "mongodb://127.0.0.1:27017"
+        },
+        "db": {
+          "title": "Database",
+          "description": "MongoDB database",
+          "type": "string",
+          "default": "sip3"
+        },
+        "write-option": {
+          "title": "MongoDB write option",
+          "description": "MongoDB write option. ACKNOWLEDGED(0), UNACKNOWLEDGED(1), FSYNCED(2), JOURNALED(3), REPLICA_ACKNOWLEDGED(4), MAJORITY(5)",
+          "type": "integer",
+          "enum": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "default": "0"
+        },
+
+        "auth": {
+          "title": "MongoDB authentication",
+          "description": "MongoDB authentication section",
+          "type": "object",
+          "properties": {
+            "user": {
+              "title": "Username",
+              "description": "MongoDB username",
+              "type": "string",
+              "default": "<username>"
+            },
+            "password": {
+              "title": "Password",
+              "description": "MongoDB password",
+              "type": "string",
+              "default": "<password>"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "user",
+            "password"
+          ]
+        },
+        "ssl": {
+          "title": "MongoDB SSL connection",
+          "description": "MongoDB SSL connection configuration section",
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "title": "Enabled",
+              "description": "MongoDB SSL enabled",
+              "type": "boolean",
+              "default": "false"
+            },
+            "ca-path": {
+              "title": "CA Path",
+              "description": "SSL CA Path",
+              "type": "string",
+              "default": "<ca-path>"
+            },
+            "cert-path": {
+              "title": "Cert Path",
+              "description": "SSL Cert Path",
+              "type": "string",
+              "default": "<cert-path>"
+            },
+            "key-path": {
+              "title": "Key Path",
+              "description": "SSL Key Path",
+              "type": "string",
+              "default": "<key-path>"
+            },
+            "trust-all": {
+              "title": "Trust all",
+              "description": "SSL Trust all",
+              "type": "boolean",
+              "default": false
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "enabled"
+          ]
+        },
+
+        "bulk-size": {
+          "title": "Bulk size",
+          "description": "MongoDB bulk size",
+          "type": "integer",
+          "default": "1"
+        },
+        "update-period": {
+          "title": "Collections update period",
+          "description": "MongoDB collections update period",
+          "type": "integer",
+          "default": "300000"
+        },
+        "management": {
+          "title": "MongoDB Management",
+          "description": "MongoDB Management configuration section",
+          "type": "object",
+          "properties": {
+            "uri": {
+              "title": "URI",
+              "description": "MongoDB URI",
+              "type": "string",
+              "format": "uri",
+              "default": "mongodb://127.0.0.1:27017"
+            },
+            "db": {
+              "title": "Database",
+              "description": "MongoDB database",
+              "type": "string",
+              "default": "sip3"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "uri",
+            "db"
+          ]
+        },
+        "collections": {
+          "title": "MongoDB SIP3 collections",
+          "description": "MongoDB SIP3 collections to be managed",
+          "type": "array",
+          "items": {
+            "title": "MongoDB collection",
+            "description": "MongoDB collection definition",
+            "type": "object",
+            "properties": {
+              "prefix": {
+                "title": "Prefix",
+                "description": "MongoDb collection prefix",
+                "type": "string",
+                "default": "<prefix>"
+              },
+              "indexes": {
+                "title": "Indexes",
+                "description": "MongoDB collection indexes",
+                "type": "object",
+                "properties": {
+                  "ascending": {
+                    "title": "Ascending index",
+                    "description": "MongoDB collection ascending index",
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "title": "Field",
+                      "type": "string"
+                    }
+                  },
+                  "hashed": {
+                    "title": "Hashed index",
+                    "description": "MongoDB collection hashed index",
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "title": "Field",
+                      "type": "string"
+                    }
+                  }
+                },
+                "additionalProperties": false,
+                "minProperties": 1
+              },
+              "max-collections": {
+                "title": "Maximum collections for prefix",
+                "description": "MongoDB maximum collections for prefix",
+                "type": "integer",
+                "default": 30
+              },
+              "hint": {
+                "title": "Hint",
+                "description": "MongoDB hint for `find`/`update` operations.",
+                "type": "object",
+                "default": {}
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "prefix",
+              "indexes"
+            ]
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "uri",
+        "db",
+        "bulk-size"
+      ]
+    },
+    "codecs": {
+      "title": "SIP3 Salto codecs directory",
+      "description": "SIP3 Salto codecs directory configuration section",
+      "type": "array",
+      "items": {
+        "title": "SIP3 Codec",
+        "description": "SIP3 Codec section",
+        "type": "object",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "description": "Codec name",
+            "type": "string",
+            "default": "PCMA"
+          },
+          "payload_types": {
+            "title": "Payload types",
+            "description": "Codec payload types",
+            "type": "array",
+            "items": {
+              "title": "Integer range or value",
+              "description": "Integer range `0..10` or Integer value `1`",
+              "pattern": "^\\d+\\.\\.\\d+$|^\\d+$"
+            },
+            "minItems": 1
+          },
+          "clock_rate":  {
+            "title": "Clock rate",
+            "description": "Codec clock rate",
+            "type": "integer",
+            "default": 8000
+          },
+          "ie": {
+            "title": "Equipment impairment factor",
+            "description": "Codec equipment impairment factor",
+            "type": "number",
+            "default": 0
+          },
+          "bpl":  {
+            "title": "Packet-loss robustness factor",
+            "description": "Codec packet-loss robustness factor",
+            "type": "number",
+            "default": 4.3
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "payload_types",
+          "clock_rate",
+          "ie",
+          "bpl"
+        ]
+      }
+    },
+    "recording": {
+      "title": "SIP3 Salto Recording",
+      "description": "SIP3 Salto Recording configuration section",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "title": "Enabled",
+          "description": "Recording enabled",
+          "type": "boolean",
+          "default": "false"
+        },
+        "expiration-delay": {
+          "title": "Expiration delay",
+          "description": "Recording expiration delay",
+          "type": "integer",
+          "default": 1000
+        },
+        "aggregation-timeout": {
+          "title": "Aggregation timeout",
+          "description": "Recording aggregation timeout",
+          "type": "integer",
+          "default": 30000
+        },
+        "bulk-size": {
+          "title": "Bulk size",
+          "description": "Recording bulk size",
+          "type": "integer",
+          "default": "64"
+        },
+        "filters": {
+          "title": "Filters",
+          "description": "Recording filters",
+          "type": "array",
+          "items": {
+            "title": "Filter",
+            "description": "Recording filter",
+            "type": "object",
+            "properties": {
+              "mode": {
+                "title": "Recording mode",
+                "description": "Recording mode. 0 - FULL, 1 - GDPR",
+                "type": "integer",
+                "enum": [
+                  0,
+                  1
+                ],
+                "default": 0
+              },
+              "filter": {
+                "title": "Filter",
+                "description": "Recording filter",
+                "type": "string",
+                "default": "\"ip.host=SBC ip.user=110\""
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "mode",
+              "filter"
+            ]
+          },
+          "minItems": 0
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "enabled"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "default": {
+    "name": "sip3-salto"
+  }
+}

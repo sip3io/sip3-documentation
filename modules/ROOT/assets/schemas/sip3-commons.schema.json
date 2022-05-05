@@ -1,0 +1,364 @@
+{
+  "$id": "sip3-commons",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SIP3 Commons",
+  "description": "SIP3 Commons definitions used in other schemas",
+  "type": "object",
+  "definitions": {
+    "vertx": {
+      "title": "Vert.x configuration",
+      "description": "Vert.x configuration section",
+      "type": "object",
+      "properties": {
+        "instances": {
+          "title": "Vert.x instances",
+          "description": "Number of Vert.x instances",
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "instances"
+      ]
+    },
+    "ssl": {
+      "title": "SSL connection",
+      "description": "SSL connection configuration section",
+      "type": "object",
+      "properties": {
+        "key-store": {
+          "title": "Path",
+          "description": "Path to key-store",
+          "type": "string",
+          "default": "/path/to/key.store"
+        },
+        "key-store-password": {
+          "title": "Password",
+          "description": "Password to key-store",
+          "type": "string",
+          "default": "<password>"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "key-store",
+        "key-store-password"
+      ]
+    },
+    "host": {
+      "title": "Host",
+      "description": "Host configuration",
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "description": "Host name",
+          "type": "string",
+          "default": "sbc.sip3.io"
+        },
+        "addr": {
+          "title": "IP addresses",
+          "description": "Host IP address list",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "default": "10.0.10.10"
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "default": [
+            "10.10.10.10",
+            "192.168.0.0/16",
+            "10.10.10.20:5060"
+          ]
+        },
+        "feature": {
+          "title": "Features",
+          "description": "Host feature list",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[^:]+:[^:]+$",
+            "default": "role:proxy"
+          },
+          "minItems": 1,
+          "uniqueItems": true,
+          "default": [
+            "role:proxy"
+          ]
+        },
+        "mapping": {
+          "title": "IP address mapping",
+          "description": "Host IP address mapping for specific cases",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/mapping"
+          },
+          "minItems": 1,
+          "uniqueItems": true,
+          "default": [
+            {
+              "source": "217.117.177.177",
+              "target": "10.10.10.10"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "addr"
+      ]
+    },
+    "mapping": {
+      "title": "IP address mapping",
+      "description": "Host IP address mapping",
+      "type": "object",
+      "properties": {
+        "source": {
+          "title": "IP Address to be replaced",
+          "description": "IP Address to be replaced",
+          "type": "string",
+          "format": "ipv4",
+          "default": "217.117.177.177"
+        },
+        "target": {
+          "title": "IP Address to be mapped to",
+          "description": "IP Address to be mapped to",
+          "type": "string",
+          "format": "ipv4",
+          "default": "10.10.10.10"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "target"
+      ]
+    },
+    "metrics": {
+      "title": "Metrics",
+      "description": "Metrics configuration section",
+      "type": "object",
+      "properties": {
+        "logging": {
+          "$ref": "#/definitions/logging-metrics"
+        },
+        "influxdb": {
+          "$ref": "#/definitions/influxdb-metrics"
+        },
+        "statsd": {
+          "$ref": "#/definitions/statsd-metrics"
+        },
+        "elastic": {
+          "$ref": "#/definitions/elastic-metrics"
+        }
+      },
+      "additionalProperties": false,
+      "minProperties": 1
+    },
+    "logging-metrics":  {
+      "title": "Logging",
+      "description": "Logging metrics configuration",
+      "type": "object",
+      "properties": {
+        "step": {
+          "title": "Step in ms",
+          "description": "Metrics step in ms",
+          "type": "integer",
+          "default": 1000
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "step"
+      ]
+    },
+    "influxdb-metrics": {
+      "title": "InfluxDB",
+      "description": "InfluxDB metrics configuration",
+      "type": "object",
+      "properties": {
+        "uri": {
+          "title": "URI",
+          "description": "InfluxDB URI",
+          "type": "string",
+          "default": "http://127.0.0.1:8086"
+        },
+        "db": {
+          "title": "Database",
+          "description": "InfluxDB database",
+          "type": "string",
+          "default": "sip3"
+        },
+        "step": {
+          "title": "Step in ms",
+          "description": "Metrics step in ms",
+          "type": "integer",
+          "default": 1000
+        },
+        "retention-duration": {
+          "title": "Retention duration",
+          "description": "InfluxDB retention duration",
+          "type": "string",
+          "default": "7d"
+        },
+        "retention-policy": {
+          "title": "Retention policy",
+          "description": "InfluxDB retention policy",
+          "type": "string",
+          "default": "default"
+        },
+        "retention-shard-duration": {
+          "title": "Retention shard duration",
+          "description": "InfluxDB retention shard duration",
+          "type": "string",
+          "default": "24h"
+        },
+        "retention-replication-factor": {
+          "title": "Retention replication factor",
+          "description": "InfluxDB retention replication factor",
+          "type": "integer",
+          "default": 1
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "uri",
+        "db",
+        "step"
+      ]
+    },
+    "statsd-metrics":  {
+      "title": "Statsd",
+      "description": "Statsd metrics configuration",
+      "type": "object",
+      "properties": {
+        "host": {
+          "title": "Host",
+          "description": "Statsd host",
+          "type": "string",
+          "default": "127.0.0.1"
+        },
+        "port": {
+          "title": "Port",
+          "type": "integer",
+          "description": "Statsd port",
+          "default": "8125"
+        },
+        "step": {
+          "title": "Step in ms",
+          "description": "Metrics step in ms",
+          "type": "integer",
+          "default": 1000
+        },
+        "buffered": {
+          "title": "Statsd buffered",
+          "description": "Statsd buffered",
+          "type": "boolean",
+          "default": true
+        },
+        "max-packet-length": {
+          "title": "Max packet length",
+          "description": "Statsd max packet length",
+          "type": "integer",
+          "default": 1400
+        },
+        "flavour": {
+          "title": "Flavour",
+          "description": "Statsd flavour",
+          "type": "string",
+          "enum": [
+            "datadog",
+            "etsy",
+            "telegraf",
+            "sysdig"
+          ],
+          "default": "datadog"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "host",
+        "port",
+        "step",
+        "flavour"
+      ]
+    },
+    "elastic-metrics": {
+      "title": "Elastic",
+      "description": "Elastic metrics configuration",
+      "type": "object",
+      "properties": {
+        "host": {
+          "title": "Host",
+          "description": "Elastic host",
+          "type": "string",
+          "default": "127.0.0.1"
+        },
+        "index": {
+          "title": "Index",
+          "description": "Elastic index",
+          "type": "string",
+          "default": "sip3"
+        },
+        "step": {
+          "title": "Step in ms",
+          "description": "Metrics step in ms",
+          "type": "integer",
+          "default": 60000
+        },
+        "index-date-format": {
+          "title": "Index date format",
+          "description": "Elastic index date format",
+          "type": "string",
+          "default": "yyyy-MM"
+        },
+        "index-date-separator":  {
+          "title": "Date separator",
+          "description": "Elastic index date separator",
+          "type": "string",
+          "default": "-"
+        },
+        "auto-create-index": {
+          "title": "Auto create index",
+          "description": "Elastic auto create index",
+          "type": "boolean",
+          "default": true
+        },
+        "pipeline":  {
+          "title": "Pipeline",
+          "description": "Elastic pipeline",
+          "type": "string",
+          "default": null
+        },
+        "timestamp-field-name": {
+          "title": "Timestamp field name",
+          "description": "Elastic timestamp field name",
+          "type": "string",
+          "default": "@timestamp"
+        },
+        "user": {
+          "title": "User",
+          "description": "Elastic user",
+          "type": "string",
+          "default": "<user>"
+        },
+        "password": {
+          "title": "Password",
+          "description": "Elastic password",
+          "type": "string",
+          "default": "<password>"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "host",
+        "index",
+        "step"
+      ]
+    }
+  }
+}
