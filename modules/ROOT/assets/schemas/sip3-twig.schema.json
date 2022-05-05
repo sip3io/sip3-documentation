@@ -1,0 +1,514 @@
+{
+  "$id": "sip3-twig-configuration",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SIP3 Twig configuration",
+  "description": "SIP3 Twig application configuration",
+  "type": "object",
+  "definitions": {
+    "spring-configuration": {
+      "title": "Spring configuration for SIP3 Twig",
+      "properties": {
+        "jackson": {
+          "type": "object",
+          "properties": {
+            "property-naming-strategy": {
+              "const": "SNAKE_CASE"
+            }
+          },
+          "required": [
+            "property-naming-strategy"
+          ]
+        },
+        "cache": {
+          "type": "object",
+          "properties": {
+            "cache-names": {
+              "const": "listAttributes, listCollectionNames, listCollectionNamesByPrefix"
+            },
+            "caffeine": {
+              "type": "object",
+              "properties": {
+                "spec": {
+                  "type": "string",
+                  "default": "expireAfterWrite=1m"
+                }
+              },
+              "additionalProperties": true,
+              "required": [
+                "spec"
+              ]
+            }
+          },
+          "required": [
+            "cache-names",
+            "caffeine"
+          ]
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "mongodb": {
+              "type": "object",
+              "properties": {
+                "uri": {
+                  "type": "string",
+                  "anyOf": [
+                    {
+                      "const": "${mongo.uri}"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ],
+                  "default": "${mongo.uri}"
+                },
+                "database": {
+                  "type": "string",
+                  "anyOf": [
+                    {
+                      "const": "${mongo.db}"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ],
+                  "default": "${mongo.db}"
+                }
+              },
+              "required": [
+                "uri",
+                "database"
+              ]
+            }
+          },
+          "required": [
+            "mongodb"
+          ]
+        },
+        "mvc": {
+          "type": "object",
+          "properties": {
+            "pathmatch": {
+              "type": "object",
+              "properties": {
+                "matching-strategy": {
+                  "const": "ant-path-matcher"
+                }
+              },
+              "required": [
+                "matching-strategy"
+              ]
+            }
+          },
+          "required": [
+            "pathmatch"
+          ]
+        }
+      }
+    }
+  },
+  "properties": {
+    "spring": {
+      "$ref": "#/definitions/spring-configuration"
+    },
+    "server": {
+      "title": "Server",
+      "description": "Server configuration section",
+      "type": "object",
+      "properties": {
+        "port": {
+          "title": "Port",
+          "description": "SIP3 Twig port",
+          "type": "integer",
+          "default": 8080
+        },
+        "servlet": {
+          "title": "Servlet",
+          "description": "Servlet configuration section",
+          "type": "object",
+          "properties": {
+            "context-path": {
+              "title": "Context path",
+              "description": "SIP3 Twig API context path",
+              "type": "string",
+              "default": "/api"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "context-path"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "port",
+        "servlet"
+      ]
+    },
+    "security": {
+      "title": "Security",
+      "description": "SIP3 Twig security configuration",
+      "properties": {
+        "enabled": {
+          "title": "Enabled",
+          "description": "SIP3 Twig security enabled",
+          "type": "boolean",
+          "default": false
+        },
+        "grafana": {
+          "title": "Grafana",
+          "description": "Grafana Security provider configuration",
+          "type": "object",
+          "properties": {
+            "url": {
+              "title": "Grafana user API URL",
+              "description": "Grafana user API URL",
+              "type": "string",
+              "format": "uri",
+              "default": "http://127.0.0.1/grafana/api/user"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "url"
+          ]
+        },
+        "mailchimp": {
+          "title": "Mailchimp",
+          "description": "Mailchimp Security provider configuration",
+          "type": "object",
+          "properties": {
+            "url": {
+              "title": "Mailchimp URL",
+              "description": "Mailchimp URL",
+              "type": "string",
+              "format": "uri",
+              "default": "https://us7.api.mailchimp.com/3.0"
+            },
+            "api-key": {
+              "title": "API Key",
+              "description": "Mailchimp API Key",
+              "type": "string",
+              "default": "<api-key>"
+            },
+            "list-id": {
+              "title": "List ID",
+              "description": "Mailchimp list ID",
+              "type": "string",
+              "default": "<list-id>"
+            },
+            "attempts": {
+              "title": "Attempts",
+              "description": "Attempts",
+              "type": "integer",
+              "default": 3
+            },
+            "step": {
+              "title": "Step",
+              "description": "Step",
+              "type": "integer",
+              "default": 2000
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "url",
+            "api-key",
+            "list-id",
+            "attempts",
+            "step"
+          ]
+        },
+        "ldap": {
+          "title": "LDAP",
+          "description": "LDAP Security provider configuration",
+          "type": "array",
+          "items": {
+            "title": "LDAP connection",
+            "description": "LDAP connection configuration",
+            "type": "object",
+            "properties": {
+              "domain": {
+                "title": "Domain",
+                "description": "LDAP Domain",
+                "type": "string",
+                "default": "sip3.io"
+              },
+              "url": {
+                "title": "URL",
+                "description": "LDAP URL",
+                "type": "string",
+                "format": "uri",
+                "default": "ldap://127.0.0.1"
+              },
+              "manager-dn": {
+                "title": "Manager DN",
+                "description": "Manager DN",
+                "type": "string",
+                "default": "ldapuser"
+              },
+              "manager-password": {
+                "title": "Manager password",
+                "description": "Manager password",
+                "type": "string",
+                "default": "ldappassword"
+              },
+              "user-search-base": {
+                "title": "LDAP search base",
+                "description": "LDAP search base",
+                "type": "string",
+                "default": "DC=sip3,DC=io"
+              },
+              "user-search-filter": {
+                "title": "LDAP search filter",
+                "description": "LDAP search filter",
+                "type": "string",
+                "default": "(&(sAMAccountName={0})(memberOf=CN=D_SIP3,OU=Access,OU=SIP3IO,DC=sip3,DC=io))"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "domain",
+              "url",
+              "manager-dn",
+              "manager-password",
+              "user-search-base",
+              "user-search-filter"
+            ]
+          },
+          "minItems": 1
+        },
+        "file": {
+          "title": "File Security provider",
+          "description": "File Security provider configuration",
+          "type": "object",
+          "properties": {
+            "path": {
+              "title": "Path to credentials file",
+              "description": "Path to credentials file",
+              "type": "string",
+              "default": "./credentials.cfg"
+            }
+          },
+          "required": [
+            "path"
+          ]
+        }
+      },
+      "minProperties": 1
+    },
+    "mongo": {
+      "title": "MongoDB",
+      "description": "MongoDB configuration section",
+      "type": "object",
+      "properties": {
+        "uri": {
+          "title": "URI",
+          "description": "MongoDB URI",
+          "type": "string",
+          "format": "uri",
+          "default": "mongodb://127.0.0.1:27017"
+        },
+        "db": {
+          "title": "Database",
+          "description": "MongoDB database",
+          "type": "string",
+          "default": "sip3"
+        },
+        "max-execution-time": {
+          "title": "Max execution time",
+          "description": "MongoDB max execution time",
+          "type": "integer",
+          "default": 10000
+        },
+        "batch-size": {
+          "title": "Batch size",
+          "description": "MongoDB batch size",
+          "type": "integer",
+          "default": 128
+        },
+        "secondary": {
+          "title": "Secondary MongoDB",
+          "type": "array",
+          "items": {
+            "title": "MongoDB",
+            "description": "Secondary MongoDB configuration section",
+            "type": "object",
+            "properties": {
+              "uri": {
+                "title": "URI",
+                "description": "MongoDB URI",
+                "type": "string",
+                "format": "uri",
+                "default": "mongodb://127.0.0.1:27017"
+              },
+              "db": {
+                "title": "Database",
+                "description": "MongoDB database",
+                "type": "string",
+                "default": "sip3"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "uri",
+              "db"
+            ]
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "uri",
+        "db",
+        "max-execution-time",
+        "batch-size"
+      ]
+    },
+    "time-suffix": {
+      "title": "Time suffix",
+      "description": "Application time suffix",
+      "type": "string",
+      "default": "yyyyMMdd"
+    },
+
+    "session": {
+      "title": "Session",
+      "description": "Session configuration section",
+      "type": "object",
+      "properties": {
+        "default-limit": {
+          "title": "Default limit",
+          "description": "Default limit",
+          "type": "integer",
+          "default": 50
+        },
+        "use-x-correlation-header":{
+          "title": "Use correlation header",
+          "description": "Use correlation header",
+          "type": "boolean",
+          "default": true
+        },
+        "show-retransmits": {
+          "title": "Show retransmits",
+          "description": "Show retransmits",
+          "type": "boolean",
+          "default": true
+        },
+        "ignore-nanos":{
+          "title": "Ignore nanos",
+          "description": "Ignore nanos",
+          "type": "boolean",
+          "default": true
+        },
+        "call": {
+          "title": "Call session",
+          "description": "Call session configuration",
+          "type": "object",
+          "properties": {
+            "max-legs": {
+              "title": "Max legs",
+              "description": "Max legs",
+              "type": "integer",
+              "default": 10
+            },
+            "aggregation-timeout": {
+              "title": "Aggregation timeout",
+              "description": "Call session aggregation timeout",
+              "type": "integer",
+              "default": 60000
+            },
+            "termination-timeout": {
+              "title": "Termination timeout",
+              "description": "Call session termination timeout",
+              "type": "integer",
+              "default": 10000
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "max-legs",
+            "aggregation-timeout",
+            "termination-timeout"
+          ]
+        },
+        "register": {
+          "title": "Register session",
+          "description": "Register session configuration",
+          "type": "object",
+          "properties": {
+            "max-legs": {
+              "title": "Max legs",
+              "description": "Max legs",
+              "type": "integer",
+              "default": 10
+            },
+            "aggregation-timeout": {
+              "title": "Aggregation timeout",
+              "description": "Register session aggregation timeout",
+              "type": "integer",
+              "default": 10000
+            },
+            "duration-timeout": {
+              "title": "Duration timeout",
+              "description": "Register session duration timeout",
+              "type": "integer",
+              "default": 900000
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "max-legs",
+            "aggregation-timeout",
+            "duration-timeout"
+          ]
+        },
+        "media": {
+          "title": "Media",
+          "description": "Media session configuration",
+          "type": "object",
+          "properties": {
+            "block-count": {
+              "title": "Block count",
+              "description": "Block count for streams",
+              "const": 28
+            },
+            "termination-timeout": {
+              "title": "Termination timeout",
+              "description": "Media session termination timeout",
+              "type": "integer",
+              "default": 60000
+            }
+
+          },
+          "additionalProperties": false,
+          "required": [
+            "block-count",
+            "termination-timeout"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "minProperties": 1
+    },
+    "cache": {
+      "title": "Cache",
+      "description": "Extended cache configuration",
+      "type": "object",
+      "properties": {
+        "refresh-rate": {
+          "title": "Refresh rate",
+          "description": "Cache refresh rate",
+          "type": "integer",
+          "default": 55000
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "refresh-rate"
+      ]
+    }
+  },
+  "additionalProperties": true
+}

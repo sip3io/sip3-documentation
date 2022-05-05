@@ -449,8 +449,36 @@
       "minProperties": 1,
       "default": {}
     },
+    "hep": {
+      "title": "HEP",
+      "description": "HEP configuration section",
+      "type": "object",
+      "properties": {
+        "rtcp": {
+          "title": "RTCP",
+          "description": "RTCP configuration section",
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "title": "Enabled",
+              "description": "HEP RTCP enabled",
+              "type": "boolean",
+              "default": false
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "enabled"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "rtcp"
+      ]
+    },
     "metrics": {
-      "$ref": "sip3-commons.schema.json/#/definitions/metrics"
+      "$ref": "sip3-commons.schema.json#/definitions/metrics"
     },
     "mongo": {
       "title": "MongoDB",

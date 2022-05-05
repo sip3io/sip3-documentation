@@ -370,10 +370,10 @@
       ]
     },
     "host": {
-      "$ref": "sip3-commons.schema.json/#/definitions/host"
+      "$ref": "sip3-commons.schema.json#/definitions/host"
     },
     "metrics": {
-      "$ref": "sip3-commons.schema.json/#/definitions/metrics"
+      "$ref": "sip3-commons.schema.json#/definitions/metrics"
     }
   },
   "additionalProperties": true,
