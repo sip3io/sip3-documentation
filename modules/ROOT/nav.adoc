@@ -14,3 +14,5 @@
 ** https://www.youtube.com/watch?v=__CvehK71vg[CommCon2021 Video - SIP3 Usage Guide and Features Overview]
 * xref:CommunityEditionVsEnterpriseEdition.adoc[CE vs EE]
 * xref:ReleaseNotes.adoc[Release Notes]
+* Appendix
+** xref:ApplicationJSONSchema.adoc[Application JSON Schemas]

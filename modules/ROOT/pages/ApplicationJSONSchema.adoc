@@ -1,0 +1,21 @@
+= Application JSON Schemas
+:description: Application JSON Schemas
+
+== Overview
+
+Every SIP3 component has its own configuration with specific properties. To simplify configuration preparation and update process SIP3 has https://json-schema.org[JSON Schema] for each component:
+
+- https://sip3.io/schemas/sip3-commons.schema.json[SIP3 Commons (Base properties)]
+- https://sip3.io/schemas/sip3-captain.schema.json[SIP3 Captain]
+- https://sip3.io/schemas/sip3-salto.schema.json[SIP3 Salto]
+- https://sip3.io/schemas/sip3-twig.schema.json[SIP3 Twig]
+
+== Usage
+
+NOTE: The SIP3 team recommends you to use https://www.jetbrains.com/idea[IntelliJ IDEA].
+
+To be able to have autocompletion and validation in IntelliJ IDEA you need to https://www.jetbrains.com/help/idea/json.html#ws_json_schema_add_custom[add custom JSON Schema] and assign it to configuration file.
+
+== Contacts
+
+If you have additional questions please contact us though https://join.slack.com/t/sip3-community/shared_invite/enQtOTIyMjg3NDI0MjU3LWUwYzhlOTFhODYxMTEwNjllYjZjNzc1M2NmM2EyNDM0ZjJmNTVkOTg1MGQ3YmFmNWU5NjlhOGI3MWU1MzUwMjE[Slack] or https://t.me/sip3io[Telegram] for the community support and though mailto:contact@sip3.io[email] for the enterprise support. We will be happy to help you.
