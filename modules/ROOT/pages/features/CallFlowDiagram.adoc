@@ -22,6 +22,8 @@ The more detailed info is shown on event click and looks like this:
 
 image::CallFlowSipMessage.png[Call Flow Sip Message]
 
+NOTE: Ctrl/Cmd + click on event opens all messages for selected SIP transaction
+
 Each `SIP Event` timestamp is clickable and cycles through `Absolute`, `Delta` and `Relative` time on each mouse click.
 
 NOTE: There is another way to change timestamps settings from call flow sidebar menu, and it's discussed later in this manual.
