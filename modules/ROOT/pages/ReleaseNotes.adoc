@@ -1,6 +1,33 @@
 = Release Notes
 :description: SIP3 Release Notes
 
+== Version: 2022.2.1
+
+=== Captain
+
+* Various performance improvements and bugfixes
+
+=== Salto
+
+* Various performance improvements and bugfixes
+
+=== Twig
+
+* Added `Stash` feature for calls
+* Various performance improvements and bugfixes
+
+=== Hoof
+
+* Re-written in https://svelte.dev/[Svelte]
+* Added new time range for search: `Next 15 min`
+* Added customizable Timezones in user interface via configuration
+* Added ability to search by attributes with options by regex
+* Added `Export to CSV` for search results
+* Improved Advanced Search query user experience
+* Resizable Callflow and Event windows
+* Improved Display settings in Callflow
+* Various performance improvements and bugfixes
+
 == Version: 2022.1.2
 
 === Captain

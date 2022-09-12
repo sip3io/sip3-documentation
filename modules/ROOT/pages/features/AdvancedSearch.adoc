@@ -48,6 +48,12 @@ Otherwise, you can just write anything as its value:
 
 image::SearchAttributeWithInfiniteAmountOfPossibleValues.png[Search Attribute With Infinite Amount Of Possible Values]
 
+For Number attributes `duration`, `trying_delay` etc you can use `s`(Seconds) and `m`(Minutes) suffix in values. I.e. next expressions has the same result:
+
+- `sip.duration>60000`
+- `sip.duration>60s`
+- `sip.duration>1m`
+
 == Groupings
 
 As it was mentioned above every SIP3 query is a combination of multiple search attributes expressions. And here you have no limitations. Feel free to combine as many attributes as you need. They also can be from different groupings like `"sip.caller=plami rtp.r_factor<30"`. There is only one thing you need to account for:
@@ -222,11 +228,13 @@ It doesn't make sense to separate `rtp` and `rtcp` groupings definition because 
 | Media session duration in milliseconds
 |===
 
-== History of Searches
+== Search History
 
 It happens that we can go into wrong direction while troubleshooting a particular problem. In such cases it might be good to be able to get a few steps back. That's why `Advanced Search` has a history of searches section:
 
-image::HistoryOfSearches.png[History of Searches]
+image::SearchHistory.png[Search History]
+
+Search History can be opened by hitting `Ctrl`/`Cmd` + `Arrow Down` as well.
 
 == Conclusions
 

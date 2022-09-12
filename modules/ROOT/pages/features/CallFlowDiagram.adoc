@@ -2,7 +2,7 @@
 :desription: SIP3 Call Flow Diagram
 
 == Overview
-Here is an example of the SIP3 `Call Flow Diagram` which allows to analyze a call as a sequence diagram. It's the key feature of a xref:features/CallFlowDiagram.adoc[Call Details Widget].
+Here is an example of the SIP3 `Call Flow Diagram` which allows to analyze a call as a sequence diagram. It's the key feature of a xref:features/CallDetails.adoc[Call Details Widget].
 
 image::CallFlowSequenceDiagram.png[Call Flow Sequence Diagram]
 
@@ -22,6 +22,8 @@ The more detailed info is shown on event click and looks like this:
 
 image::CallFlowSipMessage.png[Call Flow Sip Message]
 
+NOTE: Ctrl/Cmd + click on event opens all messages for selected SIP transaction
+
 Each `SIP Event` timestamp is clickable and cycles through `Absolute`, `Delta` and `Relative` time on each mouse click.
 
 NOTE: There is another way to change timestamps settings from call flow sidebar menu, and it's discussed later in this manual.
@@ -34,13 +36,6 @@ image::CallFlowMediaEventsSitcking.png[Call Flow Media Events Sticking]
 The xref:features/MediaRecordingOnDemand.adoc[Media Quality Widget] is shown on event click.
 
 image::CallFlowMediaMessage.png[Call Flow Media Message]
-
-== Zoom Controls
-The `Call Flow` interface has zoom controls. Plus and minus buttons allow zooming in and zooming out respectively.
-
-NOTE: You could control zoom level with `Ctrl` + scroll (with Touchpad or Mouse Wheel).
-
-image::CallFlowZoomControls.png[Call Flow Zoom Controls]
 
 == Call Flow Sidebar
 
@@ -56,7 +51,13 @@ NOTE: All settings and controls are going to be placed inside the call flow side
 
 == Display Settings
 
-The `Display Settings` control allow selecting different legs. It affects which legs are shown on the call flow diagram and which legs are exported as a PNG and PCAP from the `Export ... to ...` dropdown. Also, the control shows info about leg's participants on hover.
+The `Display Settings` control allow selecting different legs. All Legs are grouped by leg type:
+
+- `SIP`
+- `Media`
+- `DTMF`
+
+The selection affects which legs are shown on the call flow diagram and which legs are exported as a PNG and PCAP from the `Export` dropdown. Also, the control shows info about leg's Call ID on hover.
 
 image::CallFlowSidebarDisplaySettingsControl.png[Call Flow Sidebar Display Settings Control]
 
@@ -64,11 +65,17 @@ image::CallFlowSidebarDisplaySettingsControl.png[Call Flow Sidebar Display Setti
 [options="header"]
 |=======================
 | Action | Result
-| Single click on any leg | Only this leg is selected.
-| Single click on a selected leg | Selection resets. All legs are selected.
-| Ctrl click on a non-selected leg | All previously selected legs and this one is selected.
-| Ctrl click on a selected leg | Legs is deselected. All previously selected legs, except this one is selected.
+| Single click on a selected leg | Leg is deselected.
+| Single click on a non-selected leg | Leg is selected.
+| Single click on a selected group | All legs of this group are deselected.
+| Single click on a partially selected group | All legs of this group are selected.
+| Single click on a non-selected group | All legs of this group are selected.
+| Ctrl/Cmd + click on a leg | Only this leg is selected. All other will be deselected.
+| Ctrl/Cmd + click on a group | Only legs of this group are selected. All other will be deselected.
 |=======================
+
+NOTE: If no leg will be selected, previous selection choice will be applied.
+
 === Time Settings
 
 The `Time Settings` control allow changing timestamps type of all events, except the first and the last one.
