@@ -97,7 +97,7 @@ Every SIP3 release comes with Community and Enterprise versions. In this documen
 | Yes
 
 | Prometheus
-|
+| Yes
 | Yes
 
 | Datadog
