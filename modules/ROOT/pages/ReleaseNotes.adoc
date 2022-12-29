@@ -1,6 +1,28 @@
 = Release Notes
 :description: SIP3 Release Notes
 
+== Version: 2022.2.2
+
+=== Captain
+
+* Added Transparent Ethernet Bridging GRE protocol type support
+* Centralized storage for Captain configurations
+* Various performance improvements and bugfixes
+
+=== Salto
+
+* Removed JavaScript support in https://sip3.io/docs/features/UserDefinedFunctions.html[`UDF`]
+* Various performance improvements and bugfixes
+
+=== Twig
+
+* Added OpenID Connect (OIDC) authentication provider support
+* Various performance improvements and bugfixes
+
+=== Hoof
+
+* Various performance improvements and bugfixes
+
 == Version: 2022.2.1
 
 === Captain
