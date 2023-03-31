@@ -1,6 +1,41 @@
 = Release Notes
 :description: SIP3 Release Notes
 
+== Version: 2023.1.1
+
+=== Captain
+
+* Migrate from `kebab-case` to `snake_case` property naming strategy
+* Added https://newrelic.com/[New Relic] metrics support
+* Added filter by port ranges for `RTP` and `RTCP`
+* Removed offline capturing from `pcap`
+* Centralized remote configuration via SIP3 Management Socket
+* Kotlin version upgrade
+* Various performance improvements and bugfixes
+
+=== Salto
+
+* Migrate from `kebab-case` to `snake_case` property naming strategy
+* Added https://newrelic.com/[New Relic] metrics support
+* Extended control over connected SIP3 Components
+* Kotlin version upgrade
+* Various performance improvements and bugfixes
+
+=== Twig
+
+* Components API with extended control
+* Replace SpringFox with Springdoc
+* Centralized remote configuration
+* Kotlin version upgrade
+* Various performance improvements and bugfixes
+
+=== Hoof
+
+* Added SIP3 Components status page
+* Added Host Map page with CRUD operations
+* Advanced Search: double-click on time range opens dropdown with suggestions
+* Various performance improvements and bugfixes
+
 == Version: 2022.2.2
 
 === Captain
