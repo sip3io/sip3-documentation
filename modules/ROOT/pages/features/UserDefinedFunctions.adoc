@@ -15,6 +15,7 @@ This document will walk you though the process of writing UDFs. For more informa
 
 == User-Defined Function Base Structure
 
+By after enable features in ansible playbook, in file /etc/sip3-salto/environment.conf will be added param "udf.location" and her default path "/opt/sip3-salto/udf"
 To better understand SIP3 UDF structure let's analyze following `sip_message_udf` example:
 
 ++++

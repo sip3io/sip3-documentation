@@ -1,4 +1,39 @@
 = Getting Started
 :description: SIP3 Getting Started Guide
 
+Clone the repository from the beginning:
+
+[source,ssh]
+----
+git clone https://github.com/sip3io/sip3-ansible.git
+git checkout -b release/2021.2.3
+----
+
+Next, edit the example configuration file for the backend and captain (change ansible_host to your value)
+
+[source,ssh]
+----
+nano examples/sip3-backend.yml
+nano examples/sip3-captain.yml
+----
+
+Next, run ansible command:
+
+1) If the installation is performed on a remote machine:
+[source,ssh]
+----
+From backend:
+ansible-playbook -i examples/sip3-backend.yml playbooks/sip3.yml
+From captain:
+ansible-playbook -i examples/sip3-captain.yml playbooks/sip3.yml
+----
+
+2) If the installation is performed on a local machine:
+[source,ssh]
+----
+From backend:
+ansible-playbook --connection=local -i examples/sip3-backend.yml playbooks/sip3.yml
+From captain:
+ansible-playbook --connection=local -i examples/sip3-captain.yml playbooks/sip3.yml
+----
 This document will be updated soon...
