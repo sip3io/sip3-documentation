@@ -34,6 +34,8 @@ recording:
 <3> Media quality filter that enables recording of Media sessions with host `RTP_ENGINE_1`, R-Factor calculated from RTP less that 75 and duration of RTP stream more than 10000ms (10 seconds)
 <4> `GDPR` mode. In this mode SIP3 will record only headers of RTP packets without voice payload.
 
+WARNING: `Recording on Demand` filters from files will no longer supported be once this feature is added to the SIP3 UI.
+
 Now more about filters.
 
 == Filters

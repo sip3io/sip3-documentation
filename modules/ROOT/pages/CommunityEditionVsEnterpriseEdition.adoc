@@ -114,7 +114,21 @@ Every SIP3 release comes with Community and Enterprise versions. In this documen
 | Yes
 | Yes
 
-3+^| *6. Authorization*
+3+^| *6. Management*
+
+| Component management
+|
+| Yes
+
+| Centralized configuration
+|
+| Yes
+
+| Call stash
+|
+| Yes
+
+3+^| *7. Authorization*
 
 | Grafana authorization
 | Yes
@@ -128,7 +142,7 @@ Every SIP3 release comes with Community and Enterprise versions. In this documen
 |
 | Yes
 
-3+^| *7. Deployment*
+3+^| *8. Deployment*
 
 | xref:InstallationGuide.adoc[Ansible automation]
 | Yes
@@ -138,7 +152,7 @@ Every SIP3 release comes with Community and Enterprise versions. In this documen
 |
 | Yes
 
-3+^| *8. Services*
+3+^| *9. Services*
 
 | Cloud and on-premise deployment
 |

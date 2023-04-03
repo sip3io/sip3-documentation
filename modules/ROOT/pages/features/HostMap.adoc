@@ -1,0 +1,22 @@
+= Host Map
+:description: SIP3 Host Map.
+
+== Overview
+Host Map is used to map IP addresses to named host. That helps to correlate legs to one call, aggregate all VoIP traffic going through one host, improve metrics and search abilities.
+
+Host Map page contains table with list of hosts in SIP3.
+
+image::HostMap.png[Host Map table]
+
+- `Name` - the name of the host
+- `Address` - IPs or IP Ranges of the host
+- `Feature` - the list of feature of the host. A feature has simple format: `<type>:<value>`
+- `Address mapping` - the list of address mappings
+
+- `Actions` - available actions for this type of component
+* image:HostEditIcon.png[Edit Host] - view and edit the Host
+* image:TrashBinIcon.png[Remove Host] - delete the host from Host Map
+
+=== Add new host
+
+Click image:HostAddIcon.png[Add Host] to add new host. In opened window add new host in JSON format.
