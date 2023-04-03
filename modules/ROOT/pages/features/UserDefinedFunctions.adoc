@@ -9,7 +9,7 @@ Kamailio SIP proxy is one example of such system. It strictly follows RFC 3261. 
 
 We designed the SIP3 platform with generic VoIP systems in mind. User-Defined Functions (UDFs) let engineers get granular monitoring data, based on various user-defined and service attributes.
 
-At the moment the SIP3 platform lets you write UDFs using Groovy or JavaScript.
+At the moment the SIP3 platform lets you write UDFs using Groovy.
 
 This document will walk you though the process of writing UDFs. For more information about deployment, please read the xref:InstallationGuide.adoc[SIP3 Installation Guide].
 
@@ -45,39 +45,6 @@ eventBus.localConsumer("sip_message_udf", { event ->            // <2>
 
     event.reply(true)                                           // <5>
 })
-----
-++++
-</details>
-++++
-
-++++
-<details>
-<summary>JS</summary>
-++++
-[source,js]
-----
-var eventBus = vertx.eventBus();                                // <1>
-eventBus.localConsumer("sip_message_udf", function (event) {    // <2>
-    // `event.body` is a Map<String, Object>:
-    // {
-    //  "src_addr" : String,
-    //  "src_host" : String (Optional),
-    //  "src_port" : Integer,
-    //  "dst_addr" : String,
-    //  "dst_host" : String (Optional),
-    //  "dst_port" : Integer,
-    //  "payload" : Map<String, String>,
-    //  "attributes" : Map<String, String|Boolean>
-    // }
-    var packet = event.body();
-
-    var sip_message = packet['payload'];                        // <3>
-    if (sip_message['from'].match('<sip:100@.*')) {
-        packet['attributes']['robocall'] = true;                // <4>
-    }
-
-    event.reply(true);                                          // <5>
-});
 ----
 ++++
 </details>
@@ -155,29 +122,6 @@ eventBus.localConsumer("sip_message_udf", { event ->
 </details>
 ++++
 
-++++
-<details>
-<summary>JS</summary>
-++++
-[source,js]
-----
-var eventBus = vertx.eventBus();
-eventBus.localConsumer("sip_message_udf", function (event) {
-    var packet = event.body();
-
-    var from_header = packet['payload']['from'];
-    var matcher = from_header.match(/1(\d*)/);
-    if (matcher != null) {
-        packet['attributes']['caller'] = matcher[1];
-    }
-
-    event.reply(true);
-});
-----
-++++
-</details>
-++++
-
 The example above shows just a simple customization which can be done by analyzing SIP message content. However, you can build a very complex business logic using `vertx` object. Read in the https://vertx.io/docs/[Vert.x Documentation] and xref:tutorials/HowToInroduceUserDefinedAttribute.adoc[this tutorial] how to send HTTP requests or query a remote database just in a few lines of code.
 
 == Endpoints
@@ -236,42 +180,6 @@ eventBus.localConsumer("packet_udf", { event ->
 </details>
 ++++
 
-++++
-<details>
-<summary>JS</summary>
-++++
-[source,js]
-----
-var eventBus = vertx.eventBus();
-eventBus.localConsumer("packet_udf", function (event) {
-    // `event.body` is a Map<String, Object>:
-    // {
-    //  "sender_addr" : String,
-    //  "sender_host" : String (Optional),
-    //  "sender_port" : Integer,
-    //  "payload" : Map<String, Object>,
-    //      "src_addr" : String,
-    //      "src_host" : String (Optional),
-    //      "src_port" : Integer,
-    //      "dst_addr" : String,
-    //      "dst_host" : String (Optional),
-    //      "dst_port" : Integer,
-    // }
-    var packet = event.body();
-
-    if (packet['sender_host'] == 'SBC'
-        && (packet['payload']['src_host'] == 'SSW' || packet['payload']['dst_host'] == 'SSW')) {
-        event.reply(false);
-    } else {
-        event.reply(true);
-    }
-});
-----
-++++
-</details>
-++++
-
-
 === `"sip_message_udf"`
 
 ==== 1. Description
@@ -317,39 +225,6 @@ eventBus.localConsumer("sip_message_udf", { event ->
 
     event.reply(true)
 })
-----
-++++
-</details>
-++++
-
-++++
-<details>
-<summary>JS</summary>
-++++
-[source,js]
-----
-var eventBus = vertx.eventBus();
-eventBus.localConsumer("sip_message_udf", function (event) {
-    // `event.body` is a Map<String, Object>:
-    // {
-    //  "src_addr" : String,
-    //  "src_host" : String (Optional),
-    //  "src_port" : Integer,
-    //  "dst_addr" : String,
-    //  "dst_host" : String (Optional),
-    //  "dst_port" : Integer,
-    //  "payload" : Map<String, String>,
-    //  "attributes" : Map<String, String|Boolean>
-    // }
-    var packet = event.body();
-
-    var sip_message = packet['payload'];
-    if (sip_message['from'].match('<sip:100@.*')) {
-        packet['attributes']['robocall'] = true;
-    }
-
-    event.reply(true);
-});
 ----
 ++++
 </details>
@@ -411,50 +286,6 @@ eventBus.localConsumer("sip_call_udf", { event ->
 
     event.reply(true)
 })
-----
-++++
-</details>
-++++
-
-++++
-<details>
-<summary>JS</summary>
-++++
-[source,js]
-----
-var eventBus = vertx.eventBus();
-eventBus.localConsumer("sip_call_udf", function (event) {
-    // `event.body` is a Map<String, Object>:
-    // {
-    //  "src_addr" : String,
-    //  "src_host" : String (Optional),
-    //  "src_port" : Integer,
-    //  "dst_addr" : String,
-    //  "dst_host" : String (Optional),
-    //  "dst_port" : Integer,
-    //  "payload" : Map<String, Object>,
-    //      "created_at" : Long,
-    //      "terminated_at" : Long,
-    //      "state" : String,
-    //      "caller" : String,
-    //      "callee" : String,
-    //      "call_id" : String,
-    //      "duration" : Long (Optional),
-    //      "setup_time" : Long (Optional),
-    //      "cancel_time" : Long (Optional),
-    //      "establish_time" : Long (Optional),
-    //      "terminated_by" : String (Optional)
-    //   "attributes" : Map<String, String|Boolean>
-    // }
-    var session = event.body();
-
-    var setup_time = session['payload']['setup_time'];
-    if (setup_time != null && setup_time > 5000) {
-        session['attributes']['problematic'] = true;
-    }
-
-    event.reply(true);
-});
 ----
 ++++
 </details>
