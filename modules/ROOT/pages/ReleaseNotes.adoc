@@ -1,6 +1,30 @@
 = Release Notes
 :description: SIP3 Release Notes
 
+== Version: 2023.1.2
+
+=== Captain
+
+* Fixed backward compatibility with SIP3 Salto 2022.2.x version
+* Various performance improvements and bugfixes
+
+=== Salto
+
+* Fixed backward compatibility with SIP3 Captain 2022.2.x version
+* Various performance improvements and bugfixes
+
+=== Twig
+
+* Extended SIP3 Hoof Configuration
+* Various performance improvements and bugfixes
+
+=== Hoof
+
+* User Session prolongation if webpage is open
+* Configurable Winbox behaviour on layout switching
+* Configurable Sidebar links: Dashboards, Searches and External links
+* Various performance improvements and bugfixes
+
 == Version: 2023.1.1
 
 === Captain
