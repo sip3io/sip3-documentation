@@ -1,0 +1,28 @@
+= Upgrade Guide
+:description: SIP3 Upgrade Guide
+
+== Overview
+
+The document describes the steps to upgrade the SIP3 solution to a new version.
+These steps are necessary for quick, successful update without negative outcome.
+
+NOTE: We recommend upgrading the SIP3 solution using the configuration described in the `sip3-ansible` project inventory file.
+We support an update procedure between subsequent versions.
+
+Release 2024.2.1 requires to use Java Virtual Machine version 17.
+The SIP3 solution begins to use JVM 17 developed by Adoptium (https://adoptium.net/temurin/releases[JRE Eclipse Temurin by Adoptium]),
+which we packaged into `sip3-java` package for Linux. This package is required for other SIP3 solution packages.
+
+You should pay attention to checking JAVA_HOME variable in the configuration files.
+The file `environment.conf` exists in all application of SIP3 solution. Locations: `/etc/sip3-{application}/environment.conf`
+(e.g. '/etc/sip3-salto/environment.conf`).
+JAVA_HOME variable should be setted to `/opt/sip3-java`.
+
+Example of `environment.conf`:
+```
+JAVA_HOME=/opt/sip3-java
+JAVA_XMS=-Xms512M
+JAVA_XMX=-Xmx1024M
+JAVA_GC=-XX:+UseG1GC
+JAVA_OTHER=
+```
