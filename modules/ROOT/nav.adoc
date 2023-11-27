@@ -1,4 +1,5 @@
 * xref:InstallationGuide.adoc[Installation Guide]
+* xref:UpgradeGuide.adoc[Upgrade Guide]
 * Features
 ** xref:features/AdvancedSearch.adoc[Advanced Search]
 ** xref:features/CallDetails.adoc[Call Details]

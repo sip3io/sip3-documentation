@@ -1,6 +1,39 @@
 = Release Notes
 :description: SIP3 Release Notes
 
+== Version: 2023.2.1
+
+=== Captain
+
+* Java 17 is required as a minimum version
+* Various performance improvements and bugfixes
+* Update dependencies with security issues
+
+=== Salto
+
+* Java 17 is required as a minimum version
+* Support MongoDB up to version 7.0
+* Various performance improvements and bugfixes
+* Update dependencies with security issues
+
+=== Twig
+
+* Java 17 is required as a minimum version
+* Added Salto components in the SIP3 Hoof Configuration
+* Full compatible authorization with OAuth2.0 for EE
+* Upgrade to Spring Boot 3 version
+* Support MongoDB up to version 7.0
+* Various performance improvements and bugfixes
+* Update dependencies with security issues
+
+=== Hoof
+
+* Added support for Custom Search Layouts
+* Full compatible authorization with OAuth2.0 for EE
+* Various performance improvements and bugfixes
+
+For upgrade procedure, please read xref:UpgradeGuide.adoc[Upgrade Guide]
+
 == Version: 2023.1.2
 
 === Captain
