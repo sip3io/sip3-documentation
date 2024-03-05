@@ -36,7 +36,7 @@ Clone `sip3-ansible` repository and checkout the latest release branch:
 [source,ssh]
 ----
 git clone https://github.com/sip3io/sip3-ansible.git
-git checkout -b release/2023.2.1
+git checkout -b release/2024.1.1
 ----
 
 Create a `sip3-captain.yml` file inside the `inventories` directory:
@@ -202,7 +202,6 @@ all:
       - rtcp
 
     mongodb:                                          // <4>
-      version: 4.4
       path: /var/lib/mongodb
       db: sip3
     influxdb:                                         // <5>
@@ -229,7 +228,7 @@ Ansible uses it to connect to the SIP3 backend via SSH.
 They also help to separate CE and EE configuration.
 You can find more information in the corresponding section of this document.
 
-<4> MongoDB section where you can put a specific version, path and name of the database.
+<4> MongoDB section where you can put a specific path and name of the database.
 
 <5> InfluxDB section where you can put a specific version, path and name of the database.
 
