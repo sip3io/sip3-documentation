@@ -9,7 +9,7 @@ These steps are necessary for quick, successful update without negative outcome.
 NOTE: We recommend upgrading the SIP3 solution using the configuration described in the `sip3-ansible` project inventory file.
 We support an update procedure between subsequent versions.
 
-Release 2023.2.1 requires to use Java Virtual Machine version 17.
+Since release 2023.2.1 requires to use Java Virtual Machine version 17.
 The SIP3 solution begins to use JVM 17 developed by Adoptium (https://adoptium.net/temurin/releases[JRE Eclipse Temurin by Adoptium]),
 which we packaged into `sip3-java` package for Linux. This package is required for other SIP3 solution packages.
 

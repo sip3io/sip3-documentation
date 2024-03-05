@@ -1,6 +1,41 @@
 = Release Notes
 :description: SIP3 Release Notes
 
+== Version: 2024.1.1
+
+=== Captain
+* Added new SIP3 Packet Type - RAW
+* Added custom exit code for remote shutdown
+* Sender network optimizations
+* Improved SIP3 component communications via TCP
+* Various performance improvements and bugfixes
+
+=== Salto
+
+* Added new SIP3 Packet Type - RAW
+* Added unknown(unparsed) SIP Message processing
+* Fixed RTP stream duration calculations
+* Improved SIP3 component communications via TCP
+* Various performance improvements and bugfixes
+* Update dependencies with security issues
+
+=== Twig
+
+* Added unknown(unparsed) SIP Message processing
+* Added custom exit code for remote shutdown
+* Various performance improvements and bugfixes
+* Update dependencies with security issues
+
+=== Hoof
+
+* Fixed routing issues
+* Fixed scrolling issue in Winbox
+* Added refresh button for Components
+* Added unknown(unparsed) SIP Message processing
+* Various performance improvements and bugfixes
+
+_For upgrade procedure, please read xref:UpgradeGuide.adoc[Upgrade Guide]_
+
 == Version: 2023.2.1
 
 === Captain
@@ -32,7 +67,7 @@
 * Full compatible authorization with OAuth2.0 for EE
 * Various performance improvements and bugfixes
 
-For upgrade procedure, please read xref:UpgradeGuide.adoc[Upgrade Guide]
+_For upgrade procedure, please read xref:UpgradeGuide.adoc[Upgrade Guide]_
 
 == Version: 2023.1.2
 
