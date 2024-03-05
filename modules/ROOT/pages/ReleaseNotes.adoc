@@ -32,7 +32,7 @@
 * Full compatible authorization with OAuth2.0 for EE
 * Various performance improvements and bugfixes
 
-For upgrade procedure, please read xref:UpgradeGuide.adoc[Upgrade Guide]
+_For upgrade procedure, please read xref:UpgradeGuide.adoc[Upgrade Guide]_
 
 == Version: 2023.1.2
 
