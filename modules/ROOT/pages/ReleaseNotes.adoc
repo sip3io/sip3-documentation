@@ -36,6 +36,30 @@
 
 _For upgrade procedure, please read xref:UpgradeGuide.adoc[Upgrade Guide]_
 
+== Version: 2024.1.2
+
+=== Captain
+* Fixed SIP over TCP capturing
+* Added WebSocket support (EE link)
+* Added IPFIX support (EE link)
+* Added HEP3 Server (EE link)
+* Various performance improvements and bugfixes
+
+=== Salto
+
+* Various performance improvements and bugfixes
+
+=== Twig
+
+* Various performance improvements and bugfixes
+* Update dependencies with security issues
+
+=== Hoof
+
+* Various performance improvements and bugfixes
+
+For upgrade procedure, please read xref:UpgradeGuide.adoc[Upgrade Guide]
+
 == Version: 2023.2.1
 
 === Captain
