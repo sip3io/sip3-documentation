@@ -1,0 +1,313 @@
+= Hoof Configuration
+:description: SIP3 Hoof Configuration.
+
+== Overview
+
+In general SIP3 Hoof can be deeply customized by our developers. Also SIP3 Hoof can be customized with configuration. What can be customized?
+
+* Common configuration
+* Sidebar Menu
+* Timezones
+* Custom Searches
+* Custom Search Results
+* Winbox behaviour
+
+
+Hoof configuration is stored in JSON format:
+
+[source,json]
+----
+{
+  "time_zones": [], // <1>
+  "winbox": {}, // <2>
+  "sidebar": {  // <3>
+    "dashboards": [],
+    "searches": [],
+    "links": []
+  },
+  "searches": [], // <4>
+  "features": [], // <5>
+  "root_path": "", // <6>
+  "default_route": "/search/advanced", // <7>
+  "oauth2": {} // <8>
+}
+----
+
+<1> `time_zones` - List of available timezones
+<2> `winbox` - Winbox behaviour configuration
+<3> `sidebar` - Sidebar menu configuration. Contains from
+     `dashboards` - Links to dashboards. Always place on the top of the sidebar
+     `searches` - Links to Searches
+     `links` - Internal and External links to resources
+<4> `searhes` - Custom search configurations
+<5> `features` - List of features to be enabled in Hoof
+<6> `root_path` - Root path used when Hoof is placed after proxy and have prefix in path
+<7> `default_route` - Default route after successful login or going to `root_path`
+<8> `oauth2` - OAuth2 configuration
+
+== Timezones
+
+Default configuration have 2 timezones:
+
+* Local timezone based on Browser environment
+* UTC timezone
+
+Timezone configuration JSON:
+[source,json]
+----
+{
+  "label": "NPT", // <1>
+  "name": "Nepal", // <2>
+  "value": "+05:45" // <3>
+}
+----
+
+<1> `label` - Short name of Timezone that will be showed in User Interface
+<2> `name` - Name of Timezone to be showed in dropdown
+<3> `value` - Timezone offset
+
+Timezone will appear in dropdown in same order as in JSON Array.
+
+== Winbox
+
+Winbox configuration contains parameters that define behaviour of all winboxes:
+[source,json]
+----
+{
+  "auto_close": true // <1>
+}
+----
+<1> `auto_close` - If `true` all winboxes will be closed after changing layouts.
+
+== Sidebar configuration
+
+Sidebar contains 4 main sections:
+
+* Dashboards
+* Searches
+* Management
+* Links
+
+image::SidebarExample.png[Sidebar example]
+
+NOTE: Management section is not configurable directly
+
+Sections contain links to resources. A link may be `internal` or `external`.
+
+* `internal` link type used to navigate through Hoof layouts.
+* `external` links opens in new tab and must have full URL to resource.
+
+[source,json]
+----
+{
+  "order": 0, // <1>
+  "name": "Technical Dashboard", // <2>
+  "type": "internal", // <3>
+  "url": "/dashboard/technical" // <4>
+}
+----
+
+<1> `order` - Priority that determine position of the link.
+<2> `name` - Link name
+<3> `type` - Type of the link
+<4> `url` - URL
+
+== Searches
+
+Hoof allows to add custom search layout with additional fields in search results.
+
+image::CustomSearchLayout.png[Custom Search Layout]
+
+.Full Custom Search configuration example
+[%collapsible]
+====
+[source,json]
+----
+{
+      "id": "custom",
+      "name": "Custom search",
+      "sections": [
+        {
+          "id": "main",
+          "name": "Main search attributes",
+          "attributes": [
+            [
+              {
+                "name": "timeRange",
+                "type": "time_range"
+              },
+              {
+                "name": "sip.caller",
+                "placeholder": "Caller"
+              },
+              {
+                "name": "sip.callee",
+                "placeholder": "Callee"
+              }
+            ],
+            [
+              {
+                "name": "sip.state",
+                "placeholder": "State"
+              },
+              {
+                "name": "callsOnly",
+                "type": "checkbox",
+                "placeholder": "Calls only",
+                "init_value": "sip.method=INVITE",
+                "if_true": "sip.method=INVITE",
+                "if_false": ""
+              }
+            ]
+          ]
+        },
+        {
+          "id": "hosts",
+          "name": "Host search attributes",
+          "attributes": [
+            [
+              {
+                "name": "sip.src_addr"
+              },
+              {
+                "name": "sip.src_host",
+                "init_value": "domru"
+              },
+              {
+                "name": "sip.dst_addr"
+              },
+              {
+                "name": "sip.dst_host",
+                "init_value": "PBX-.*",
+                "init_operator": "=~"
+              }
+            ]
+          ]
+        }
+      ],
+      "results": {
+        "columns": [
+          {
+            "header": "Establish time",
+            "src": "sip.establish_time",
+            "formatter": "duration"
+          },
+          {
+            "header": "Terminated at",
+            "src": "sip.terminated_at",
+            "formatter": "datetime"
+          },
+          {
+            "header": "Transactions",
+            "src": "sip.transactions"
+          },
+          {
+            "header": "Src addr",
+            "src": "sip.src_addr"
+          }
+        ]
+      }
+    }
+----
+====
+
+Search configuration consist of 4 main parameters:
+
+[source,json]
+----
+{
+  "id": "custom", // <1>
+  "name": "Custom search", // <2>
+  "sections": [ ], // <3>
+  "results": { } // <4>
+}
+----
+<1> `id` - Custom search ID
+<2> `name` - Custom search name
+<3> `sections` - Section of search attributes
+<4> `results` - Configuration for search results
+
+=== Section
+
+Section used to group attributes and arrange it on gird for better usability.
+
+[source,json]
+----
+{
+  "id": "main", // <1>
+  "name": "Main search attributes", // <2>
+  "attributes": [ // <3>
+    [ ],
+    [ ]
+  ]
+}
+----
+<1> `id` - Section ID
+<2> `name` - Section name
+<3> `attributes` - List of attribute lines.
+
+NOTE: Recommended attributes in one line is not more than 4.
+
+=== Custom Search Attribute
+
+All Custom Search Attributes have `name`, other parameters are optional. Attribute may be one of types:
+
+* `time_range` - Date and time range selector
+* `checkbox` - Checkbox that define query  to be added to Search query
+* `string` - String type
+* `boolean` - Boolean type
+* `number` - Number type.
+
+[source,json]
+----
+{
+    "name": "callsOnly", // <1>
+    "type": "checkbox", // <2>
+    "placeholder": "Calls only", // <3>
+    "init_value": "sip.method=INVITE", // <4>
+    "init_operator": "=", // <5>
+    "if_true": "sip.method=INVITE", // <6>
+    "if_false": "" // <7>
+}
+----
+
+<1> `name` -  Attribute name
+<2> `type` -  Attribute type.
+<3> `placeholder`	- Placeholder that will be displayed in Input field.
+<4> `init_value` - Initial value
+<5> `init_operator` - Initial operator
+<6> `if_true`	- Search query expression if checkbox is checked
+<7> `if_false` - Search query expression if checkbox is not checked
+
+=== Custom search results
+
+Search result in Custom Search may be modified by adding custom columns from Search Results:
+
+[source,json]
+----
+{
+  "columns": [
+    {
+      "header": "Establish time", // <1>
+      "src": "sip.establish_time", // <2>
+      "formatter": "duration" // <3>
+    },
+    {
+      "header": "Terminated at",
+      "src": "sip.terminated_at",
+      "formatter": "datetime"
+    },
+    {
+      "header": "Transactions",
+      "src": "sip.transactions"
+    },
+    {
+      "header": "Src addr",
+      "src": "sip.src_addr"
+    }
+  ]
+}
+----
+<1> `header` - Column name in Search Result Table
+<2> `src` - Field name from Search Result
+<3> `formatter` - Formatter for the value. Available types: `datetime`, `duration` or raw value if not set
