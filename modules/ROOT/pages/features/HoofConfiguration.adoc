@@ -311,3 +311,45 @@ Search result in Custom Search may be modified by adding custom columns from Sea
 <1> `header` - Column name in Search Result Table
 <2> `src` - Field name from Search Result
 <3> `formatter` - Formatter for the value. Available types: `datetime`, `duration` or raw value if not set
+
+=== Features
+
+To enable some features in SIP3 Hoof you need to add this named feature to `features`:
+
+[source,json]
+----
+{
+  "features": [
+    "recording_tasks"
+  ]
+}
+----
+
+NOTE: Starting from 2024.2.2 version only one feature is available: `recording_tasks`
+
+=== OAuth2 Configuration
+
+SIP3 Hoof supports OAuth2 authentication and need to be configured properly:
+[source,json]
+----
+{
+  "oauth2": {
+    "enabled": true,      // <1>
+    "provider": "sip3"    // <2>
+  }
+}
+----
+<1> `enabled` - Enables OAuth2 authorization in UI
+<2> `provider` - OAuth2 provider in SIP3 Twig
+
+IMPORTANT: SIP3 Twig must be configured first to enable OAuth2 authentication.
+
+=== Other parameters
+
+==== root_path
+
+Root path used when Hoof is placed after proxy and have prefix in path
+
+==== default_route
+
+Default route after successful login or going to `root_path`
