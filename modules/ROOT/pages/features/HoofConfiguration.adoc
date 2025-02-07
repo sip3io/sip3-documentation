@@ -288,9 +288,9 @@ Search result in Custom Search may be modified by adding custom columns from Sea
 {
   "columns": [
     {
-      "header": "Establish time", // <1>
-      "src": "sip.establish_time", // <2>
-      "formatter": "duration" // <3>
+      "header": "Establish time",   // <1>
+      "src": "sip.establish_time",  // <2>
+      "formatter": "duration"       // <3>
     },
     {
       "header": "Terminated at",
@@ -303,7 +303,8 @@ Search result in Custom Search may be modified by adding custom columns from Sea
     },
     {
       "header": "Src addr",
-      "src": "sip.src_addr"
+      "src": "sip.src_addr",
+      "display_type": "set"         // <4>
     }
   ]
 }
@@ -311,6 +312,11 @@ Search result in Custom Search may be modified by adding custom columns from Sea
 <1> `header` - Column name in Search Result Table
 <2> `src` - Field name from Search Result
 <3> `formatter` - Formatter for the value. Available types: `datetime`, `duration` or raw value if not set
+<4> `display_type` - Define display type for values.
+
+- `first` - Display only first non-null value for `src`
+- `set` - Display all unique values
+- `list` - Display all values in the same order as this value appears in Call legs.
 
 === Features
 
@@ -324,6 +330,11 @@ To enable some features in SIP3 Hoof you need to add this named feature to `feat
   ]
 }
 ----
+
+Available features in 2025.1.1:
+
+- `recording_tasks`
+- `configurations`
 
 NOTE: Starting from 2024.2.2 version only one feature is available: `recording_tasks`
 
