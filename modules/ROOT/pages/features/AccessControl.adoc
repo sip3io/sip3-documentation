@@ -1,0 +1,274 @@
+= Access Control
+:description: SIP3 Access control.
+
+== Overview
+
+To offer security and access control in SIP3 was developed and implemented Role-based access control model. SIP3 supports OpenID Connect or SAML 2.0 Identity Providers like https://www.keycloak.org[Keycloak].
+
+== Security Roles
+
+There are 5 predefined roles in SIP3:
+
+* `SIP3_UNAUTHORIZED`
+* `SIP3_VIEWER`
+* `SIP3_SUPPORT`
+* `SIP3_SUPERVISOR`
+* `SIP3_ADMIN`
+
+These roles can grant access for support users to search and view SIP sessions, enable xref:features/MediaRecordingOnDemand.adoc[Media Recording On Demand] and deny access to setting up and editing the system. System administrators will also have access to configuration and management of SIP3 components, advanced Media Recording functionality, etc.
+
+=== Access control matrix
+[%header,cols="1,2,3,^4,^5,^6,^7,^8,^9"]
+|====================
+4+|
+5+^|Roles
+^|Site
+^|Action
+^|Endpoint
+^|Method
+^|SIP3_UNAUTHORIZED
+^|SIP3_VIEWER
+^|SIP3_SUPPORT
+^|SIP3_SUPERVISOR
+^|SIP3_ADMIN
+
+|Attributes
+|View attributes
+|/api/attributes
+^|*
+|
+|
+|X
+|X
+|X
+
+|Search
+|Session search
+|/api/search
+^|*
+|
+|
+|X
+|X
+|X
+
+.5+|Sessions
+.3+|View session
+|/api/session/flow
+^|*
+|
+|X
+|X
+|X
+|X
+
+|/api/session/details
+^|*
+|
+|X
+|X
+|X
+|X
+
+|/api/session/media
+^|*
+|
+|X
+|X
+|X
+|X
+
+|Export to PCAP
+|/api/session/pcap
+^|*
+|
+|
+|X
+|X
+|X
+
+|Stash session
+|/api/session/stash
+^|*
+|
+|
+|X
+|X
+|X
+
+.4+|Hosts
+.2+|View hosts
+|/api/hosts
+<|GET
+|
+|
+|X
+|X
+|X
+
+|/api/hosts/<name>
+<|GET
+|
+|
+|X
+|X
+|X
+
+|Edit hosts
+|/api/hosts
+|POST/PUT/DELETE
+|
+|
+|
+|X
+|X
+
+|Import hosts
+|/api/hosts/import
+|POST
+|
+|
+|
+|
+|X
+
+.4+|Tasks
+|View task
+|/api/tasks/<id>
+<|GET
+|
+|
+|X
+|X
+|X
+
+|Search task
+|/api/tasks/search
+|POST
+|
+|
+|X
+|X
+|X
+
+|Add task
+|/api/tasks/
+<|POST
+|
+|
+|
+|X
+|X
+
+|Cancel task
+|/api/tasks/<id>/cancel
+<|PUT
+|
+|
+|
+|X
+|X
+
+.4+|Recordings
+.4+|Add recording task
+|/api/tasks/recording/user/
+<|POST
+|
+|
+|X
+|X
+|X
+
+|/api/tasks/recording/addr/
+|POST
+|
+|
+|X
+|X
+|X
+
+|/api/tasks/recording/host/
+|POST
+|
+|
+|X
+|X
+|X
+
+|/api/tasks/recording/filter
+|POST
+|
+|
+|
+|X
+|X
+
+.4+|Components
+|View
+|/api/management/components
+<|GET
+|
+|
+|
+|X
+|X
+
+|Reset recording-status
+|/api/management/components/recording-reset
+^|*
+|
+|
+|
+|
+|X
+
+|Shutdown
+|/api/management/components/shutdown
+^|*
+|
+|
+|
+|
+|X
+
+|Delete
+|/api/management/components
+|DELETE
+|
+|
+|
+|
+|X
+
+.3+|Configuration
+|View
+|/api/management/configuration
+<|GET
+|
+|
+|
+|
+|X
+
+|Edit
+|/api/management/configuration
+|POST/PUT
+|
+|
+|
+|
+|X
+
+|Delete
+|/api/management/configuration
+|DELETE
+|
+|
+|
+|
+|X
+|====================
+
+== Customization
+
+To be more flexible SIP3 Access control matrix is ​​ready to be modified according to customer requirements. Standard roles can be changed, and new roles with a limited set of rights can be added.

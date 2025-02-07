@@ -10,6 +10,7 @@
 ** xref:features/HostMap.adoc[Host Map]
 ** xref:features/Components.adoc[Components]
 ** xref:features/HoofConfiguration.adoc[Hoof Configuration]
+** xref:features/AccessControl.adoc[Access Control]
 * Tutorials
 ** xref:tutorials/HowToInroduceUserDefinedAttribute.adoc[How To Introduce a User-Defined Attribute or Integration with APIBAN Example]
 ** xref:tutorials/HowToBuildSip3BasedSolutions.adoc[How To Build SIP3 Based Solutions or Wangiri Fraud Detection Example]
