@@ -325,16 +325,18 @@ To enable some features in SIP3 Hoof you need to add this named feature to `feat
 }
 ----
 
-NOTE: Starting from 2024.2.2 version only one feature is available: `recording_tasks`
+Available features in 2025.1.1:
+- `recording_tasks`
+- `configurations`
 
 === OAuth2 Configuration
 
-SIP3 Hoof supports OAuth2 authentication and need to be configured properly:
+SIP3 Hoof supports OAuth2 authentication and needs to be configured properly:
 [source,json]
 ----
 {
   "oauth2": {
-    "enabled": true,      // <1>
+    "enabled" : true,      // <1>
     "provider": "sip3"    // <2>
   }
 }
