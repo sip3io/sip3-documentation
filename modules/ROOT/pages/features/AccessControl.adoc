@@ -9,32 +9,32 @@ To offer security and access control in SIP3 was developed and implemented Role-
 
 There are 5 predefined roles in SIP3:
 
-* `SIP3_UNAUTHORIZED`
-* `SIP3_VIEWER`
-* `SIP3_SUPPORT`
-* `SIP3_SUPERVISOR`
-* `SIP3_ADMIN`
+<1> [[SIP3_UNAUTHORIZED]] `SIP3_UNAUTHORIZED`
+<2> [[SIP3_VIEWER]]`SIP3_VIEWER`
+<3> [[SIP3_SUPPORT]]`SIP3_SUPPORT`
+<4> [[SIP3_SUPERVISOR]]`SIP3_SUPERVISOR`
+<5> [[SIP3_ADMIN]]`SIP3_ADMIN`
 
 These roles can grant access for support users to search and view SIP sessions, enable xref:features/MediaRecordingOnDemand.adoc[Media Recording On Demand] and deny access to setting up and editing the system. System administrators will also have access to configuration and management of SIP3 components, advanced Media Recording functionality, etc.
 
 === Access control matrix
-[%header,cols="1,2,3,^4,^5,^6,^7,^8,^9"]
-|====================
+[cols="1,2,3,^4,^5,^6,^7,^8,^9"]
+|===
 4+|
-5+^|Roles
+5+^|<<_security_roles, Roles>>
 ^|Site
 ^|Action
 ^|Endpoint
 ^|Method
-^|SIP3_UNAUTHORIZED
-^|SIP3_VIEWER
-^|SIP3_SUPPORT
-^|SIP3_SUPERVISOR
-^|SIP3_ADMIN
+^|`<<SIP3_UNAUTHORIZED,1>>`
+^|`<<SIP3_VIEWER,2>>`
+^|`<<SIP3_SUPPORT,3>>`
+^|`<<SIP3_SUPERVISOR,4>>`
+^|`<<SIP3_ADMIN,5>>`
 
 |Attributes
 |View attributes
-|/api/attributes
+|`/api/attributes`
 ^|*
 |
 |
@@ -44,7 +44,7 @@ These roles can grant access for support users to search and view SIP sessions, 
 
 |Search
 |Session search
-|/api/search
+|`/api/search`
 ^|*
 |
 |
@@ -54,7 +54,7 @@ These roles can grant access for support users to search and view SIP sessions, 
 
 .5+|Sessions
 .3+|View session
-|/api/session/flow
+|`/api/session/flow`
 ^|*
 |
 |X
@@ -62,7 +62,7 @@ These roles can grant access for support users to search and view SIP sessions, 
 |X
 |X
 
-|/api/session/details
+|`/api/session/details`
 ^|*
 |
 |X
@@ -70,7 +70,7 @@ These roles can grant access for support users to search and view SIP sessions, 
 |X
 |X
 
-|/api/session/media
+|`/api/session/media`
 ^|*
 |
 |X
@@ -79,7 +79,7 @@ These roles can grant access for support users to search and view SIP sessions, 
 |X
 
 |Export to PCAP
-|/api/session/pcap
+|`/api/session/pcap`
 ^|*
 |
 |
@@ -88,7 +88,7 @@ These roles can grant access for support users to search and view SIP sessions, 
 |X
 
 |Stash session
-|/api/session/stash
+|`/api/session/stash`
 ^|*
 |
 |
@@ -98,7 +98,7 @@ These roles can grant access for support users to search and view SIP sessions, 
 
 .4+|Hosts
 .2+|View hosts
-|/api/hosts
+|`/api/hosts`
 <|GET
 |
 |
@@ -106,7 +106,7 @@ These roles can grant access for support users to search and view SIP sessions, 
 |X
 |X
 
-|/api/hosts/<name>
+|`/api/hosts/<name>`
 <|GET
 |
 |
@@ -115,8 +115,10 @@ These roles can grant access for support users to search and view SIP sessions, 
 |X
 
 |Edit hosts
-|/api/hosts
-|POST/PUT/DELETE
+|`/api/hosts`
+|POST +
+PUT +
+DELETE
 |
 |
 |
@@ -124,7 +126,7 @@ These roles can grant access for support users to search and view SIP sessions, 
 |X
 
 |Import hosts
-|/api/hosts/import
+|`/api/hosts/import`
 |POST
 |
 |
@@ -134,7 +136,7 @@ These roles can grant access for support users to search and view SIP sessions, 
 
 .4+|Tasks
 |View task
-|/api/tasks/<id>
+|`/api/tasks/<id>`
 <|GET
 |
 |
@@ -143,7 +145,7 @@ These roles can grant access for support users to search and view SIP sessions, 
 |X
 
 |Search task
-|/api/tasks/search
+|`/api/tasks/search`
 |POST
 |
 |
@@ -152,7 +154,7 @@ These roles can grant access for support users to search and view SIP sessions, 
 |X
 
 |Add task
-|/api/tasks/
+|`/api/tasks/`
 <|POST
 |
 |
@@ -161,7 +163,7 @@ These roles can grant access for support users to search and view SIP sessions, 
 |X
 
 |Cancel task
-|/api/tasks/<id>/cancel
+|`/api/tasks/<id>/cancel`
 <|PUT
 |
 |
@@ -171,7 +173,7 @@ These roles can grant access for support users to search and view SIP sessions, 
 
 .4+|Recordings
 .4+|Add recording task
-|/api/tasks/recording/user/
+|`/api/tasks/recording/user/`
 <|POST
 |
 |
@@ -179,7 +181,7 @@ These roles can grant access for support users to search and view SIP sessions, 
 |X
 |X
 
-|/api/tasks/recording/addr/
+|`/api/tasks/recording/addr/`
 |POST
 |
 |
@@ -187,7 +189,7 @@ These roles can grant access for support users to search and view SIP sessions, 
 |X
 |X
 
-|/api/tasks/recording/host/
+|`/api/tasks/recording/host/`
 |POST
 |
 |
@@ -195,7 +197,7 @@ These roles can grant access for support users to search and view SIP sessions, 
 |X
 |X
 
-|/api/tasks/recording/filter
+|`/api/tasks/recording/filter`
 |POST
 |
 |
@@ -205,7 +207,7 @@ These roles can grant access for support users to search and view SIP sessions, 
 
 .4+|Components
 |View
-|/api/management/components
+|`/api/management/components`
 <|GET
 |
 |
@@ -214,7 +216,7 @@ These roles can grant access for support users to search and view SIP sessions, 
 |X
 
 |Reset recording-status
-|/api/management/components/recording-reset
+|`/api/management/components/recording-reset`
 ^|*
 |
 |
@@ -223,7 +225,7 @@ These roles can grant access for support users to search and view SIP sessions, 
 |X
 
 |Shutdown
-|/api/management/components/shutdown
+|`/api/management/components/shutdown`
 ^|*
 |
 |
@@ -232,7 +234,7 @@ These roles can grant access for support users to search and view SIP sessions, 
 |X
 
 |Delete
-|/api/management/components
+|`/api/management/components`
 |DELETE
 |
 |
@@ -242,7 +244,7 @@ These roles can grant access for support users to search and view SIP sessions, 
 
 .3+|Configuration
 |View
-|/api/management/configuration
+|`/api/management/configuration`
 <|GET
 |
 |
@@ -251,8 +253,9 @@ These roles can grant access for support users to search and view SIP sessions, 
 |X
 
 |Edit
-|/api/management/configuration
-|POST/PUT
+|`/api/management/configuration`
+|POST +
+PUT
 |
 |
 |
@@ -260,15 +263,15 @@ These roles can grant access for support users to search and view SIP sessions, 
 |X
 
 |Delete
-|/api/management/configuration
+|`/api/management/configuration`
 |DELETE
 |
 |
 |
 |
 |X
-|====================
+|===
 
 == Customization
 
-To be more flexible SIP3 Access control matrix is ​​ready to be modified according to customer requirements. Standard roles can be changed, and new roles with a limited set of rights can be added.
+To be more flexible SIP3 Access control matrix is ready to be modified according to customer requirements. Standard roles can be changed, and new roles with a limited set of rights can be added.
