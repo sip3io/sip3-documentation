@@ -1,6 +1,149 @@
 = Release Notes
 :description: SIP3 Release Notes
 
+== Version: 2025.1.1
+
+=== Captain
+
+* Various performance improvements and bugfixes
+
+=== Salto
+
+* Various performance improvements and bugfixes
+
+=== Twig
+
+* Advanced error processing for calls with invalid data
+* Various performance improvements and bugfixes
+
+=== Hoof
+
+* Export to JSON for calls to share data with SIP3 support
+* User Interface to work with stored configurations
+* Handle render errors for calls
+* Various performance improvements and bugfixes
+
+== Version: 2024.3.1
+
+=== Captain
+
+* Various performance improvements and bugfixes
+
+=== Salto
+
+* Improve stability of Management Socket
+* Various performance improvements and bugfixes
+
+=== Twig
+
+* Multiply values for user-defined columns
+* Extend Component's configuration
+* Various performance improvements and bugfixes
+
+=== Hoof
+
+* Multiply values in Custom Search Results for user-defined columns
+* Fixed alignments for some UI components
+* Various performance improvements and bugfixes
+
+== Version: 2024.2.2
+
+=== Captain
+
+* Remote configuration improvements
+* Various performance improvements and bugfixes
+
+=== Salto
+
+* Remote configuration improvements
+* Various performance improvements and bugfixes
+
+=== Twig
+
+* Remote configuration improvements
+* Various performance improvements and bugfixes
+
+=== Hoof
+
+* Added Recording Tasks management from UI
+* Added component version to Component list
+* Various performance improvements and bugfixes
+
+== Version: 2024.2.1
+
+=== Captain
+
+* Added TCP protocol for Management
+* Added WebSocket protocol for Management and data sending(EE)
+* Added response handling for SIP3 Component Register messages
+* Various performance improvements and bugfixes
+
+=== Salto
+
+* Added TCP protocol for Management
+* Added WebSocket protocol for Management and data sending(EE)
+* Support different protocols for Server and Management in same time
+* Various performance improvements and bugfixes
+
+=== Twig
+
+* Update Salto multi-protocol configuration
+* Various performance improvements and bugfixes
+
+=== Hoof
+
+* Various performance improvements and bugfixes
+
+== Version: 2024.1.3
+
+=== Captain
+
+* Extend New Relic metrics configuration
+* Added response for Register message in Management Socket
+* Various performance improvements and bugfixes
+
+=== Salto
+
+* Extend New Relic metrics configuration
+* Added response for Register message in Management Socket
+* Remove configuration improvements
+* Various performance improvements and bugfixes
+
+=== Twig
+
+* Extend Role-based authorization model in EE version
+* Various performance improvements and bugfixes
+
+=== Hoof
+
+* Role-based authorization model for EE version
+* Various performance improvements and bugfixes
+
+== Version: 2024.1.2
+
+=== Captain
+
+* Fixed SIP over TCP capturing
+* Added WebSocket support in EE version
+* Added IPFIX support in EE version
+* Added HEP3 Server in EE version
+* Various performance improvements and bugfixes
+
+=== Salto
+
+* Various performance improvements and bugfixes
+
+=== Twig
+
+* Various performance improvements and bugfixes
+* Update dependencies with security issues
+
+=== Hoof
+
+* Various performance improvements and bugfixes
+
+For upgrade procedure, please read xref:UpgradeGuide.adoc[Upgrade Guide]
+
 == Version: 2024.1.1
 
 === Captain
@@ -35,30 +178,6 @@
 * Various performance improvements and bugfixes
 
 _For upgrade procedure, please read xref:UpgradeGuide.adoc[Upgrade Guide]_
-
-== Version: 2024.1.2
-
-=== Captain
-* Fixed SIP over TCP capturing
-* Added WebSocket support (EE link)
-* Added IPFIX support (EE link)
-* Added HEP3 Server (EE link)
-* Various performance improvements and bugfixes
-
-=== Salto
-
-* Various performance improvements and bugfixes
-
-=== Twig
-
-* Various performance improvements and bugfixes
-* Update dependencies with security issues
-
-=== Hoof
-
-* Various performance improvements and bugfixes
-
-For upgrade procedure, please read xref:UpgradeGuide.adoc[Upgrade Guide]
 
 == Version: 2023.2.1
 
