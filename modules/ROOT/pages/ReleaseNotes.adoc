@@ -1,6 +1,42 @@
 = Release Notes
 :description: SIP3 Release Notes
 
+== Version: 2025.2.1
+
+=== Captain
+
+* Improve connection stability and SSL support between components
+
+* Various performance improvements and bugfixes
+
+=== Salto
+
+* Improve connection stability and SSL support between components
+
+* UDF management using MongoDB
+
+* Remote Shutdown from UI
+
+* Various performance improvements and bugfixes
+
+=== Twig
+
+* UDF API
+
+* OAuth roles customization
+
+* Twig Registration as a component in UI
+
+* Various performance improvements and bugfixes
+
+=== Hoof
+
+* Callflow merging (Experimental feature)
+
+* UDF management
+
+* Various performance improvements and bugfixes
+
 == Version: 2025.1.1
 
 === Captain

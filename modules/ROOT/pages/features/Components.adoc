@@ -2,20 +2,21 @@
 :description: SIP3 Components.
 
 == Overview
-SIP3 provides control over its components. On Components page there is table that shows all Captains connected to Salto.
+SIP3 provides control over its components. On the Components page there is a table that shows all Captains connected to Salto.
 
 image::Components.png[Components table]
 
 - `Name` - the name of the component from its configuration
 - `Type` - component type
+- `Version` - component version
 - `Connected to` - the name of the Salto to which the component is connected
 - `Registered at` - date and time of the first `register` message from the Captain
 - `Updated at` - date and time of the last `register` message from the Captain
 - `Time difference` - time difference between the timestamp of `register` message on Captain host and the timestamp of receiving this message on Salto
 
-- `Actions` - available actions for this type of component
+- `Actions` - available actions for this type of component:
 * image:SettingsIcon.png[Settings] - view configuration of remote component in JSON
 * image:PowerOffIcon.png[Shutdown] - shutdown component (available in xref:CommunityEditionVsEnterpriseEdition.adoc[Enterprise Edition]).
 
-NOTE: The Shutdown action will cause the component restart if it was installed as `systemd` service.
+NOTE: The Shutdown action will cause the component restart if it was installed as `systemd` service. Only Captain and Salto are supported.
 
