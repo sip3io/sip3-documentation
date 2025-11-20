@@ -35,7 +35,7 @@ image::CallFlowMediaEventsSitcking.png[Call Flow Media Events Sticking]
 
 The xref:features/MediaRecordingOnDemand.adoc[Media Quality Widget] is shown on event click.
 
-image::CallFlowMediaMessage.png[Call Flow Media Message]
+image::MediaQualityWidget.png[Call Flow Media Message]
 
 == Call Flow Sidebar
 

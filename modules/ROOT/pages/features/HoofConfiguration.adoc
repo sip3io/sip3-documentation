@@ -11,6 +11,7 @@ In general SIP3 Hoof can be deeply customized by our developers. Also SIP3 Hoof 
 * Custom Searches
 * Custom Search Results
 * Winbox behaviour
+* Media appearance
 
 
 Hoof configuration is stored in JSON format:
@@ -29,7 +30,8 @@ Hoof configuration is stored in JSON format:
   "features": [], // <5>
   "root_path": "", // <6>
   "default_route": "/search/advanced", // <7>
-  "oauth2": {} // <8>
+  "oauth2": {}, // <8>
+  "media": {} // <9>
 }
 ----
 
@@ -44,7 +46,7 @@ Hoof configuration is stored in JSON format:
 <6> `root_path` - Root path used when Hoof is placed after proxy and have prefix in path
 <7> `default_route` - Default route after successful login or going to `root_path`
 <8> `oauth2` - OAuth2 configuration
-
+<9> `media` - Media configuration
 == Timezones
 
 Default configuration have 2 timezones:
@@ -358,6 +360,19 @@ SIP3 Hoof supports OAuth2 authentication and needs to be configured properly:
 <2> `provider` - OAuth2 provider in SIP3 Twig
 
 IMPORTANT: SIP3 Twig must be configured first to enable OAuth2 authentication.
+
+=== Media configuration
+
+Some parameters for media appearance can be configured:
+[source,json]
+----
+{
+  "media": {
+    "distance_threshold": 1000      // <1>
+  }
+}
+----
+<1> `distance_threshold` - minimal distance between RTP Reports in milliseconds.
 
 === Other parameters
 

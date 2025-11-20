@@ -16,7 +16,7 @@ image::Components.png[Components table]
 
 - `Actions` - available actions for this type of component:
 * image:SettingsIcon.png[Settings] - view configuration of remote component in JSON
-* image:PowerOffIcon.png[Shutdown] - shutdown component (available in xref:CommunityEditionVsEnterpriseEdition.adoc[Enterprise Edition]).
+* image:PowerOffIcon.png[Shutdown] - shutdown component (available in xref:CommunityEditionVsEnterpriseEdition.adoc[Enterprise Edition]).  With `Ctrl`/`Cmd` pressed component will try to upgrade itself.
 
 NOTE: The Shutdown action will cause the component restart if it was installed as `systemd` service. Only Captain and Salto are supported.
 

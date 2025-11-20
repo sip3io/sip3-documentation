@@ -1,6 +1,33 @@
 = Release Notes
 :description: SIP3 Release Notes
 
+== Version: 2025.3.1
+
+=== Captain
+* Improved ISUP message processing
+* Various performance improvements and bugfixes
+
+=== Salto
+
+* Allowed SIP message processing with empty user
+* Improved ISUP message processing
+* Add all transactions for processing in a call
+* Case-insensitive headers in `sip.message`
+* Fixed SDP parsing
+* Various performance improvements and bugfixes
+
+=== Twig
+* Improved RTP Report post-processing
+* Improved ISUP message processing
+* Various performance improvements and bugfixes
+
+=== Hoof
+* RTP/RTCP quality visualization
+* User interface improvements
+* Various performance improvements and bugfixes
+
+IMPORTANT: Hoof configuration must be upgraded
+
 == Version: 2025.2.1
 
 === Captain

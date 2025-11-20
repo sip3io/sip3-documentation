@@ -16,7 +16,7 @@ which we packaged into `sip3-java` package for Linux. This package is required f
 You should pay attention to checking JAVA_HOME variable in the configuration files.
 The file `environment.conf` exists in all application of SIP3 solution. Locations: `/etc/sip3-{application}/environment.conf`
 (e.g. '/etc/sip3-salto/environment.conf`).
-JAVA_HOME variable should be setted to `/opt/sip3-java`.
+JAVA_HOME variable should be set to `/opt/sip3-java`.
 
 Example of `environment.conf`:
 ```

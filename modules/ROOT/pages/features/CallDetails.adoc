@@ -30,10 +30,13 @@ On the right side of Header are control elements for this Call.
 - Stash the call. It helps to save the call to special collections for storing them for as long as you need (xref:CommunityEditionVsEnterpriseEdition.adoc[EE feature]).
 - Share this call. Get link to the call and share it with you teammates.
 - Export this call. It allows to export either all or selected call legs in _PNG_ and _PCAP_.
+- Merge this call with another opened to show them on one callflow.
 
 NOTE: Check out the Display settings section of xref:features/CallFlowDiagram.adoc[Call Flow Diagram page] to find out how to select call legs.
 
 image::ExportToDropdown.png[Export To Dropdown]
+
+image::MergeDropdown.png[Merge Dropdown]
 
 === Info
 Info always shows main information, that needs to be easily accessible from any tab, like call's __caller__ and __callee__, __start time__, __status__ and __duration__.
