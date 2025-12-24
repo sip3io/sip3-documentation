@@ -128,6 +128,7 @@ image::CustomSearchLayout.png[Custom Search Layout]
 {
       "id": "custom",
       "name": "Custom search",
+      "form_type": "attributes",
       "sections": [
         {
           "id": "main",
@@ -220,14 +221,16 @@ Search configuration consist of 4 main parameters:
 {
   "id": "custom", // <1>
   "name": "Custom search", // <2>
-  "sections": [ ], // <3>
-  "results": { } // <4>
+  "form_type": "attributes", // <3>
+  "sections": [ ], // <4>
+  "results": { } // <5>
 }
 ----
 <1> `id` - Custom search ID
 <2> `name` - Custom search name
-<3> `sections` - Section of search attributes
-<4> `results` - Configuration for search results
+<3> `form_type` - Search form type. Available values: `attributes`, `advanced`
+<4> `sections` - Section of search attributes
+<5> `results` - Configuration for search results
 
 === Section
 
