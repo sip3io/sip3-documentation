@@ -25,28 +25,41 @@ To better understand SIP3 UDF structure let's analyze following `sip_message_udf
 ++++
 [source,groovy]
 ----
-def eventBus = vertx.eventBus()                                 // <1>
-eventBus.localConsumer("sip_message_udf", { event ->            // <2>
-    // `event.body` is a Map<String, Object>:
-    // {
-    //  "src_addr" : String,
-    //  "src_host" : String (Optional),
-    //  "src_port" : Integer,
-    //  "dst_addr" : String,
-    //  "dst_host" : String (Optional),
-    //  "dst_port" : Integer,
-    //  "payload" : Map<String, String>,
-    //  "attributes" : Map<String, String|Boolean>
-    // }
-    def packet = event.body()
+package SipMessageUdfVerticle
 
-    def sip_message = packet['payload']                         // <3>
-    if (sip_message['from'].matches('<sip:100@.*')) {
-        packet['attributes']['robocall'] = true                 // <4>
+import io.vertx.core.AbstractVerticle
+import io.sip3.salto.ce.udf.UdfExecutor
+import org.slf4j.LoggerFactory
+
+public class SipMessageUdfVerticle extends AbstractVerticle {
+
+    def logger = LoggerFactory.getLogger(UdfExecutor.class)
+
+    @Override                                                           // <1>
+    public void start() {
+        vertx.eventBus().localConsumer("sip_message_udf", { event ->    // <2>
+            // `event.body` is a Map<String, Object>:
+            // {
+            //  "src_addr" : String,
+            //  "src_host" : String (Optional),
+            //  "src_port" : Integer,
+            //  "dst_addr" : String,
+            //  "dst_host" : String (Optional),
+            //  "dst_port" : Integer,
+            //  "payload" : Map<String, String>,
+            //  "attributes" : Map<String, String|Boolean>
+            // }
+            def packet = event.body()
+
+            def sip_message = packet['payload']                         // <3>
+            if (sip_message['from'].matches('<sip:100@.*')) {
+                packet['attributes']['robocall'] = true                 // <4>
+            }
+
+            event.reply(true)                                           // <5>
+        })
     }
-
-    event.reply(true)                                           // <5>
-})
+}
 ----
 ++++
 </details>
@@ -107,18 +120,43 @@ SIP3 correlates same call legs by strictly matching `From` and `To` users. Now, 
 ++++
 [source,groovy]
 ----
-def eventBus = vertx.eventBus()
-eventBus.localConsumer("sip_message_udf", { event ->
-    def packet = event.body()
+package SipMessageUdfVerticle
 
-    def from_header = packet['payload']['from']
-    def matcher = (from_header =~ /1(\d*)/)
-    if (matcher) {
-        packet['attributes']['caller'] = matcher[0][1]
+import io.vertx.core.AbstractVerticle
+import io.sip3.salto.ce.udf.UdfExecutor
+import org.slf4j.LoggerFactory
+
+public class SipMessageUdfVerticle extends AbstractVerticle {
+
+    def logger = LoggerFactory.getLogger(UdfExecutor.class)
+
+    @Override
+    public void start() {
+        vertx.eventBus().localConsumer("sip_message_udf", { event ->
+            // `event.body` is a Map<String, Object>:
+            // {
+            //  "src_addr" : String,
+            //  "src_host" : String (Optional),
+            //  "src_port" : Integer,
+            //  "dst_addr" : String,
+            //  "dst_host" : String (Optional),
+            //  "dst_port" : Integer,
+            //  "payload" : Map<String, String>,
+            //  "attributes" : Map<String, String|Boolean>
+            // }
+            def packet = event.body()
+
+            def from_header = packet['payload']['from']
+            def matcher = (from_header =~ /1(\d*)_(\d*)/)
+            if (matcher) {
+                packet['attributes']['caller'] = matcher[0][1]
+                packet['attributes']['d:suffix'] = matcher[0][2]
+            }
+
+            event.reply(true)
+        })
     }
-
-    event.reply(true)
-})
+}
 ----
 ++++
 </details>
@@ -153,30 +191,43 @@ Following example shows how to filter traffic passing between `SBC` and `SSW` ho
 ++++
 [source,groovy]
 ----
-def eventBus = vertx.eventBus()
-eventBus.localConsumer("packet_udf", { event ->
-    // `event.body` is a Map<String, Object>:
-    // {
-    //  "sender_addr" : String,
-    //  "sender_host" : String (Optional),
-    //  "sender_port" : Integer,
-    //  "payload" : Map<String, Object>,
-    //      "src_addr" : String,
-    //      "src_host" : String (Optional),
-    //      "src_port" : Integer,
-    //      "dst_addr" : String,
-    //      "dst_host" : String (Optional),
-    //      "dst_port" : Integer,
-    // }
-    def packet = event.body()
+package PacketUdfVerticle
 
-    if (packet['sender_host'] == 'SBC'
-            && (packet['payload']['src_host'] == 'SSW' || packet['payload']['dst_host'] == 'SSW')) {
-        event.reply(false)
-    } else {
-        event.reply(true)
+import io.vertx.core.AbstractVerticle
+import io.sip3.salto.ce.udf.UdfExecutor
+import org.slf4j.LoggerFactory
+
+public class PacketUdfVerticle extends AbstractVerticle {
+
+    def logger = LoggerFactory.getLogger(UdfExecutor.class)
+
+    @Override
+    public void start() {
+        vertx.eventBus().localConsumer("packet_udf", { event ->
+            // `event.body` is a Map<String, Object>:
+            // {
+            //  "sender_addr" : String,
+            //  "sender_host" : String (Optional),
+            //  "sender_port" : Integer,
+            //  "payload" : Map<String, Object>,
+            //      "src_addr" : String,
+            //      "src_host" : String (Optional),
+            //      "src_port" : Integer,
+            //      "dst_addr" : String,
+            //      "dst_host" : String (Optional),
+            //      "dst_port" : Integer,
+            // }
+            def packet = event.body()
+
+            if (packet['sender_host'] == 'SBC'
+                    && (packet['payload']['src_host'] == 'SSW' || packet['payload']['dst_host'] == 'SSW')) {
+                event.reply(false)
+            } else {
+                event.reply(true)
+            }
+        })
     }
-})
+}
 ----
 ++++
 </details>
@@ -205,28 +256,41 @@ Following example shows how to define and assign `robocall` attribute:
 ++++
 [source,groovy]
 ----
-def eventBus = vertx.eventBus()
-eventBus.localConsumer("sip_message_udf", { event ->
-    // `event.body` is a Map<String, Object>:
-    // {
-    //  "src_addr" : String,
-    //  "src_host" : String (Optional),
-    //  "src_port" : Integer,
-    //  "dst_addr" : String,
-    //  "dst_host" : String (Optional),
-    //  "dst_port" : Integer,
-    //  "payload" : Map<String, String>,
-    //  "attributes" : Map<String, String|Boolean>
-    // }
-    def packet = event.body()
+package SipMessageUdfVerticle
 
-    def sip_message = packet['payload']
-    if (sip_message['from'].matches('<sip:100@.*')) {
-        packet['attributes']['robocall'] = true
+import io.vertx.core.AbstractVerticle
+import io.sip3.salto.ce.udf.UdfExecutor
+import org.slf4j.LoggerFactory
+
+public class SipMessageUdfVerticle extends AbstractVerticle {
+
+    def logger = LoggerFactory.getLogger(UdfExecutor.class)
+
+    @Override
+    public void start() {
+        vertx.eventBus().localConsumer("sip_message_udf", { event ->
+            // `event.body` is a Map<String, Object>:
+            // {
+            //  "src_addr" : String,
+            //  "src_host" : String (Optional),
+            //  "src_port" : Integer,
+            //  "dst_addr" : String,
+            //  "dst_host" : String (Optional),
+            //  "dst_port" : Integer,
+            //  "payload" : Map<String, String>,
+            //  "attributes" : Map<String, String|Boolean>
+            // }
+            def packet = event.body()
+
+            def sip_message = packet['payload']
+            if (sip_message['from'].matches('<sip:100@.*')) {
+                packet['attributes']['robocall'] = true
+            }
+
+            event.reply(true)
+        })
     }
-
-    event.reply(true)
-})
+}
 ----
 ++++
 </details>
@@ -257,37 +321,57 @@ Following example shows how to define and assign `problematic` attribute to a ca
 ----
 def eventBus = vertx.eventBus()
 eventBus.localConsumer("sip_call_udf", { event ->
-    // `event.body` is a Map<String, Object>:
-    // {
-    //  "src_addr" : String,
-    //  "src_host" : String (Optional),
-    //  "src_port" : Integer,
-    //  "dst_addr" : String,
-    //  "dst_host" : String (Optional),
-    //  "dst_port" : Integer,
-    //  "payload" : Map<String, Object>,
-    //      "created_at" : Long,
-    //      "terminated_at" : Long,
-    //      "state" : String,
-    //      "caller" : String,
-    //      "callee" : String,
-    //      "call_id" : String,
-    //      "duration" : Long (Optional),
-    //      "setup_time" : Long (Optional),
-    //      "cancel_time" : Long (Optional),
-    //      "establish_time" : Long (Optional),
-    //      "terminated_by" : String (Optional)
-    //   "attributes" : Map<String, String|Boolean>
-    // }
-    def session = event.body()
 
-    def setup_time = session['payload']['setup_time']
-    if (setup_time != null && setup_time > 5000) {
-        session['attributes']['problematic'] = true
-    }
-
-    event.reply(true)
 })
+
+
+package SipCallUdfVerticle
+
+import io.vertx.core.AbstractVerticle
+import io.sip3.salto.ce.udf.UdfExecutor
+import org.slf4j.LoggerFactory
+
+public class SipCallUdfHandler extends AbstractVerticle {
+
+    def logger = LoggerFactory.getLogger(UdfExecutor.class)
+
+    @Override
+    public void start() {
+        vertx.eventBus().localConsumer("sip_call_udf", { event ->
+            // `event.body` is a Map<String, Object>:
+            // {
+            //  "src_addr" : String,
+            //  "src_host" : String (Optional),
+            //  "src_port" : Integer,
+            //  "dst_addr" : String,
+            //  "dst_host" : String (Optional),
+            //  "dst_port" : Integer,
+            //  "payload" : Map<String, Object>,
+            //      "created_at" : Long,
+            //      "terminated_at" : Long,
+            //      "state" : String,
+            //      "caller" : String,
+            //      "callee" : String,
+            //      "call_id" : String,
+            //      "duration" : Long (Optional),
+            //      "setup_time" : Long (Optional),
+            //      "cancel_time" : Long (Optional),
+            //      "establish_time" : Long (Optional),
+            //      "terminated_by" : String (Optional)
+            //   "attributes" : Map<String, String|Boolean>
+            // }
+            def session = event.body()
+
+            def setup_time = session['payload']['setup_time']
+            if (setup_time != null && setup_time > 5000) {
+                session['attributes']['problematic'] = true
+            }
+
+            event.reply(true)
+        })
+    }
+}
+
 ----
 ++++
 </details>
