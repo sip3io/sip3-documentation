@@ -1,0 +1,297 @@
+= Community Edition vs Enterprise Edition
+:description: SIP3 Community Edition vs Enterprise Edition
+
+== Overview
+
+SIP3 is available in Community, Enterprise, and Telecom editions. These editions offer different sets of features. In this document, we have summarized the main differences between these editions and the features available in each.
+
+== Comparison
+
+[cols="66,~,~, ~"]
+|===
+||CE |EE |TE
+
+4+^| *1. Data Sources*
+
+| SIP3 Captain real-time capture agent
+| Yes
+| Yes
+| Yes
+
+| SIP3 Captain high-load optimized capture agent
+|
+| Yes
+| Yes
+
+| DPDK support
+|
+|
+| Yes
+
+| HEP support
+| Yes
+| Yes
+| Yes
+
+| Optimized HEP support
+|
+| Yes
+| Yes
+
+| SPAN/RSPAN/ERSPAN/IP-in-IP encapsulation support
+| Yes
+| Yes
+| Yes
+
+4+^| *2. Transport Protocols*
+
+| UDP
+| Yes
+| Yes
+| Yes
+
+| TCP
+| Yes
+| Yes
+| Yes
+
+| SCTP
+|
+|
+| Yes
+
+4+^| *3. Data Processing*
+
+| SIP analysis
+| Yes
+| Yes
+| Yes
+
+| SIP-I (ISUP encapsulation) analysis
+|
+|
+| Yes
+
+| RTCP analysis
+| Yes
+| Yes
+| Yes
+
+| RTP/SRTP analysis
+|
+| Yes
+| Yes
+
+| DTMF analysis
+|
+| Yes
+| Yes
+
+
+| Custom events analysis (i.e. Push Notifications)
+|
+| Yes
+| Yes
+
+| RTP recording
+| Yes
+| Yes
+| Yes
+
+| RTP recording on demand
+|
+| Yes
+| Yes
+
+| RTP recording in GDPR-compliant mode
+|
+| Yes
+| Yes
+
+| DTMF in GDPR-compliant mode
+|
+| Yes
+| Yes
+
+4+^| *4. Interfaces, integrations and management*
+
+| Simple Search for Tier 1 dashboard
+| Yes
+| Yes
+| Yes
+
+| Advanced Search dashboard
+| Yes
+| Yes
+| Yes
+
+| Customization Search dashboard
+|
+| Yes
+| Yes
+
+| User-Defined Functions
+| Yes
+| Yes
+| Yes
+
+| User interface for managing UDFs
+|
+| Yes
+| Yes
+
+| Component management
+|
+| Yes
+| Yes
+
+| Сonfiguration management
+|
+| Yes
+| Yes
+
+| Calls Snapshot Vault
+|
+| Yes
+| Yes
+
+4+^| *5. Service Metrics*
+
+| InfluxDB
+| Yes
+| Yes
+| Yes
+
+| Prometheus
+| 
+| Yes
+| Yes
+
+| VictoriaMetrix
+|
+| Yes
+| Yes
+
+| Datadog
+|
+| Yes
+| Yes
+
+| New Relic
+|
+| Yes
+| Yes
+
+| Datadog and New Relic cost optimized
+|
+|
+| Yes
+
+4+^| *6. Authorization*
+
+| Grafana authorization
+| Yes
+| Yes
+| Yes
+
+| LDAP authorization
+|
+| Yes
+| Yes
+
+| OAuth and OIDC authorization (KeyCloak, Okta, Google, etc)
+|
+| Yes
+| Yes
+
+| Role Based Access Control
+|
+| Yes
+| Yes
+
+| API key authorization
+|
+| Yes
+| Yes
+
+| Audit logging
+|
+| Yes
+| Yes
+
+4+^| *7. Deployment*
+
+| Ansible automation
+| Yes
+| Yes
+| Yes
+
+| Agent installtion scripts
+|
+| Yes
+| Yes
+
+| HostMap agent Auto-Discovery
+|
+| Yes
+| Yes
+
+| Data Federation
+|
+| Yes
+| Yes
+
+| High-availability cluster
+|
+|
+| Yes
+
+4+^| *8. Services*
+
+| Cloud and on-premise deployment
+|
+| Yes
+| Yes
+
+| Integrations and customizations
+|
+| Yes
+| Yes
+
+| Community support
+| Yes
+|
+|
+
+| SLA support
+|
+| Yes
+| Yes
+
+| Audit and consultament (fraud detection, traffic profiling, etc)
+|
+| Yes
+| Yes
+
+4+^| *9. Automation interfaces*
+
+| OpenAPI
+| Yes
+| Yes
+| Yes
+
+| MCP Support
+|
+| Yes
+| Yes
+
+| VX AI Skills Pack
+|
+| Yes
+| Yes
+
+|===
+
+== Contacts
+
+If you have any further questions, feel free to reach out to our enterprise support team via mailto:contact@sip3.io[email]. We're happy to help.
