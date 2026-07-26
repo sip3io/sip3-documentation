@@ -319,12 +319,6 @@ Following example shows how to define and assign `problematic` attribute to a ca
 ++++
 [source,groovy]
 ----
-def eventBus = vertx.eventBus()
-eventBus.localConsumer("sip_call_udf", { event ->
-
-})
-
-
 package SipCallUdfVerticle
 
 import io.vertx.core.AbstractVerticle
