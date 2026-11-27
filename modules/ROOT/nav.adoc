@@ -1,4 +1,5 @@
 * xref:InstallationGuide.adoc[Installation Guide]
+** xref:InstallationGuideContainers.adoc[Installation in Docker and Kubernetes]
 * xref:UpgradeGuide.adoc[Upgrade Guide]
 * Features
 ** xref:features/AdvancedSearch.adoc[Advanced Search]
