@@ -1,6 +1,96 @@
 = Release Notes
 :description: SIP3 Release Notes
 
+== Version: 2026.2.2
+
+*Higher Performance, Deeper Media Visibility, and a Stronger Foundation for Scale*
+
+This release brings significant improvements in packet processing performance, media session visibility, transport reliability, and operational efficiency.
+It focuses on the priorities of production VoIP environments: processing more traffic with fewer resources, maintaining accurate visibility across complex call scenarios, and making troubleshooting faster and more effective.
+SIP3 `2026.2.2` also introduces an updated deployment policy for the Community Edition, establishing a clearer distinction between free deployments and commercially supported, large-scale installations.
+
+=== Netty Native Transport
+SIP3 now supports Netty native transport, enabling more efficient network I/O processing on Linux operating systems.
+By taking advantage of native operating system networking capabilities, SIP3 reduces overhead associated with standard Java NIO operations.
+
+* Higher throughput and improved resource efficiency. SIP3 can process more SIP and RTP traffic on existing compute resources
+* Lower network I/O overhead. Native event handling reduces unnecessary system calls and improves responsiveness under demanding traffic conditions
+* More predictable performance under load. Optimized buffer and memory management helps reduce JVM garbage collection pressure and the risk of processing delays during traffic bursts
+* Automatic transport selection. SIP3 detects native transport availability at startup and uses the appropriate implementation, with automatic fallback to standard Java NIO when native transport is unavailable
+
+=== Community and Commercial Editions
+Starting with `2026.2.2`, the Community Edition supports up to two simultaneous `sip3-captain` instances connected to `sip3-salto`.
+This deployment policy is suited to development, testing, and evaluation, as well as smaller production environments, while maintaining access to the core SIP3 monitoring and troubleshooting capabilities.
+
+* The Community Edition remains open source. Users can continue to use SIP3 for learning, development, and testing, and in smaller monitoring environments, with up to two connected Captain instances
+* Enterprise and Telecom Editions support unrestricted Captain scaling. These editions are designed for organizations with more demanding requirements for operations, scalability, and service levels
+
+See xref:CompareEditions.adoc[SIP3 Editions] for more details.
+
+=== WAV Recording Export Through the API
+Added the ability to export recorded media streams in standard WAV format through the SIP3 API.
+For environments where media recording is enabled and permitted under applicable privacy and data protection requirements, this simplifies access to recorded audio for technical investigation and automated analysis.
+
+* Direct WAV export. Retrieve recorded media through the API without additional conversion steps
+* Faster troubleshooting of one-way audio, degraded voice quality, and other media-related issues
+* Automation support. Integrate recorded media retrieval into testing, quality assurance, and incident investigation workflows
+
+NOTE: Dedicated controls for accessing and downloading recorded media directly from the SIP3 web interface are coming in an upcoming release.
+
+=== Continuous Media Quality Visibility
+SIP renegotiation, call transfers, SBC processing, codec changes, and media re-anchoring can modify the characteristics of an active media session.
+In earlier versions, these transitions could fragment media statistics or make it difficult to follow quality changes throughout a call.
+SIP3 now improves how media sessions are represented and analyzed over time.
+
+* Continuous media quality timelines across the full session lifecycle, including transitions caused by renegotiation or media re-anchoring
+* Dynamic parameter tracking. Follow changes in media ports, codecs, and other session parameters as they occur
+* Improved troubleshooting context. Correlate changes in media characteristics with quality degradation, call transfers, SBC behavior, and other signaling events
+
+=== Extended UDF Capabilities
+The `sip_packet_udf` payload now includes the `protocol_code` field.
+It gives UDF developers the information needed to distinguish traffic captured at multiple capture points, avoiding duplicate records and inflated metrics.
+
+* Greater control over custom packet processing
+* Improved support for multi-point traffic capture scenarios
+* More accurate custom infrastructure and business KPIs
+
+See xref:features/UserDefinedFunctions.adoc[User-Defined Functions] for more details.
+
+=== Selective and Extensible SDP Parsing
+Introduced a more selective and extensible SDP parsing mechanism.
+
+* Selective field processing. SIP3 focuses on the SDP attributes required for standard monitoring and analysis
+* Reduced parsing overhead. Nonessential attributes are skipped, which lowers CPU load
+* Extensible parsing rules. Add your own handling for vendor-specific attributes or proprietary SDP extensions
+
+=== Improved Time Zone Handling with IANA
+The web interface now supports standard IANA time zone identifiers, such as `America/New_York` and `Europe/London`.
+Unlike fixed UTC offsets, IANA time zones account for regional daylight saving time rules and historical offset changes.
+This improves the consistency of historical timestamps and reduces ambiguity when investigating calls during daylight saving time transitions or across multiple regions.
+
+=== TCP and WebSocket Transport Reliability
+Further optimizations of TCP and WebSocket communication between distributed components:
+
+* Connection stability under high concurrency and sustained traffic loads
+* Efficient buffer management
+* Reduced data transfer overhead
+* Steadier behavior during traffic bursts and other periods of high load
+
+=== User Interface and Usability Improvements
+* A series of smaller improvements throughout the web interface that simplify everyday troubleshooting tasks, improve navigation, and make call analysis more intuitive
+
+=== Security and Dependency Updates
+Updates to third-party runtime and infrastructure components to address reported security vulnerabilities:
+
+* Java Runtime: Eclipse Temurin (Adoptium) `25.0.5.1+2`
+** CVE-2026-91403,
+CVE-2026-114820,
+CVE-2026-114938
+* Nginx `1.31.9` mainline
+** CVE-2026-123007,
+CVE-2026-123633,
+CVE-2026-123634
+
 == Version: 2026.1.1
 
 This is a major release that includes updates to component versions and third-party software, and addresses many security vulnerabilities in dependent libraries.
