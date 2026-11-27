@@ -1,0 +1,550 @@
+= Installation in Docker and Kubernetes
+:description: SIP3 Installation in Docker and Kubernetes
+
+== Overview
+
+NOTE: This document describes the installation of SIP3 version `2026.2.2` using containers.
+If you prefer Ansible, please refer to the xref:InstallationGuide.adoc[Installation Guide].
+
+This document describes the containers that make up SIP3, how they relate to each other, and how to run and configure them in Docker and Kubernetes.
+
+== System Components
+
+[cols="1,3,2"]
+|===
+|Container |Purpose |Port / network
+
+|`sip3-captain`
+|Traffic capture agent. Listens on a network interface and sends the data to SIP3 Salto
+|Host network, `NET_RAW` capability
+
+|`sip3-salto`
+|Data processing and storage in MongoDB
+|UDP 15060 (data from SIP3 Captain), UDP 15090 (management)
+
+|`sip3-twig`
+|REST API for the UI. Reads data from MongoDB
+|TCP 8080 (path `/api`)
+
+|`sip3-hoof`
+|Web UI
+|TCP 8080 inside the container (publish it on any port)
+|===
+
+Two external services are also required or optional. They are not part of SIP3:
+
+- *MongoDB* (required). Stores the data written by SIP3 Salto and read by SIP3 Twig.
+- *Grafana* (optional). SIP3 Hoof proxies it at the `/grafana` path.
+
+== How The Containers Are Connected
+
+[source]
+----
+                 UDP 15060                      TCP 27017
+ captain ─────────────────────▶ salto ─────────────────────▶ MongoDB
+ (interface traffic)                                            ▲
+                                                                │
+ browser ──▶ hoof ──/api/──▶ twig ──────────────────────────────┘
+               └──/grafana──▶ Grafana (optional)
+----
+
+- SIP3 Captain must see the network traffic, so run it on a host that has the capture interface.
+- SIP3 Captain needs the SIP3 Salto address (`SIP3_CONFIG_CAPTAIN_SENDER_URI`).
+- SIP3 Salto and Twig need the MongoDB address (`..._MONGO_URI`).
+- SIP3 Hoof needs the SIP3 Twig address (`SIP3_CONFIG_HOOF_TWIG_ADDRESS`) and, if used, the Grafana address.
+- SIP3 Salto, Twig, Hoof, MongoDB, and Grafana must be on the *same network* (a Docker network or a Kubernetes namespace) so they can reach each other by name.
+- You are responsible for startup order and restarts: use `restart: unless-stopped` and `depends_on` in Docker, or a restart policy in Kubernetes.
+SIP3 Hoof does not start if the SIP3 Twig or Grafana name cannot be resolved.
+
+== General Configuration Principles
+
+- Containers are configured with *environment variables*. You do not need to modify the image or create configuration files.
+- Anything you do not set comes from the built-in minimal configuration.
+- Containers run as an unprivileged user (uid 101). Logs go to the console: `docker logs`, `kubectl logs`.
+- Instead of variables, you can mount your own `application.yml` (see <<Custom application.yml>>). It becomes the base, and variables are applied on top of it.
+- You can check a configuration before running it: `SIP3_CONFIG_DRY_RUN=true` prints the resulting configuration and exits (see <<Verifying the Configuration>>).
+
+== Configuring SIP3 Captain, Salto And Twig
+
+=== Application Parameters
+
+Build the variable name from the parameter path in `application.yml`:
+
+. Add the prefix: `SIP3_CONFIG_CAPTAIN_`, `SIP3_CONFIG_SALTO_`, or `SIP3_CONFIG_TWIG_`.
+. Separate nesting levels with `_`.
+. Write a `_` that is part of a parameter name as `__`.
+. Use uppercase throughout.
+
+[cols="1,2"]
+|===
+|Parameter |Variable
+
+|`pcap.dev` (captain)
+|`SIP3_CONFIG_CAPTAIN_PCAP_DEV`
+
+|`pcap.bpf_filter` (captain)
+|`SIP3_CONFIG_CAPTAIN_PCAP_BPF__FILTER`
+
+|`sender.uri` (captain)
+|`SIP3_CONFIG_CAPTAIN_SENDER_URI`
+
+|`server.udp.uri` (salto)
+|`SIP3_CONFIG_SALTO_SERVER_UDP_URI`
+
+|`mongo.uri` (salto)
+|`SIP3_CONFIG_SALTO_MONGO_URI`
+
+|`mongo.db` (salto, twig)
+|`SIP3_CONFIG_SALTO_MONGO_DB`, `SIP3_CONFIG_TWIG_MONGO_DB`
+
+|`session.call.max_legs` (twig)
+|`SIP3_CONFIG_TWIG_SESSION_CALL_MAX__LEGS`
+|===
+
+You can set *any* application parameter, not only the ones listed here.
+See the xref:GettingStartedGuide.adoc[Getting Started Guide] for the full list of parameters.
+
+=== Values
+
+[cols="1,2"]
+|===
+|What you need |How to write it
+
+|Number, `true`/`false`, string
+|As is: `1450`, `true`, `ip and udp`
+
+|URI with `?`, `&`, `=`
+|As is: `mongodb://mongo:27017/?w=0&j=false`
+
+|List
+|In square brackets, wrapped in single quotes: `'[0..10, 100]'`
+
+|String that looks like a number or `yes`/`no`/`null`
+|In double quotes inside single quotes: `'"123"'`
+
+|Complex structure (for example `host.mapping`, `mongo.collections`)
+|As a single variable containing the whole YAML value
+|===
+
+A list is replaced as a whole. You cannot change a single list element.
+For long lists, it is easier to mount your own `application.yml`.
+
+WARNING: *Leaf-parameters-only rule.* You cannot set a block and its nested parameters at the same time.
+For example, `SIP3_CONFIG_CAPTAIN_SENDER` together with `SIP3_CONFIG_CAPTAIN_SENDER_URI` is an error, and the container does not start.
+
+=== Secrets
+
+Passwords in regular variables are visible in `docker inspect` and in manifests.
+For secrets, add the `_FILE` suffix and set the path to a file that contains the value:
+
+[source]
+----
+SIP3_CONFIG_SALTO_MONGO_URI_FILE=/run/secrets/mongo_uri
+----
+
+The file contains the entire value, for example `mongodb://user:pass@mongo:27017/sip3?w=0&j=false`.
+For a given parameter, set either the regular variable or the `_FILE` variable, not both.
+
+- Docker: `-v ./mongo_uri:/run/secrets/mongo_uri:ro` or Docker secrets.
+- Kubernetes: a Secret mounted as a volume.
+
+=== Java Launch Parameters
+
+[cols="2,2,2"]
+|===
+|Variable |Default |Purpose
+
+|`SIP3_CONFIG_JAVA_JVM`
+|captain, salto: `-Xms512M -Xmx1024M`; twig: `-Xms128M -Xmx256M`
+|Memory and GC
+
+|`SIP3_CONFIG_JAVA_OPTS`
+|empty
+|Other JVM flags
+
+|`SIP3_CONFIG_APPLICATION_OPTS`
+|empty (salto community: see below)
+|Application arguments
+
+|`SIP3_CONFIG_JAR_FILE`
+|built-in jar
+|Path to the jar
+
+|`SIP3_CONFIG_JAVA_PATH`
+|`java`
+|Path to java
+|===
+
+Values are split into words on spaces. Quotes inside them are not processed.
+Arguments placed after the image name (`docker run IMAGE ARGUMENTS`, or `args:` in Kubernetes) are also passed to the application.
+
+In the community edition of SIP3 Salto, the default is `SIP3_CONFIG_APPLICATION_OPTS="-Dcodecs.location=/etc/sip3-salto/codecs.yml -Dudf.location=/opt/sip3-salto/udf"`.
+If you set this variable yourself, repeat these two parameters in it.
+
+=== Logging
+
+[cols="2,3,2"]
+|===
+|Variable |Default |Purpose
+
+|`SIP3_CONFIG_LOG_ROOT_LEVEL`
+|`ERROR`
+|Root log level
+
+|`SIP3_CONFIG_LOG_LEVELS`
+|empty
+|Levels for classes and packages
+
+|`SIP3_CONFIG_LOG_PATTERN`
+|`%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n`
+|Log line format
+|===
+
+Levels: `ALL TRACE DEBUG INFO WARN ERROR OFF`.
+The `io.sip3` package always runs at `INFO` unless you override it.
+To change a level or add your own classes, provide a comma-separated list:
+
+[source]
+----
+SIP3_CONFIG_LOG_LEVELS="io.sip3=DEBUG,org.mongodb=WARN"
+----
+
+=== Custom application.yml
+
+Mount a file instead of using variables.
+It becomes the base, and the `SIP3_CONFIG_*` variables are applied on top of it.
+
+[source]
+----
+-v ./application.yml:/etc/sip3-captain/application.yml:ro     # same for sip3-salto, sip3-twig
+----
+
+In Kubernetes, use a ConfigMap mounted at `/etc/sip3-<component>/application.yml`.
+
+=== Vert.x Configuration
+
+Vert.x parameters (`vertx-options.json`) of SIP3 Captain and Salto cannot be changed with variables.
+To change them, mount your own file over `/etc/sip3-captain/vertx-options.json` or `/etc/sip3-salto/vertx-options.json`.
+
+== Container-Specific Notes
+
+=== sip3-captain
+
+- Packet capture requires the host network (`--network host`, `hostNetwork: true`) and the `NET_RAW` capability.
+- With no configuration, SIP3 Captain uses interface `any`, sends to `udp://127.0.0.1:15060`, and uses management address `udp://127.0.0.1:15090`.
+In a real deployment, set the SIP3 Salto address.
+
+[cols="1,3"]
+|===
+|Parameter |Example
+
+|Interface
+|`SIP3_CONFIG_CAPTAIN_PCAP_DEV=eth0`
+
+|BPF filter
+|`SIP3_CONFIG_CAPTAIN_PCAP_BPF__FILTER="tcp or udp"`
+
+|Destination
+|`SIP3_CONFIG_CAPTAIN_SENDER_URI=udp://sip3-salto:15060`
+|===
+
+=== sip3-salto
+
+- Listens on `udp://0.0.0.0:15060` (data from SIP3 Captain) and `udp://0.0.0.0:15090` (management).
+- Connects to MongoDB at `mongodb://127.0.0.1:27017/?w=0&j=false`, database `sip3`. Set your own address.
+- *License (commercial edition only).* The `license.jks` file is not included in the image. Mount it and set its path:
+
+[source]
+----
+-v ./license.jks:/run/secrets/license.jks:ro
+-e SIP3_CONFIG_SALTO_LICENSE_PATH=/run/secrets/license.jks
+----
+
+In Kubernetes, mount the file from a Secret (`defaultMode: 0440`, `fsGroup: 101`).
+The community edition does not need a license.
+
+=== sip3-twig
+
+- Listens on port `8080` with context path `/api`. Security is disabled (`security.enabled: false`).
+- *The default MongoDB address is the address of an internal test environment. You must set your own:* `SIP3_CONFIG_TWIG_MONGO_URI`.
+- Spring parameters are set the same way: `spring.jackson.property_naming_strategy` becomes `SIP3_CONFIG_TWIG_SPRING_JACKSON_PROPERTY__NAMING__STRATEGY`.
+
+=== sip3-hoof
+
+SIP3 Hoof is a web UI served by Nginx.
+It runs as the `nginx` user (uid 101).
+The port inside the container does not matter: publish it wherever you need (`-p 80:8080`).
+
+[cols="2,1,2"]
+|===
+|Variable |Default |Purpose
+
+|`SIP3_CONFIG_HOOF_PORT`
+|`8080`
+|Nginx port inside the container
+
+|`SIP3_CONFIG_HOOF_TWIG_ADDRESS`
+|`sip3-twig:8080`
+|SIP3 Twig address (`name:port`)
+
+|`SIP3_CONFIG_HOOF_GRAFANA_ENABLED`
+|`true`
+|`false` disables the `/grafana` path
+
+|`SIP3_CONFIG_HOOF_GRAFANA_ADDRESS`
+|`grafana:3000`
+|Grafana address (`name:port`)
+
+|`SIP3_CONFIG_HOOF_LOCAL_CONFIG`
+|`true` in community, `false` in commercial
+|Serve `hoof.json` from the container
+
+|`SIP3_CONFIG_DRY_RUN`
+|`false`
+|`true` prints the resulting Nginx configuration and exits
+|===
+
+An address is a container or service name plus a port: letters, digits, `.`, `_`, `-`, and an optional `:port`.
+
+*UI settings in `hoof.json` (community).*
+The menu, dashboards, time zones, and OAuth2 settings are stored in `hoof.json`.
+The image includes a default file.
+Mount your own file as a whole:
+
+[source]
+----
+-v ./hoof.json:/var/www/sip3-hoof/api/management/configuration/hoof:ro
+----
+
+In Kubernetes, create a ConfigMap with the key `hoof` and mount it as a directory.
+Do not use `subPath`: without it, ConfigMap changes are applied without recreating the pod.
+
+[source,yaml]
+----
+volumeMounts:
+  - {name: hoof-config, mountPath: /var/www/sip3-hoof/api/management/configuration, readOnly: true}
+volumes:
+  - name: hoof-config
+    configMap: {name: sip3-hoof-config, items: [{key: hoof, path: hoof}]}
+----
+
+The commercial edition does not need this file: UI settings come through the API.
+
+*Custom Nginx configuration.*
+If the parameters are not enough, mount your own site file: `-v ./sip3-hoof.conf:/etc/sip3-hoof/sip3-hoof.conf:ro`.
+Any `SIP3_CONFIG_HOOF_*` parameters you did not set explicitly are ignored in this case.
+If you set a parameter and your file has no matching line, the container reports an error.
+In your own file, write logs to `/var/log/nginx/sip3-hoof.access.log` and `/var/log/nginx/sip3-hoof.error.log`: these are redirected to the console.
+
+== Running in Docker
+
+Create a shared network and start the containers.
+Images are named `sip3-<component>-ce:<version>` (community) or `sip3-<component>-ee:<version>` (commercial).
+
+[source,ssh]
+----
+docker network create sip3
+
+# MongoDB (if you do not have your own)
+docker run -d --name mongo --network sip3 mongo
+
+# salto
+docker run -d --name sip3-salto --network sip3 \
+  -p 15060:15060/udp -p 15090:15090/udp \
+  -e SIP3_CONFIG_SALTO_MONGO_URI="mongodb://mongo:27017/?w=0&j=false" \
+  -e SIP3_CONFIG_SALTO_MONGO_DB=sip3 \
+  sip3-salto-ce:2026.2.2
+
+# twig
+docker run -d --name sip3-twig --network sip3 \
+  -e SIP3_CONFIG_TWIG_MONGO_URI="mongodb://mongo:27017" \
+  -e SIP3_CONFIG_TWIG_MONGO_DB=sip3 \
+  sip3-twig-ce:2026.2.2
+
+# hoof (without Grafana)
+docker run -d --name sip3-hoof --network sip3 -p 80:8080 \
+  -e SIP3_CONFIG_HOOF_GRAFANA_ENABLED=false \
+  sip3-hoof-ce:2026.2.2
+
+# captain (on the host that sees the traffic)
+docker run -d --name sip3-captain --network host --cap-add NET_RAW \
+  -e SIP3_CONFIG_CAPTAIN_PCAP_DEV=eth0 \
+  -e SIP3_CONFIG_CAPTAIN_PCAP_BPF__FILTER="tcp or udp" \
+  -e SIP3_CONFIG_CAPTAIN_SENDER_URI=udp://<salto-address>:15060 \
+  sip3-captain-ce:2026.2.2
+----
+
+NOTE: SIP3 Captain uses the host network, so it cannot resolve container names from the `sip3` network.
+Specify the IP address or DNS name of the host that runs SIP3 Salto (port 15060/udp is published).
+
+To avoid listing every `-e` option, put the variables in a file and pass it with `--env-file ./sip3.env` (lines of the form `NAME=value`, without quotes).
+
+We recommend `--restart unless-stopped` (`restart: unless-stopped` in Compose) for all containers so they recover when a dependency restarts.
+
+== Running in Kubernetes
+
+General recommendations for all pods:
+
+- Set `enableServiceLinks: false`. Otherwise Kubernetes adds service variables to the environment.
+- Set `securityContext` to `runAsUser: 101`, `runAsNonRoot: true`, `readOnlyRootFilesystem: true`, `capabilities: {drop: [ALL]}`, and `seccompProfile: {type: RuntimeDefault}`.
+- Mount an `emptyDir` volume at `/tmp`. It must be writable and must not be `noexec`.
+- Pass variables with `env:` or `envFrom:` (ConfigMap). Pass secrets as a Secret volume plus `_FILE`.
+
+[cols="1,1,2,2"]
+|===
+|Component |`allowPrivilegeEscalation` |Capabilities |Additional
+
+|captain
+|`true`
+|`drop: [ALL]`, `add: [NET_RAW]`
+|`hostNetwork: true`
+
+|salto
+|`false`
+|`drop: [ALL]`
+|
+
+|twig
+|`false`
+|`drop: [ALL]`
+|
+
+|hoof
+|`false`
+|`drop: [ALL]`
+|`hoof` ConfigMap for community
+|===
+
+SIP3 Captain example:
+
+[source,yaml]
+----
+spec:
+  hostNetwork: true
+  enableServiceLinks: false
+  containers:
+    - name: sip3-captain
+      image: sip3-captain-ce:2026.2.2
+      env:
+        - {name: SIP3_CONFIG_CAPTAIN_PCAP_DEV, value: any}
+        - {name: SIP3_CONFIG_CAPTAIN_SENDER_URI, value: "udp://sip3-salto:15060"}
+      securityContext:
+        runAsUser: 101
+        runAsNonRoot: true
+        allowPrivilegeEscalation: true   # required for the packet capture capability
+        readOnlyRootFilesystem: true
+        capabilities: {drop: [ALL], add: [NET_RAW]}
+        seccompProfile: {type: RuntimeDefault}
+      volumeMounts:
+        - {name: tmp, mountPath: /tmp}
+  volumes:
+    - {name: tmp, emptyDir: {}}
+----
+
+If your cluster policy forbids `allowPrivilegeEscalation: true`, run SIP3 Captain as root: `runAsUser: 0`, without `runAsNonRoot`, and with the same `drop: [ALL]` and `add: [NET_RAW]`.
+
+SIP3 Salto example (a Secret holds the MongoDB address):
+
+[source,yaml]
+----
+spec:
+  enableServiceLinks: false
+  containers:
+    - name: sip3-salto
+      image: sip3-salto-ce:2026.2.2
+      ports:
+        - {containerPort: 15060, protocol: UDP}
+        - {containerPort: 15090, protocol: UDP}
+      env:
+        - {name: SIP3_CONFIG_SALTO_MONGO_URI_FILE, value: /run/secrets/mongo/uri}
+      securityContext:
+        runAsUser: 101
+        runAsNonRoot: true
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities: {drop: [ALL]}
+        seccompProfile: {type: RuntimeDefault}
+      volumeMounts:
+        - {name: tmp, mountPath: /tmp}
+        - {name: mongo, mountPath: /run/secrets/mongo, readOnly: true}
+  volumes:
+    - {name: tmp, emptyDir: {}}
+    - name: mongo
+      secret: {secretName: sip3-mongo, items: [{key: uri, path: uri}]}
+----
+
+Configure SIP3 Twig and Hoof the same way: use `SIP3_CONFIG_TWIG_*` for SIP3 Twig, and `SIP3_CONFIG_HOOF_*` with port `8080` for SIP3 Hoof.
+A Service or Ingress defines the external SIP3 Hoof port.
+For the containers to reach each other, create a Service for SIP3 Salto, Twig, and Hoof, and use the Service name in addresses (`sip3-salto`, `sip3-twig:8080`).
+
+== Verifying the Configuration
+
+`SIP3_CONFIG_DRY_RUN=true` shows the resulting configuration and exits without starting the application.
+
+[source,ssh]
+----
+docker run --rm -e SIP3_CONFIG_DRY_RUN=true -e SIP3_CONFIG_CAPTAIN_PCAP_DEV=eth0 sip3-captain-ce:2026.2.2
+docker run --rm -e SIP3_CONFIG_DRY_RUN=true -e SIP3_CONFIG_HOOF_PORT=9000 sip3-hoof-ce:2026.2.2
+----
+
+For SIP3 Captain, Salto, and Twig, the output contains the resulting `application.yml` (values of keys with `password`, `secret`, or `token` in the name and credentials in URIs are masked), the logging settings, and the launch command.
+For SIP3 Hoof, the output is the resulting Nginx configuration.
+
+After a normal start, the application writes the configuration it accepted to the log: `docker logs <container>`.
+
+== Troubleshooting
+
+[cols="2,3"]
+|===
+|Message / symptom |Cause and solution
+
+|`invalid parameter name`
+|The variable name contains lowercase letters, three consecutive `_`, or a trailing `_`
+
+|`only leaf parameters can have a value`
+|Both a block and its nested parameters are set
+
+|`parameter ... is set twice`
+|Both a value and `_FILE` are set for the same parameter
+
+|`file ... is not readable`
+|Wrong path or wrong permissions on the secret file
+
+|`invalid level` / `invalid entry`
+|Error in `SIP3_CONFIG_LOG_ROOT_LEVEL` or `SIP3_CONFIG_LOG_LEVELS`
+
+|A parameter has no effect
+|Typo in the name: unknown keys are not validated, and the application ignores them
+
+|A string turned into a number or `true`
+|Quote the value: `'"123"'`
+
+|SIP3 Captain does not capture packets
+|Missing host network or `NET_RAW` capability
+
+|Data does not reach SIP3 Salto
+|Wrong `SIP3_CONFIG_CAPTAIN_SENDER_URI`, or port `15060/udp` is not published
+
+|SIP3 Twig shows no data
+|`SIP3_CONFIG_TWIG_MONGO_URI` is not set (the default is an internal test environment)
+
+|`host not found in upstream "sip3-twig"` (SIP3 Hoof)
+|The SIP3 Twig or Grafana name does not resolve: different network, container not running, or wrong address
+
+|`502 Bad Gateway` on `/api/`
+|SIP3 Twig is unreachable
+
+|The UI shows default settings
+|`hoof.json` is not mounted (community)
+
+|`nothing to replace` (SIP3 Hoof)
+|A parameter is set, but your `sip3-hoof.conf` has no matching line
+|===
+
+== Limitations
+
+- Variable values are read at startup. Restart the container to apply changes.
+- Names matching `SIP3_CONFIG_<COMPONENT>_*` are reserved for configuration.
+- `application.yml` keys can be set only in lowercase using `a-z`, `0-9`, and `_`.
+You cannot set a key that ends in `file` with a variable (the `_FILE` suffix is reserved). Use your own `application.yml` instead.
+- Vert.x parameters and `hoof.json` can be changed only by mounting a file.

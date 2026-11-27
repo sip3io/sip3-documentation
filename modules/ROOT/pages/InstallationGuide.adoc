@@ -3,115 +3,422 @@
 
 == Overview
 
-WARNING: This document is `work in progress`.
-Starting with release `2026.1.1`, each component must be installed using its own Ansible Playbook.
-Component configurations will also be stored in their own inventory files.
-This improvement will provide a deeper understanding of how components interact within the SIP3 solution and offer greater flexibility and expanded configuration options for your projects.
+NOTE: This document describes the installation of SIP3 version `2026.2.2` using Ansible.
+If you prefer containers, please refer to the xref:InstallationGuideContainers.adoc[Installation in Docker and Kubernetes] guide.
 
 SIP3 leverages a traditional microservice architecture that makes it easy to scale, in the cloud and on-premise.
 
 Having each one of the SIP3 components deployed independently saves you money, time and resources, but it also brings a layer of extra complexity to the deployment process.
 To make your life easier the SIP3 team introduced the https://github.com/sip3io/sip3-ansible[`sip3-ansible`] Github project.
 
-NOTE: At the moment you can use `sip3-ansible` to deploy each of the SIP3 components as a service to CentOS, Debian or as a docker container to any Linux OS.
+Starting with release `2026.1.1`, each component must be installed using its own Ansible Playbook.
+Component configurations are also stored in their own inventory files.
+This approach provides a deeper understanding of how components interact within the SIP3 solution and offers greater flexibility and expanded configuration options for your projects.
+
+NOTE: At the moment you can use `sip3-ansible` to deploy each of the SIP3 components as a service (packages and `systemd`) to Debian, Ubuntu or RedHat-family Linux distributions.
 Please, contact mailto:support@sip3.io[the SIP3 team] if you need help with specific environment.
 
-By following the traditional Ansible approach, you will be creating an inventory file that describes the SIP3 installation process.
+By following the traditional Ansible approach, you will be creating inventory files that describe the SIP3 installation process.
 By doing so, you will be able to quickly deploy your project to any infrastructure, regardless of the size and amount of its traffic.
 
 NOTE: The `sip3-ansible` project requires Ansible version 2.10 or higher.
+
+Your work consists of three steps:
+
+. *Describe the deployment.* In the inventory, list your servers and assign them to groups (`captain`, `salto`, `twig`, `hoof`, `mongodb`, `influxdb`, `grafana`).
+. *Configure each component separately.* Each component has its own variable (`captain`, `salto`, `twig`, `hoof`, `mongodb`) with its own configuration.
+The configurations are independent: no address or database name is propagated between them automatically.
+. *Align the integration points.* If component A connects to component B, you set the address of B in the configuration of A yourself.
+All such parameters are listed in the <<Integration Points>> section.
+This is the key skill for working with this project.
+
+== Components
+
+[cols="1,1,2,1,2"]
+|===
+|Component |Inventory group |Playbook |Service |Ports
+
+|SIP3 Captain
+|`captain`
+|`playbooks/captain.yml`
+|`sip3-captain`
+|outbound to SIP3 Salto
+
+|SIP3 Salto
+|`salto`
+|`playbooks/salto.yml`
+|`sip3-salto`
+|15060 (data from Captain, UDP and TCP), 15090 (management, UDP and TCP)
+
+|SIP3 Twig
+|`twig`
+|`playbooks/twig.yml`
+|`sip3-twig`
+|8080 (context path `/api`)
+
+|SIP3 Hoof
+|`hoof`
+|`playbooks/hoof.yml`
+|`nginx`
+|80 (in the example)
+
+|MongoDB
+|`mongodb`
+|`playbooks/mongodb.yml`
+|`mongod`
+|27017
+
+|InfluxDB
+|`influxdb`
+|`playbooks/influxdb.yml`
+|`influxd`
+|8086
+
+|Grafana
+|`grafana`
+|`playbooks/grafana.yml`
+|`grafana-server`
+|3000
+|===
+
+- SIP3 Captain - the traffic capture agent. Install it on a server that can see SIP/RTP traffic.
+- SIP3 Salto - a component for traffic processing and quality metric generation. It processes data from SIP3 Captain and writes it to MongoDB, metrics go to InfluxDB.
+- SIP3 Twig - a component providing REST API. It reads data from MongoDB.
+- SIP3 Hoof - a web user interface served via the Nginx HTTP server.
+It proxies `/api/` to SIP3 Twig and `/grafana` to Grafana.
+- MongoDB - a document-oriented database that stores information. It is required.
+- InfluxDB and Grafana - provide quality metrics and dashboards. SIP3 Hoof displays Grafana dashboards as external pages. Both are optional.
+
+The `repo` role adds the SIP3 package repositories (`repo.sip3.io`).
+The Captain, Salto, Twig and Hoof playbooks call it automatically.
+
+== How Components Interact
+
+[source]
+----
+              tcp/udp 15060 (data)                    mongodb://…:27017
+ captain ───────────────────────────▶ salto ───────────────────────────▶ MongoDB
+   │      tcp/udp 15090 (management)    │                                    ▲
+   │ (traffic from the interface)       │ http://…:8086                      │
+                                        ▼                                    │
+                                     InfluxDB ◀── http://…:8086 ── Grafana   │
+                                                                     ▲       │
+ browser ──▶ hoof (nginx) ──/api/──────▶ twig ───────────────────────┼───────┘
+                  │                                                  │
+                  └──/grafana────────────────────────────────────────┘
+----
+
+- SIP3 Captain sends data to SIP3 Salto and registers with it on the management port.
+- SIP3 Salto writes data to MongoDB (two databases: data and management) and metrics to InfluxDB.
+- SIP3 Twig reads the same two MongoDB databases.
+- SIP3 Hoof is the single entry point: it serves the UI and proxies `/api/` to SIP3 Twig and `/grafana` to Grafana.
+- Grafana reads metrics from InfluxDB.
+
+== Project and Inventory Structure
+
+=== Repository Layout
+
+[source]
+----
+ansible.cfg              Ansible settings (required, see "How Ansible Merges Variables")
+playbooks/               one playbook per component + sip3.yml (everything at once) + utility playbooks
+roles/                   component roles (not modified by users)
+inventories/example/     reference example: copy it and edit the copy
+  sip3-backend.yml       backend servers: groups and SSH access
+  sip3-agent.yml         captain servers: group and SSH access
+  captain.yml, salto.yml, twig.yml, hoof.yml, mongodb.yml    component configurations
+  hoof-config.yml        hoof UI settings (hoof.json)
+  hostmap-config.yml     host map (hostmap)
+  ansible-playbook.sh    playbook run order
+----
+
+Edit only your own inventory. You do not need to modify roles or playbooks.
+
+=== Inventory Files As Building Blocks
+
+An inventory is assembled from several files passed with repeated `-i` options.
+There are two kinds of files:
+
+[cols="1,2,2"]
+|===
+|Kind |What it defines |Example
+
+|Topology
+|Where everything runs: groups, addresses, SSH
+|`sip3-backend.yml`, `sip3-agent.yml`
+
+|Component configuration
+|The component variable in `all.vars`
+|`salto.yml`, `twig.yml`, `captain.yml`, ...
+|===
+
+For each playbook, pass the topology file and only the configuration file of the component being deployed.
+This is convenient because SIP3 Captain often runs on a separate server (for example, at a customer site) and needs only `sip3-agent.yml` and `captain.yml`.
+
+[source,ssh]
+----
+ansible-playbook -i inventories/prod/sip3-backend.yml -i inventories/prod/salto.yml playbooks/salto.yml
+----
+
+=== Topology
+
+The groups in `sip3-backend.yml` map each component to a server.
+Group names are fixed because the playbooks reference them.
+A single server can belong to several groups:
+
+[source,yaml]
+----
+all:
+  children:
+    salto:    { hosts: { 'sip3-engine':  { ansible_ssh_host: 10.0.0.11 } } }
+    twig:     { hosts: { 'sip3-api':     { ansible_ssh_host: 10.0.0.12 } } }
+    hoof:     { hosts: { 'sip3-front':   { ansible_ssh_host: 10.0.0.13 } } }
+    grafana:  { hosts: { 'sip3-front':   { ansible_ssh_host: 10.0.0.13 } } }
+    mongodb:  { hosts: { 'sip3-storage': { ansible_ssh_host: 10.0.0.10 } } }
+    influxdb: { hosts: { 'sip3-storage': { ansible_ssh_host: 10.0.0.10 } } }
+  vars:
+    ansible_user: user
+    ansible_port: 22
+    ansible_become: true
+    ansible_ssh_private_key_file: ~/.ssh/id_ed25519-user
+----
+
+=== Component Variable
+
+Each component is described by a single variable with a common structure:
+
+[source,yaml]
+----
+all:
+  vars:
+    salto:
+      mode: full            # <1>
+      application: { ... }  # <2>
+      environment: |        # <3>
+        ...
+      logback: |            # <4>
+        ...
+----
+
+<1> What to do: `full`, `config` or `package`.
+
+<2> Contents of `application.yml`.
+
+<3> Contents of `environment.conf` (Java, memory, startup options).
+
+<4> Contents of `logback.xml`.
+
+The role writes the following files on the server:
+
+[cols="1,3"]
+|===
+|Key |File on the server
+
+|`application`
+|`/etc/sip3-<component>/application.yml`
+
+|`environment`
+|`/etc/sip3-<component>/environment.conf`
+
+|`logback`
+|`/etc/sip3-<component>/logback.xml`
+|===
+
+This applies to SIP3 Captain, Salto and Twig.
+
+- `application` is plain YAML. The keys are the same as in the component's `application.yml`. You can add any parameter, not only those shown in the example.
+- `environment` holds startup variables: `JAVA_HOME`, memory (`JAVA_XMS`, `JAVA_XMX`), garbage collector (`JAVA_GC`), and application arguments (`APP_OPTS`).
+- `logback` is the logging configuration. By default, logs are written to `/var/log/sip3-<component>/default.log` and `metrics.log` and are retained for 15 days.
+
+The `mode` setting controls what the role does:
+
+[cols="1,2,2"]
+|===
+|`mode` |Install packages |Write configs and restart
+
+|`full`
+|yes
+|yes
+
+|`package`
+|yes
+|no
+
+|`config`
+|no
+|yes
+|===
+
+Use `config` when you only need to change settings and want to leave the package version untouched.
+
+NOTE: For SIP3 Captain, Salto, Twig and Hoof, `mode` defaults to `full`. `mongodb` has no default, so always set `mode` explicitly there.
+
+NOTE: `mode` is defined in `all.vars`, so it applies to every server the file is applied to.
+
+WARNING: Every run with `full` or `config` *restarts* the service, even if the files did not change.
+Packages are installed with `state: latest`, so a run with `full` or `package` upgrades the component to the latest version in the repository.
+
+*SIP3 Hoof and MongoDB specifics*
+
+- SIP3 Hoof is configured with two text blocks: `nginx` (the entire `nginx.conf`) and `sip3_hoof` (the SIP3 site).
+If `hoof.nginx` is set, the role installs Nginx, replaces `/etc/nginx/nginx.conf`, places the site in `/etc/nginx/conf.d/sip3-hoof.conf`, and removes `default.conf` (after backing it up).
+If `hoof.nginx` is *not set*, the role only places an example in `/etc/sip3-hoof/sip3-hoof.conf`, and you must include it in Nginx yourself.
+- MongoDB is configured with the `mongodb.config` text, which is written to `/etc/mongod.conf`.
+- There are no examples for InfluxDB and Grafana. Their parameters are described in the <<InfluxDB and Grafana Parameters>> section.
+
+=== How Ansible Merges Variables
+
+. *Run Ansible from the repository root.* `ansible.cfg` is read from the current directory.
+It enables `hash_behaviour = merge`, which the behavior described below depends on.
+. *Dictionaries are merged, not replaced.* You can define a shared configuration and override only what you need on an individual server.
+*Lists are replaced entirely*, for example `salto.application.mongo.collections` or `sip.message.exclusions`.
+. *Host-level configuration takes precedence over shared configuration.* Below is an example of two SIP3 Captains with different interfaces and names, and the rest of the configuration shared.
+. *Store passwords in Ansible Vault*, not in plain text.
+Examples: the MongoDB URI with credentials (`ansible-vault encrypt_string`) and `sip3_api_password`.
+
+[source,yaml]
+----
+# captain.yml: shared configuration for all captains
+all:
+  vars:
+    captain:
+      mode: full
+      application:
+        pcap: { dev: eth0 }
+        sender: { uri: "tcp://10.0.0.11:15060" }
+----
+
+[source,yaml]
+----
+# sip3-agent.yml: per-server differences
+all:
+  children:
+    captain:
+      hosts:
+        captain-msk:
+          ansible_ssh_host: 10.1.0.5
+          captain: { application: { name: captain-msk } }
+        captain-spb:
+          ansible_ssh_host: 10.2.0.5
+          captain: { application: { name: captain-spb, pcap: { dev: eth1 } } }
+----
 
 == Basic Installation
 
 In the following section we will deploy SIP3 to a simple VoIP network, consisting of one PBX server, as shown on the diagram below.
 In the beginning SIP3 Captain will be installed as an agent to the same server.
-Afterwards, all the SIP3 backend components will be installed to another server as a monolithic application.
+Afterwards, all the SIP3 backend components will be installed to another server.
 
 image::InstallationGuideBasicInstallationDiagram.jpg[Installation Guide Basic Installation Diagram]
 
-=== Installing SIP3 Captain To Single PBX
+=== Preparing Control Machine And Servers
 
-Clone `sip3-ansible` repository and checkout the latest release branch:
+. *Prepare the control machine.* You need Ansible 2.10 or later (`pip install -r requirements.txt`) and key-based SSH access with `sudo` privileges to all servers.
+. *Prepare the servers.* Python 3 is required.
+On Debian and Ubuntu, `python3-apt` is recommended; on RedHat-family systems, `python3-rpm` or `python3-dnf`.
+The playbook warns you if the package is missing.
+The playbooks check OS version requirements for MongoDB and the other services themselves and print a message if the system is not supported.
+. *Clone `sip3-ansible` repository* and checkout the latest release branch:
 
 [source,ssh]
 ----
 git clone https://github.com/sip3io/sip3-ansible.git
-git checkout -b release/2026.1.1
+cd sip3-ansible
+git checkout -b release/2026.2.2
 ----
 
-Create a `sip3-captain.yml` file inside the `inventories` directory:
+. *Create your inventory* from the example and delete the files you do not need:
+
+[source,ssh]
+----
+cp -r inventories/example inventories/prod
+----
+
+=== Installing SIP3 Captain To Single PBX
+
+Edit the `inventories/prod/sip3-agent.yml` file to define the topology:
 
 [source,yaml]
 ----
 all:
-  hosts:
+  children:
     captain:
-      ansible_host: 23.08.20.15                       // <1>
+      hosts:
+        captain:
+          ansible_ssh_host: 23.08.20.15                   // <1>
   vars:
     ansible_user: root
     ansible_port: 22
     ansible_become: true
-
-    edition: ce                                       // <2>
-
-    features:                                         // <3>
-      - rtcp
-
-    captain:
-      pcap:                                           // <4>
-        dev: eth0
-        bpf_filter: udp
-      sender:                                         // <5>
-        uri: udp://192.168.1.2:15060
-      management:                                     // <6>
-        uri: udp://192.168.1.2:15090
-      metrics:
-        logging:
-          step: 5000
 ----
 
-Let's take a closer look at the inventory file:
+Then edit the `inventories/prod/captain.yml` file to configure SIP3 Captain:
+
+[source,yaml]
+----
+all:
+  vars:
+    captain:
+      mode: full                                          // <2>
+      application:
+        pcap:                                             // <3>
+          dev: eth0
+          bpf_filter: udp
+        sender:                                           // <4>
+          uri: udp://192.168.1.2:15060
+        management:                                       // <5>
+          uri: udp://192.168.1.2:15090
+        metrics:
+          logging:
+            step: 5000
+----
+
+Let's take a closer look at the inventory files:
 
 <1> SSH address.
 Ansible uses it to connect to the PBX via SSH.
 
-<2> Component edition.
+<2> Installation mode.
+See the <<Component Variable>> section for more details.
 
-<3> Features help to customize SIP3 behaviour and enable/disable certain functionality.
-They also help to separate CE and EE configuration.
-You can find more information in the corresponding section of this document.
-
-<4> Standard `libpcap` settings.
+<3> Standard `libpcap` settings.
 Specify on which interface you want to capture VoIP traffic and set https://biot.com/capstats/bpf.html[BPF filter] to avoid capturing all the packets (e.g. If you want to capture only SIP protocol on port 5060 use `udp and port 5060` as a filter).
 
-<5> SIP3 Salto data interface.
+<4> SIP3 Salto data interface.
 SIP3 Captain uses this interface to send application data.
+The host must be the *actual address of the SIP3 Salto server*.
 
-<6> Management interface.
-Must be defined if `rtp` or `rtcp` features enabled.
+<5> Management interface.
 SIP3 Salto and Captain use this interface to exchange SDP information.
+The host must be the *actual address of the SIP3 Salto server*.
 
 Our minimalistic SIP3 Captain configuration is ready.
 Now, let's install SIP3 Captain to the PBX using the command below:
 
-```
-ansible-playbook -i inventories/sip3-captain.yml playbooks/sip3.yml
-```
+[source,ssh]
+----
+ansible-playbook \
+  -i inventories/prod/sip3-agent.yml \
+  -i inventories/prod/captain.yml \
+  playbooks/captain.yml
+----
 
 Once Ansible successfully finished with the playbook we can check that SIP3 Captain is actually working.
-At the first check bootstrap information from `/var/log/sip3-captain/default.log` if you deployed SIP3 Captain without Docker or `~/sip3/var/log/sip3-captain/default.log` in other case:
+At the first check bootstrap information from `/var/log/sip3-captain/default.log`:
 
-```
+[source]
+----
 05-10-2020 11:36:34.758 [vert.x-eventloop-thread-0] INFO  i.s.captain.ce.capturing.PcapEngine - Listening network interface: eth0
 05-10-2020 11:36:34.885 [vert.x-eventloop-thread-1] INFO  io.sip3.captain.ce.sender.Sender - UDP connection opened: udp://192.168.1.2:15060
-```
+----
 
-Now let's check `/var/log/sip3-captain/metrics.log` and `~/sip3/var/log/sip3-captain/metrics.log` accordingly to get some insights on the amount of traffic captured by SIP3 Captain and to make sure that the traffic goes to the SIP3 Salto:
+Now let's check `/var/log/sip3-captain/metrics.log` to get some insights on the amount of traffic captured by SIP3 Captain and to make sure that the traffic goes to the SIP3 Salto:
 
-```
+[source]
+----
 05-10-2020 12:27:09.298 - packets_captured{name=sip3-captain,source=pcap} throughput=2.4/s
 05-10-2020 12:27:09.299 - packets_sent{name=sip3-captain} throughput=1.2/s
-```
+----
 
 Congratulations, SIP3 Captain is up and capturing traffic.
 So, we can move to the next section of the document.
@@ -120,7 +427,8 @@ So, we can move to the next section of the document.
 
 In the previous section we configured SIP3 Captain for single PBX. However, in real life we usually have multiple VoIP nodes.
 
-Let's add another PBX to our previous example and define a group of hosts called `captain` as it's shown in the example below:
+Let's add another PBX to our previous example.
+Add both hosts to the `captain` group in the `sip3-agent.yml` file as it's shown in the example below:
 
 [source,yaml]
 ----
@@ -129,154 +437,521 @@ all:
     captain:
       hosts:
         pbx1:
-          ansible_host: 23.08.20.15
+          ansible_ssh_host: 23.08.20.15
         pbx2:
-          ansible_host: 29.11.19.88
+          ansible_ssh_host: 29.11.19.88
           captain:                          // <1>
-            pcap:
-              dev: eth1
+            application:
+              name: pbx2
+              pcap:
+                dev: eth1
   vars:
     ansible_user: root
     ansible_port: 22
     ansible_become: true
-
-    edition: ce
-
-    features:
-      - rtcp
-
-    captain:
-      pcap:
-        dev: eth0
-        bpf_filter: udp
-      sender:
-        uri: udp://192.168.1.2:15060
-      management:
-        uri: udp://192.168.1.2:15090
-      metrics:
-        logging:
-          step: 5000
 ----
 
-<1> Each SIP3 Captain instance can be configured separately by re-assigning global variables withing the host section.
-Re-assigned variables will be merged with the global one accordingly to https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable[Ansible precedence convention].
+<1> Each SIP3 Captain instance can be configured separately by re-assigning variables within the host section.
+Re-assigned variables will be merged with the global ones from `captain.yml` accordingly to https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable[Ansible precedence convention].
+Keep `application.name` unique for each agent.
 
-Now we can use the same command from the previous section to install both SIP3 Captains:
-
-```
-ansible-playbook -i inventories/sip3-captain.yml playbooks/sip3-captain.yml
-```
+Now we can use the same command from the previous section to install both SIP3 Captains.
+To add a new SIP3 Captain later, add a new host to the group and run the playbook with `--limit <host>`.
 
 As you can see installing multiple SIP3 Captains as easy as installing one.
 
 === Installing SIP3 Backend Components
 
-==== The backend components are:
+The backend components are:
+
 - SIP3 Salto - a component for traffic processing and quality metric generation
 - SIP3 Twig - a component providing OpenAPI functionality
 - SIP3 Hoof - a web user interface served via the Nginx HTTP server
-- MongoDB - A document-oriented database that stores information
-- InfluxDB - A time-series database for storing quality metrics
-- Grafana - A server that provides functionality for displaying metrics on user dashboards
+- MongoDB - a document-oriented database that stores information
+- InfluxDB - a time-series database for storing quality metrics
+- Grafana - a server that provides functionality for displaying metrics on user dashboards
 
-Each component must be configured using its own inventory file and installed using its own playbook
-Create the following component configuration files in the `inventories` directory:
-`sip3-salto.yml`, `sip3-twig.yml`, `sip3-hoof.yml`, `mongodb.yml`, and optionally `influxdb.yml` and `grafana.yml`.
+Each component must be configured using its own inventory file and installed using its own playbook.
+Create the following component configuration files in the `inventories/prod` directory:
+`salto.yml`, `twig.yml`, `hoof.yml`, `mongodb.yml`, and optionally `grafana.yml`.
+Edit `sip3-backend.yml` to set the real addresses and SSH access.
 
-==== Commons structure of inventory files
+NOTE: For SIP3 Salto, use `salto.yml` as the basis rather than `salto-sepatate.yml`.
+The latter is a variant with its own host block, a license, and webhook notifications; Community Edition does not require a license.
+
+==== Common Structure Of Inventory Files
+
 [source,yaml]
 ----
 all:
-  hosts:
-    backend:
-      ansible_host: 23.08.20.15                       // <1>
-
   vars:
-    ansible_user: root                                // <2>
-    ansible_port: 22                                  // <3>
-    ansible_become: true                              // <4>
-    edition: сe                                       // <5>
+    salto:                                            // <1>
+      mode: full                                      // <2>
 
-    salto:                                            // <6>
-      mode: full
-
-      application:                                    // <7>
-        config:
-          name: sip3-salto
-          type: salto
-          ...
-      vertx_options: |                                // <8>
-        {
-          "metricsOptions": {
-            "enabled": false
-            ...
-      environment: |                                  // <9>
+      application:                                    // <3>
+        name: sip3-salto
+        ...
+      environment: |                                  // <4>
         JAVA_HOME=/opt/sip3-java
         ...
-      logback: |                                      // <10>
+      logback: |                                      // <5>
         <?xml version="1.0" encoding="UTF-8"?>
         ...
 ----
 
 Let's take a closer look at the inventory file:
 
-<1> Server address.
-Ansible uses it to connect to the SIP3 backend via SSH.
+<1> The name of a component in the SIP3 solution. It can be one of the following: `salto`, `twig`, `hoof`, `mongodb`.
 
-<2> Username Ansible will use to connect to the backend server.
+<2> Installation mode: `full`, `package` or `config`.
 
-<3> SSH tcp port of backend server.
+<3> The application configuration section.
+This section contains the main configuration settings for this component.
 
-<4> Configuring Ansible to grant the user privileged rights on connection to the server.
+<4> The environment file configuration section.
 
-<5> Component edition.
+<5> The logging configuration section.
 
-<6> The name of a component in the sip3 solution. It can be one of the following: `salto`, `twig`, `hoof`, `mongodb`, `influxdb`, or `grafana`.
+The server addresses, the user Ansible uses to connect to them, SSH port, and privileges (`ansible_user`, `ansible_port`, `ansible_become`) are defined in the topology file `sip3-backend.yml`.
 
-<7> The application configuration section.
-This section contains the main configuration settings for this component and specifies how it will be deployed on the server.
+==== Running The Playbooks
 
-<8> The Vert.x configuration section.
+Run the playbooks from the repository root, in order (the same order as in `inventories/example/ansible-playbook.sh`):
 
-<9> The environment file configuration section
+[source,ssh]
+----
+I=inventories/prod
 
-<10> The logging configuration section
-
-Now let's install SIP3 backend a component by running the same simple command:
-
-```
 # MongoDB
-ansible-playbook \
-  -i ../inventories/mongodb.yml \
-  playbooks/mongodb.yml
-
-# Grafana
-ansible-playbook \
-  -i ../inventories/grafana.yml \
-  playbooks/grafana.yml
+ansible-playbook -i $I/sip3-backend.yml -i $I/mongodb.yml playbooks/mongodb.yml
 
 # InfluxDB
-ansible-playbook \
-  -i ../inventories/influxdb.yml \
-  playbooks/influxdb.yml
-
-# Twig
-ansible-playbook \
-  -i ../inventories/twig.yml \
-  playbooks/twig.yml
-
-# Hoof
-ansible-playbook \
-  -i ../inventories/hoof.yml \
-  playbooks/hoof.yml
+ansible-playbook -i $I/sip3-backend.yml playbooks/influxdb.yml
 
 # Salto
-ansible-playbook \
-  -i ../inventories/salto.yml \
-  -i ../inventories/codecs.yml \
-  playbooks/salto.yml
+ansible-playbook -i $I/sip3-backend.yml -i $I/salto.yml playbooks/salto.yml
 
-```
+# Twig
+ansible-playbook -i $I/sip3-backend.yml -i $I/twig.yml playbooks/twig.yml
 
+# Hoof
+ansible-playbook -i $I/sip3-backend.yml -i $I/hoof.yml -i $I/twig.yml playbooks/hoof.yml
 
-This document will be updated soon...
+# Grafana
+ansible-playbook -i $I/sip3-backend.yml -i $I/grafana.yml playbooks/grafana.yml
+
+# Captain
+ansible-playbook -i $I/sip3-agent.yml -i $I/captain.yml playbooks/captain.yml
+----
+
+NOTE: `grafana.yml` is your own file with the parameters from the <<InfluxDB and Grafana Parameters>> section, if you need it.
+Without it, Grafana uses the default values.
+
+The order matters: storage first, then processing and the API, then the UI, and SIP3 Captain last, so that data has somewhere to go as soon as it starts flowing.
+
+When SIP3 Twig is running, upload the UI settings and the host map:
+
+[source,ssh]
+----
+ansible-playbook -i $I/sip3-backend.yml -i $I/hoof-config.yml playbooks/hoof-configuration.yml
+ansible-playbook -i $I/sip3-backend.yml -i $I/hostmap-config.yml playbooks/hostmap.yml
+----
+
+NOTE: The `sip3.yml` playbook deploys MongoDB, SIP3 Salto, Twig and Hoof in a single run.
+It does not include SIP3 Captain, InfluxDB, or Grafana.
+You can narrow the run with tags (`-t storage`, `-t salto`, `-t twig`, `-t hoof`) or with `--limit`.
+
+== Integration Points
+
+This is the key section.
+In each table, the left column is a parameter you set in one component, and the right column is the parameter in another component that it *must match*.
+
+=== SIP3 Captain To SIP3 Salto
+
+[cols="2,2,3"]
+|===
+|captain |salto |What must match
+
+|`application.sender.uri`
+|`application.server.udp.uri` or `application.server.tcp.uri`
+|Scheme (`udp`/`tcp`) and port. In SIP3 Captain, the host is the *actual address of the SIP3 Salto server*; in SIP3 Salto, it is the listen address (`0.0.0.0`)
+
+|`application.management.uri`
+|`application.management.udp.uri` or `application.management.tcp.uri`
+|Scheme and port; the host follows the same rule
+|===
+
+In the example, SIP3 Salto listens on ports 15060 and 15090 over both UDP and TCP, while SIP3 Captain points to `127.0.0.1` by default.
+In a real deployment, replace `127.0.0.1` with the address of the SIP3 Salto server.
+If you change a port or keep only one protocol, change it in both components and open the port on the firewall between the servers.
+
+SIP3 Captain and Salto are defined in different inventory files, so you can either specify the address explicitly or reference the SIP3 Salto host, provided `sip3-backend.yml` is also passed when running the SIP3 Captain playbook:
+
+[source,yaml]
+----
+captain:
+  application:
+    sender:
+      uri: "tcp://{{ hostvars['sip3-engine'].ansible_ssh_host }}:15060"
+----
+
+=== SIP3 Salto And Twig To MongoDB
+
+[cols="2,2,3"]
+|===
+|salto |twig |What must match
+
+|`application.mongo.uri`
+|`application.mongo.uri`
+|MongoDB address (the same database server)
+
+|`application.mongo.db`
+|`application.mongo.db`
+|Data database name (default `sip3`)
+
+|`application.mongo.management.uri`
+|`application.mongo.management.uri`
+|MongoDB address for the management database
+
+|`application.mongo.management.db`
+|`application.mongo.management.db`
+|Management database name (default `sip3-mgmt`)
+
+|`application.time_suffix`
+|`application.time_suffix`
+|Suffix format in collection names (`yyyyMMdd`)
+|===
+
+- SIP3 Salto writes; SIP3 Twig reads. If the database names or `time_suffix` differ, the UI shows no data.
+- In the example, `spring.data.mongodb.uri` and `database` of SIP3 Twig reference `${mongo.management.uri}` and `${mongo.management.db}`.
+Do not change these references: they automatically pick up your `mongo.management.*` values.
+- *The default address `localhost`* works only if MongoDB runs on the same server as SIP3 Salto or Twig. Otherwise, set the IP address of the MongoDB server.
+
+*The MongoDB role and these parameters:*
+
+- `mongodb.config` (`net.bindIp`, `net.port`) determines which addresses and port MongoDB accepts connections on.
+The example uses `bindIp: 0.0.0.0`.
+If SIP3 Salto and Twig run on other servers, `bindIp` must allow connections from them, and the port must be open on the firewall.
+- The MongoDB role creates an index in the management database itself.
+It takes the database name from `twig.application.mongo.management.db` (if the `twig` variable is included in the inventory) and falls back to `sip3-mgmt` otherwise.
+If you renamed the management database, add `twig.yml` to the `mongodb` playbook run.
+- The role waits for MongoDB on port *27017* and creates the data directory `/data/db`.
+These are defaults: changing `net.port` or `storage.dbPath` inside the `mongodb.config` text does not affect them.
+
+=== SIP3 Salto To InfluxDB To Grafana
+
+[cols="1,2,3"]
+|===
+|Component |Parameter |What must match
+
+|salto
+|`application.metrics.influxdb.uri`
+|InfluxDB address and port: `http://<influxdb>:8086`
+
+|salto
+|`application.metrics.influxdb.db`
+|Metrics database name (`sip3`)
+
+|influxdb
+|`influxdb.address`, `influxdb.port`
+|The address and port InfluxDB listens on
+
+|grafana
+|`grafana.influxdb.address`, `grafana.influxdb.port`
+|Where Grafana reads metrics from
+
+|grafana
+|`grafana.influxdb.db`
+|The same database name as `metrics.influxdb.db` in SIP3 Salto
+|===
+
+By default, InfluxDB listens on `127.0.0.1:8086`.
+If SIP3 Salto or Grafana runs on another server, set `influxdb.address` (for example, `0.0.0.0` or the server IP) and open the port.
+
+=== SIP3 Hoof To SIP3 Twig And Grafana
+
+The `hoof.sip3_hoof` block (Nginx) defines where SIP3 Hoof proxies requests:
+
+[cols="3,1,3"]
+|===
+|nginx block |Target |Must match
+
+|`location /api/ { proxy_pass http://127.0.0.1:8080/api/; }`
+|twig
+|SIP3 Twig server address, `application.server.port` (8080), and `application.server.servlet.context_path` (`/api`)
+
+|`location /grafana { proxy_pass http://localhost:3000; }`
+|Grafana
+|Grafana server address and port 3000
+
+|`listen 80; server_name sip3.localhost;`
+|entry point
+|The port and name users use to open the UI
+|===
+
+- In the example inventory, SIP3 Twig and Hoof run on *different* servers, but `proxy_pass` points to `127.0.0.1`.
+Replace it with the SIP3 Twig server address. Otherwise the UI loads, but the API does not work (`502 Bad Gateway`).
+- The same applies to Grafana: `localhost:3000` works only if Grafana runs on the same server as SIP3 Hoof (as it does in the example).
+
+Additional dependencies:
+
+[cols="3,2,3"]
+|===
+|Parameter |Related to |Notes
+
+|`twig.application.security.grafana.url` (`http://sip3-hoof/grafana/api/user`)
+|The address at which SIP3 Twig reaches SIP3 Hoof/Grafana
+|A parameter of the `security` section; relevant when security is enabled. Replace `sip3-hoof` with the actual SIP3 Hoof address
+
+|`grafana`: `serve_from_sub_path` and `root_url`
+|`location /grafana` in SIP3 Hoof
+|The role configures Grafana to serve from `/grafana/` automatically. Do not change the path in Nginx unless necessary
+
+|`hoof.config.sidebar.dashboards[].url` (`/grafana/d/tech-dashboard/...`)
+|Grafana dashboards
+|Paths to the dashboards installed by the `grafana` role
+
+|`hoof.config.sidebar.links[].url` (`/api/swagger-ui/`)
+|SIP3 Twig `springdoc` and `context_path`
+|Link to the API documentation
+|===
+
+=== InfluxDB and Grafana Parameters
+
+There are no examples for these components in `inventories/example`, but the roles accept the following variables (all optional):
+
+[source,yaml]
+----
+all:
+  vars:
+    address: 10.0.0.10        # shared default address for influxdb and grafana (default 127.0.0.1)
+
+    influxdb:
+      address: 10.0.0.10      # address InfluxDB listens on
+      port: 8086
+      path: /var/lib/influxdb # data directory
+
+    grafana:
+      influxdb:
+        address: 10.0.0.10    # where InfluxDB is (defaults to the address value, otherwise 127.0.0.1)
+        port: 8086
+        db: sip3              # database name (default sip3)
+      datasources:            # instead of the three parameters above, you can set final values
+        url: http://10.0.0.10:8086
+        database: sip3
+----
+
+If `grafana.datasources.url` or `grafana.datasources.database` is set, it takes precedence over `grafana.influxdb.*`.
+
+=== Host Map And UI Settings
+
+[cols="2,1,4"]
+|===
+|Parameter |Where |Purpose
+
+|`sip3_api_uri`, `sip3_api_user`, `sip3_api_password`
+|`hostmap-config.yml`
+|The `hostmap.yml` playbook uploads the host map through the SIP3 Twig API. `sip3_api_uri` is the SIP3 Twig address without `/api` (default `http://127.0.0.1:8080`; the playbook runs on the SIP3 Twig server). The user and password are required if `security` is enabled; otherwise, remove both variables
+
+|`hostmap`
+|`hostmap-config.yml`
+|List of nodes: `name`, `addr` (list of IPs), `mapping`
+
+|`hoof.config`
+|`hoof-config.yml`
+|UI settings. The `hoof-configuration.yml` playbook writes them as JSON to `/var/www/sip3-hoof/api/management/configuration/hoof` on the SIP3 Hoof server (Nginx serves the file as `/api/management/configuration/hoof`)
+|===
+
+The `flash-hostmap.yml` playbook deletes the `hostmap` nodes from SIP3 Twig.
+In no-authentication mode, it uses `sip3_api_uri` without a default value, so always set it.
+
+=== Port Summary
+
+[cols="1,1,1,2"]
+|===
+|Source |Destination |Port |Protocol
+
+|captain
+|salto
+|15060, 15090
+|UDP or TCP (per `sender.uri` and `management.uri`)
+
+|salto
+|MongoDB
+|27017
+|TCP
+
+|salto
+|InfluxDB
+|8086
+|TCP
+
+|twig
+|MongoDB
+|27017
+|TCP
+
+|Grafana
+|InfluxDB
+|8086
+|TCP
+
+|hoof
+|twig
+|8080
+|TCP
+
+|hoof
+|Grafana
+|3000
+|TCP
+
+|user
+|hoof
+|80
+|TCP
+|===
+
+== Choosing a Topology
+
+*Everything on one server* (evaluation, test environment).
+Add a single host to all groups.
+The defaults in the examples work almost everywhere because all addresses are `127.0.0.1`.
+The only exception is SIP3 Captain, which needs the capture interface (`pcap.dev`).
+
+*Distributed across servers.*
+The more servers you use, the more "local" values you must replace with real addresses:
+
+[cols="1,3"]
+|===
+|What is separated |What to change
+
+|captain separate from salto
+|`captain.application.sender.uri`, `management.uri`
+
+|MongoDB separate
+|`salto`/`twig`: `mongo.uri`, `mongo.management.uri`; `mongodb.config`: `bindIp`
+
+|InfluxDB separate
+|`salto.application.metrics.influxdb.uri`; `influxdb.address`; `grafana.influxdb.address`
+
+|twig separate from hoof
+|`hoof.sip3_hoof`: `proxy_pass` for `/api/`
+
+|Grafana separate from hoof
+|`hoof.sip3_hoof`: `proxy_pass` for `/grafana`; `twig.application.security.grafana.url`
+|===
+
+== Common Changes
+
+Edit the inventory and re-run the playbook for the relevant component.
+If the package version must not change, set `mode: config` in the component variable.
+
+[cols="1,3"]
+|===
+|Task |What to change
+
+|Different capture interface or BPF filter
+|`captain.application.pcap.dev`, `pcap.bpf_filter`, then run `playbooks/captain.yml`
+
+|Add another SIP3 Captain
+|Add a new host to the `captain` group in `sip3-agent.yml`, set its own `application.name` if needed, then run `playbooks/captain.yml` with `--limit <host>`
+
+|Increase Java memory
+|In the component's `environment`: `JAVA_XMS`, `JAVA_XMX`
+
+|Change log level or retention
+|The component's `logback` (`root level`, `maxHistory`)
+
+|Move MongoDB to another server
+|`mongo.uri` and `mongo.management.uri` in `salto.yml` and `twig.yml`, then run SIP3 Salto and Twig playbooks
+
+|Change processing parameters (timeouts, `sip.message.exclusions`)
+|`salto.application`
+
+|Change the UI menu, dashboards, or time zones
+|`hoof.config` in `hoof-config.yml`, then run `playbooks/hoof-configuration.yml`
+
+|Update the host map
+|`hostmap` in `hostmap-config.yml`, then run `playbooks/hostmap.yml`
+
+|Enable SIP3 Twig security
+|`twig.application.security.enabled: true` and the `security` parameters (`grafana.url` or `file.path`), then set `sip3_api_user` and `sip3_api_password` for the hostmap playbooks
+|===
+
+The application parameters themselves (which keys exist in `application.yml`) are described in the xref:GettingStartedGuide.adoc[Getting Started Guide].
+
+== Verifying the Result
+
+Verify along the chain, starting with the data stores.
+
+[cols="1,3"]
+|===
+|What |How
+
+|Services
+|`systemctl status mongod influxd sip3-salto sip3-twig nginx grafana-server sip3-captain` on the corresponding servers
+
+|Logs
+|`/var/log/sip3-<component>/default.log`, metrics in `metrics.log`; for SIP3 Hoof, `/var/log/nginx/`
+
+|SIP3 Salto is accepting data
+|`ss -lunp` and `ss -ltnp` on the SIP3 Salto server: ports 15060 and 15090
+
+|Data in MongoDB
+|`mongosh`: `show dbs`; collections with prefixes such as `sip_call_index` and `rtpr_rtp_index` appear in the `sip3` database
+
+|SIP3 Twig
+|`curl http://<twig>:8080/api/users/profile` should return `200` (without `security`)
+
+|SIP3 Hoof
+|Open `http://<hoof>/` in a browser; `curl http://<hoof>/api/users/profile` verifies the hoof -> twig path
+
+|Grafana
+|`http://<hoof>/grafana`
+|===
+
+Configuration files on the servers: `/etc/sip3-<component>/` (SIP3 Captain, Salto, Twig), `/etc/mongod.conf`, `/etc/nginx/conf.d/sip3-hoof.conf` (or `/etc/sip3-hoof/sip3-hoof.conf`), `/etc/influxdb/influxdb.conf`.
+
+== Troubleshooting
+
+[cols="2,3"]
+|===
+|Symptom |Cause and fix
+
+|Host-level overrides have no effect; a dictionary is replaced entirely
+|The playbook was not run from the repository root, so `ansible.cfg` was not read (`hash_behaviour = merge`)
+
+|`'captain' is undefined`, `'twig' is undefined`, etc.
+|The component configuration file is not included (`-i .../captain.yml`)
+
+|The UI opens but shows no data
+|`mongo.db`, `mongo.management.db`, or `time_suffix` differ between SIP3 Salto and Twig; or SIP3 Captain is not sending anything
+
+|SIP3 Captain is running but SIP3 Salto receives no data
+|`sender.uri` points to `127.0.0.1` or the wrong port; the port is blocked by a firewall
+
+|`502 Bad Gateway` on `/api/`
+|`proxy_pass` in `sip3_hoof` does not point to the SIP3 Twig server, or SIP3 Twig is not running
+
+|SIP3 Twig or Salto cannot connect to MongoDB
+|Address is `localhost` instead of an IP; `bindIp` in `mongod.conf`; port 27017 is closed
+
+|Grafana is empty or has no data source
+|`influxdb.address` defaults to `127.0.0.1` but Grafana runs on another server; or `db` does not match
+
+|Error while waiting for MongoDB to start (`wait_for`)
+|`mongod.conf` specifies a port other than 27017. The role always waits for 27017
+
+|Nginx does not use the SIP3 configuration
+|`hoof.nginx` is not set: the role only placed an example in `/etc/sip3-hoof/sip3-hoof.conf`
+
+|The `repo` role is skipped and packages are not found
+|One of `salto/twig/captain/hoof.mode` is set to `config`: repositories are added only if all four are `full`, `repo`, or `package`
+
+|Package not found on Debian/Ubuntu
+|`python3-apt` is missing, or the server is not supported by the role (see the playbook output)
+
+|The service restarts on every run
+|By design: the roles always restart the service after writing configs
+|===

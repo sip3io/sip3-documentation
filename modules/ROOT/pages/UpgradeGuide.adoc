@@ -9,12 +9,12 @@ These steps are necessary for quick, successful update without negative outcome.
 NOTE: We recommend upgrading the SIP3 solution using the configuration described in the `sip3-ansible` project inventory file.
 We support an update procedure between subsequent versions.
 
-NOTE: Starting with release `2026.1.1`, we are changing the `sip3-ansible` project.
+NOTE: Starting with release `2026.2.2`, we are changing the `sip3-ansible` project.
 From now on, each component must be installed using its own Ansible Playbook.
 Component configurations will also be stored in their own inventory files.
 This improvement will provide a deeper understanding of how components interact within the SIP3 solution and offer greater flexibility and expanded configuration options for your projects.
 
-Since release `2026.1.1` requires to use Java Virtual Machine version 25.
+Since release `2026.2.2` requires to use Java Virtual Machine version 25.
 The SIP3 solution begins to use JVM 25 developed by Adoptium (https://adoptium.net/temurin/releases[JRE Eclipse Temurin by Adoptium]),
 which we packaged into `sip3-java` package for Linux. This package is required for other SIP3 solution packages.
 
@@ -31,3 +31,39 @@ JAVA_XMX=-Xmx1024M
 JAVA_GC=-XX:+UseG1GC
 JAVA_OTHER=
 ```
+
+== Upgrading to 2026.2.2 with Ansible
+
+. Get the latest `sip3-ansible` release and keep your own inventory (for example, `inventories/prod`) unchanged:
++
+[source,ssh]
+----
+cd sip3-ansible
+git fetch
+git checkout -b release/2026.2.2 origin/release/2026.2.2
+----
++
+. Compare your inventory with `inventories/example` of the new release and apply the differences, if any.
+. Run the playbooks for each component from the repository root in the same order as for the installation (see the xref:InstallationGuide.adoc[Installation Guide]).
+Packages are installed with `state: latest`, so a run with `mode: full` or `mode: package` upgrades the component to the latest version in the repository.
+
+WARNING: Every run with `mode: full` or `mode: config` *restarts* the service, even if the configuration files did not change.
+
+NOTE: Use `mode: config` to change settings only and leave the package version untouched.
+Use `mode: package` to upgrade the package and leave the configuration files untouched.
+
+== Upgrading to 2026.2.2 in Docker and Kubernetes
+
+Containers are not upgraded in place.
+Pull the new images and recreate the containers (or update the image tag in your Kubernetes manifests) with the same environment variables and mounted files:
+
+[source,ssh]
+----
+docker pull sip3-salto-ce:2026.2.2
+docker rm -f sip3-salto
+docker run -d --name sip3-salto ... sip3-salto-ce:2026.2.2
+----
+
+Repeat for `sip3-twig`, `sip3-hoof` and `sip3-captain`.
+Variable values are read at startup, so restart the container to apply any change.
+Details are in the xref:InstallationGuideContainers.adoc[Installation in Docker and Kubernetes] guide.
